@@ -40,6 +40,7 @@
 | Language | Python |
 | Data | MySQL, MongoDB |
 | Collaboration | GitHub |
+| Cloud | AWS |
 
 ## 4. WBS
 
