@@ -3,7 +3,7 @@
 [TEST START] common.logging_utils unit tests
 
 Purpose:
-    Verify the common compatibility export points to the actual logger,
+    Verify the logger implementation now lives in common.logging_utils,
     nested secrets are masked, JSONL is written, and stderr is mirrored.
 ===============================================================================
 """
@@ -24,9 +24,11 @@ for import_path in (str(ROOT), str(SRC)):
     if import_path not in sys.path:
         sys.path.insert(0, import_path)
 
-from common.logging_utils import JsonlLogger as CompatibilityLogger  # noqa: E402
-from common.logging_utils import redact as compatibility_redact  # noqa: E402
-from src.logging.logging_utils import JsonlLogger, redact  # noqa: E402
+from common.logging_utils import JsonlLogger, redact  # noqa: E402
+from src.logging.logging_utils import (  # noqa: E402
+    JsonlLogger as CompatibilityLogger,
+    redact as compatibility_redact,
+)
 
 
 def test_common_logging_utils_masks_secrets_and_writes_jsonl() -> None:

@@ -16,7 +16,7 @@ if __package__ in {None, ""}:
 from collection.api import ApiClient, ApiError
 from collection.usedcar import FetchError, load_fetcher, page_checkpoint
 from common.config import Settings, settings_from_env
-from src.logging.logging_utils import JsonlLogger
+from common.logging_utils import JsonlLogger
 from common.contracts import CollectionEnvelope, PreparedBatch, RejectedRecord
 from loading.usedcar import CheckpointStore, LoadStats, sink_for
 from preprocessing.usedcar import PreprocessError, transform_records
