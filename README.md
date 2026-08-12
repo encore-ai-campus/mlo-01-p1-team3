@@ -61,7 +61,42 @@
 
 - 추가 예정
 
-## 9. 한 줄 회고
+## 9. 데이터 수집 파이프라인 모듈화
+
+기존 단일 스크립트의 수집, 데이터 정규화, DB 적재 책임을 `src/`의 단계별 패키지로 분리했습니다. 각 단계는 정해진 입력·출력 계약만 공유하며, 실제 실행 조합은 `pipelines/`에서만 수행합니다.
+
+```text
+collection → preprocessing → loading
+                  ↑
+             pipelines (실행 조합)
+```
+
+| 경로 | 책임 |
+|---|---|
+| `src/common/` | 환경변수 설정, 공통 계약, 구조화 로그, SQL 값 변환 |
+| `src/collection/` | AutoData API/FAQ HTML 수집, 페이지·응답 검증, 재시도 |
+| `src/preprocessing/` | 원천 레코드 검증·정규화, 관계형 중고차 aggregate 및 FAQ document 생성 |
+| `src/loading/` | MySQL/MongoDB Upsert, transaction, checkpoint 관리 |
+| `src/pipelines/` | Collect → Preprocess → Validate → Load orchestration |
+
+실행 파일은 기존 목적을 유지하되 orchestration만 호출하는 얇은 진입점입니다.
+
+| 실행 파일 | 동작 |
+|---|---|
+| `src/load_cars_initial.py` | 중고차 초기 데이터를 MySQL에 적재합니다. 기본 설정은 500건 × 20배치로 최대 10,000건입니다. |
+| `src/update_cars_incremental.py` | checkpoint의 `after_seq`부터 변경분을 MySQL에 Upsert합니다. 기본 실행 주기는 5분이며 `--once`로 단발 실행할 수 있습니다. |
+| `src/load_faqs_mongodb.py` | FAQ를 수집하여 `faq_id` 기준으로 MongoDB에 Upsert합니다. 기본 실행 주기는 5분이며 `--once`를 지원합니다. |
+
+필수 환경변수는 `.env` 또는 시스템 환경변수로 제공합니다. MySQL은 `SQL_HOST`, `SQL_PORT`, `SQL_DATABASE`, `SQL_USER`, `SQL_PASSWORD`(기존 `MYSQL_*` 사용자·비밀번호도 호환), MongoDB는 `MONGODB_URI` 또는 `MONGODB_HOST`, `MONGODB_PORT`, `MONGODB_DATABASE`, `MONGODB_FAQ_COLLECTION`을 사용합니다.
+
+```powershell
+cd C:\encore_first_project\src
+python load_cars_initial.py
+python update_cars_incremental.py --once
+python load_faqs_mongodb.py --once
+```
+
+## 10. 한 줄 회고
 
 | 이름 | 회고 |
 |---|---|

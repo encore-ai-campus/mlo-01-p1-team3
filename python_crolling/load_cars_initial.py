@@ -260,116 +260,51 @@ def normalize_car(raw):
     location = raw.get("location") or {}
 
     return {
+        "car_id": raw.get("id"),
+        "listing_number": raw.get("listingNumber"),
 
-        # -------------------------------------------------
-        # 식별자
-        # -------------------------------------------------
-
-        "car_id":
-            raw.get("id"),
-
-        "listing_number":
-            raw.get("listingNumber"),
-
-        # 실제 JSON
-        # dealer.code
-        "dealer_id":
-            dealer.get("code"),
-
-        # 실제 JSON
-        # businessArea.id
-        "business_area_code":
-            area.get("id"),
-
-        # -------------------------------------------------
-        # 기본 차량정보
-        # -------------------------------------------------
+        "dealer_id": dealer.get("code"),
+        "business_area_code": area.get("id"),
 
         "brand": value_from(
             brand,
             "name",
-            default=(
-                brand
-                if isinstance(brand, str)
-                else None
-            )
+            default=brand if isinstance(brand, str) else None
         ),
 
         "model": value_from(
             model,
             "name",
-            default=(
-                model
-                if isinstance(model, str)
-                else None
-            )
+            default=model if isinstance(model, str) else None
         ),
 
-        "trim":
-            raw.get("trim"),
+        "trim": raw.get("trim"),
+        "model_year": raw.get("modelYear"),
 
-        "model_year":
-            raw.get("modelYear"),
+        "first_registration_date": normalize_date(
+            raw.get("firstRegistration")
+            or raw.get("firstRegistrationDate")
+            or raw.get("firstRegisteredAt")
+        ),
 
-        "first_registration_date":
-            normalize_date(
-                raw.get("firstRegistration")
-                or raw.get("firstRegistrationDate")
-                or raw.get("firstRegisteredAt")
-            ),
+        "mileage_km": raw.get("mileageKm"),
+        "price": raw.get("price"),
+        "currency": raw.get("currency"),
 
-        # -------------------------------------------------
-        # 제원
-        # -------------------------------------------------
+        "fuel_type": raw.get("fuelType") or raw.get("fuel"),
+        "transmission": raw.get("transmission"),
+        "color": raw.get("color"),
 
-        "mileage_km":
-            raw.get("mileageKm"),
-
-        "price":
-            raw.get("price"),
-
-        "currency":
-            raw.get("currency"),
-
-        "fuel_type":
-            raw.get("fuelType")
-            or raw.get("fuel"),
-
-        "transmission":
-            raw.get("transmission"),
-
-        "color":
-            raw.get("color"),
-
-        "displacement_cc":
+        "displacement_cc": (
             raw.get("displacementCc")
-            or raw.get(
-                "engineDisplacementCc"
-            ),
+            or raw.get("engineDisplacementCc")
+        ),
 
-        # -------------------------------------------------
-        # 판매상태
-        # -------------------------------------------------
+        "status": raw.get("status"),
 
-        "status":
-            raw.get("status"),
-
-        # -------------------------------------------------
-        # 사고 / 소유이력
-        # -------------------------------------------------
-
-        "accident_count":
-            raw.get("accidentCount"),
-
-        "owner_change_count":
-            raw.get("ownerChangeCount"),
-
-        "inspection_status":
-            raw.get("inspectionStatus"),
-
-        # -------------------------------------------------
-        # 지역
-        # -------------------------------------------------
+        "accident_count": raw.get("accidentCount"),
+        "owner_change_count": raw.get("ownerChangeCount"),
+        "inspection_status": raw.get("inspectionStatus"),
 
         "province": value_from(
             location,
@@ -385,17 +320,11 @@ def normalize_car(raw):
             "district"
         ),
 
-        # -------------------------------------------------
-        # 매물 등록일
-        # -------------------------------------------------
-
-        "listing_date":
-            normalize_date(
-                raw.get("listingDate")
-                or raw.get(
-                    "registeredDate"
-                )
-            )
+        "listing_date": normalize_date(
+            raw.get("listingDate")
+            or raw.get("registeredDate")
+            or raw.get("createdAt")
+        )
     }
 
 
@@ -1030,7 +959,7 @@ def load_initial_cars(
                 # -----------------------------------------
                 # 차량 정규화
                 # -----------------------------------------
-
+             
                 car = normalize_car(
                     raw
                 )
