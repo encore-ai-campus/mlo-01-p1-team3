@@ -7,6 +7,7 @@ from typing import Any
 import pytest
 
 from collection.faq import FaqCollector, FaqError, parse_faq_html
+from preprocessing.faq import transform_faq_records
 
 
 def faq_html(next_href: str | None = None, *, faq_id: str = "faq-1") -> bytes:
@@ -17,7 +18,7 @@ def faq_html(next_href: str | None = None, *, faq_id: str = "faq-1") -> bytes:
         <div data-field="category">Purchase</div>
         <div data-field="question">Can I <b>buy</b> it?</div>
         <div data-field="answer">Yes, <strong>you can.</strong></div>
-        <time data-field="reviewed-at" datetime="2026-08-01T00:00:00Z"></time>
+        <time data-field="reviewed-at" datetime="2026-08-01"></time>
         <a data-field="source" href="https://source.example/faq/{faq_id}">source</a>
       </article>
       {next_link}
@@ -65,13 +66,32 @@ def test_parse_faq_html_preserves_nested_text_and_hash() -> None:
             "faq_id": "faq-1",
             "brand": "Brand A",
             "category": "Purchase",
-            "reviewed_at": "2026-08-01T00:00:00Z",
+            "reviewed_at": "2026-08-01",
             "source_url": "https://source.example/faq/faq-1",
             "question": "Can I buy it?",
             "answer": "Yes, you can.",
         }
     ]
     assert len(result.response_sha256) == 64
+
+
+def test_collection_faq_date_contract_is_accepted_by_preprocessing() -> None:
+    page = parse_faq_html(faq_html(), "https://faq.example.test/faqs")
+    preprocessing_settings = SimpleNamespace(
+        faq_license="educational-sandbox-rewrite",
+        faq_attribution="AutoData Lab educational snapshot",
+    )
+
+    valid, rejected = transform_faq_records(
+        page.records,
+        settings=preprocessing_settings,
+        run_id="run-1",
+        collected_at="2026-08-13T00:00:00+00:00",
+    )
+
+    assert rejected == []
+    assert len(valid) == 1
+    assert valid[0]["source_updated_at"] == "2026-08-01T00:00:00+00:00"
 
 
 def test_parse_faq_html_rejects_missing_selector_or_required_fields() -> None:

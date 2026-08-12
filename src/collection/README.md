@@ -94,7 +94,7 @@ FaqPage(
 faq_id, brand, category, reviewed_at, source_url, question, answer
 ```
 
-`question`, `answer`는 nested HTML을 공백 기준 text로 변환한다. `response_sha256`는 수집한 원본 bytes의 SHA-256이며, 적재 key가 아니다.
+`question`, `answer`는 nested HTML을 공백 기준 text로 변환한다. `reviewed_at`은 외부 FAQ의 날짜-only `YYYY-MM-DD` 원천값을 보존한다. preprocessing은 이 값을 내부 `source_updated_at` 형식으로 정규화한다. `response_sha256`는 수집한 원본 bytes의 SHA-256이며, 적재 key가 아니다.
 
 ### 3.4 Registration 반환 계약
 
@@ -156,6 +156,7 @@ GET /api/v1/changes?after_seq=<non-negative checkpoint>&limit=<1..500>
 | selector | `article.faq-item` |
 | 필수 identifier | `data-faq-id` 또는 `data-field="faq-id"` |
 | 필수 text | `data-field="question"`, `data-field="answer"` |
+| 확인일 | `data-reviewed-at` 또는 `data-field="reviewed-at"`의 `YYYY-MM-DD` |
 | next | 동일 host이며 allowlisted path인 `a[rel~="next"]`만 허용 |
 | body 제한 | 페이지당 4 MiB |
 | page 제한 | `FAQ_MAX_PAGES`, 기본 100 |
