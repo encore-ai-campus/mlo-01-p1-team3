@@ -12,6 +12,7 @@
 | `config.py` | `common.config` | `.env`·환경변수 해석, SQL JDBC URL 파싱, MongoDB URI 조합, 기본값·빈 비밀번호 `None` 처리 |
 | `contracts.py` | `common.contracts` | `RawRecord`, `PreparedRecord`, `CollectionEnvelope`, `PreparedBatch`, `RejectedRecord`, `LoadStats`, `RunContext` |
 | `sql_utils.py` | `common.sql_utils` | ISO datetime/date와 JSON 값을 SQL 입력값으로 변환 |
+| `time_utils.py` | `common.time_utils` | UTC datetime/date 정규화와 현재 시각 생성 |
 
 ## 모듈 관계
 
@@ -40,6 +41,8 @@ flowchart TD
 - `PreparedBatch`는 유효 데이터와 Reject 요약을 적재로 전달한다.
 - 로그에는 API key, DB password, MongoDB URI, Discord/Webhook URL을 남기지 않는다.
 - SQL 날짜·시간은 UTC 기준으로 변환하며, timezone 정보가 없는 입력은 UTC로 해석한다.
+- 공통 시간 포맷은 `common.time_utils`가 소유하며 datetime은 `YYYY-MM-DDTHH:MM:SS+00:00`, date는 `YYYY-MM-DD`로 정규화한다.
+- `created_at`·`updated_at`처럼 적재 시각이 필요한 모듈도 같은 포맷터를 사용하되, 시각을 생성하는 책임은 해당 모듈에 둔다.
 
 ## 외부 계약
 
@@ -52,7 +55,7 @@ flowchart TD
 ### 출력
 
 - 설정: immutable `Settings` 객체
-- 시간: 로그와 SQL 변환은 UTC 기준 ISO 문자열 또는 timezone-aware datetime
+- 시간: `format_utc_datetime()`의 canonical UTC ISO 문자열 또는 timezone-aware `datetime`; date 의미의 값은 `format_utc_date()`의 `YYYY-MM-DD`
 - 로그: UTF-8 JSONL 한 줄 한 이벤트
 - 공통 적재 통계: `inserted_count`, `updated_count`, `unchanged_count`
 
@@ -65,4 +68,4 @@ flowchart TD
 
 ## 의존성 경계
 
-표준 라이브러리만 사용하며 `collection`, `preprocessing`, `loading`, `pipelines`를 import하지 않는다. 공통 계약을 바꾸면 collection·preprocessing·loading·pipeline contract test를 먼저 갱신한다.
+표준 라이브러리만 사용하며 `collection`, `preprocessing`, `loading`, `pipelines`, `logging`을 import하지 않는다. 공통 계약을 바꾸면 collection·preprocessing·loading·pipeline contract test를 먼저 갱신한다.
