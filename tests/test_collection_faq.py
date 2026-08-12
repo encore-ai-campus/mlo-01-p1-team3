@@ -17,7 +17,7 @@ def faq_html(next_href: str | None = None, *, faq_id: str = "faq-1") -> bytes:
         <div data-field="category">Purchase</div>
         <div data-field="question">Can I <b>buy</b> it?</div>
         <div data-field="answer">Yes, <strong>you can.</strong></div>
-        <time data-field="reviewed-at" datetime="2026-08-01T00:00:00Z"></time>
+        <time data-field="reviewed-at" datetime="2026-08-01"></time>
         <a data-field="source" href="https://source.example/faq/{faq_id}">source</a>
       </article>
       {next_link}
@@ -65,7 +65,7 @@ def test_parse_faq_html_preserves_nested_text_and_hash() -> None:
             "faq_id": "faq-1",
             "brand": "Brand A",
             "category": "Purchase",
-            "reviewed_at": "2026-08-01T00:00:00Z",
+            "reviewed_at": "2026-08-01",
             "source_url": "https://source.example/faq/faq-1",
             "question": "Can I buy it?",
             "answer": "Yes, you can.",
