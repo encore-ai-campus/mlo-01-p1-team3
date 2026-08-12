@@ -27,7 +27,7 @@ flowchart TD
     Contracts["common.contracts"] --> Pipelines["pipelines"]
     Contracts --> Preprocessing
     Contracts --> Loading
-    Logging["src.logging"] --> Pipelines
+    Logging["common.logging_utils"] --> Pipelines
     SQLUtils["common.sql_utils"] --> Loading
 ```
 
@@ -35,7 +35,6 @@ flowchart TD
 
 - `Settings.from_env()`와 `settings_from_env()`가 운영·로컬 환경의 유일한 설정 진입점이다.
 - 구조화 로그 구현은 `common.logging_utils.JsonlLogger`가 소유한다.
-- `src.logging.logging_utils`는 기존 import 경로를 위한 호환용 re-export만 제공한다.
 - 코드 어디에도 API key, DB password, host를 하드코딩하지 않는다.
 - 빈 계정 비밀번호는 Python `None`으로 취급한다.
 - `APP_ENV=production`에서는 SQL 사용자·비밀번호와 명시적 MongoDB URI 및 인증정보가 없으면 설정 생성을 거부한다.
@@ -71,4 +70,4 @@ flowchart TD
 
 ## 의존성 경계
 
-표준 라이브러리만 사용하며 `collection`, `preprocessing`, `loading`, `pipelines`, `logging`을 import하지 않는다. 공통 계약을 바꾸면 collection·preprocessing·loading·pipeline contract test를 먼저 갱신한다.
+표준 라이브러리만 사용하며 `collection`, `preprocessing`, `loading`, `pipelines`를 import하지 않는다. 공통 계약을 바꾸면 collection·preprocessing·loading·pipeline contract test를 먼저 갱신한다.

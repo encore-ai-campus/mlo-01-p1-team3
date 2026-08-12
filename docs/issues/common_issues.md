@@ -3,27 +3,27 @@
 - 작성일: 2026-08-13
 - 대상 저장소: `C:\encore_first_project`
 - 대상 모듈: `src/common`
-- 직접 연관 모듈: `src/logging`, `src/loading`
+- 직접 연관 모듈: `src/loading`
 - 참고 저장소: `C:\encore_first_project\ref\mlo-01-p1-team3-a`
 - 참고 보고서: `C:\Users\yoona\OneDrive\Desktop\# common 구현 모듈 이슈 보고서.md`
 - 목적: 공통 설정·계약·로그·SQL 변환 모듈의 내부 계약, 외부 계약, 문서 정합성, 테스트 증거 및 운영 안전성 보고
-- 조치 범위: 본 보고서 작성 중 소스·테스트·설정 파일 수정 없음
-- MongoDB 상태: Replica Set 전체 URI 미전달. 실제 연결·인증·선출 검증은 보류
+- 조치 범위: `common.logging_utils` 경로·공통 테스트·관련 문서만 정리했으며 collection/loading 구현은 수정하지 않음
+- MongoDB 상태: `.env`에 URI·인증 변수는 존재하나 실제 연결·인증·선출 검증은 보류
 
 ## 0. 결정 반영 및 현재 상태
 
 | ID | 우선순위 | 항목 | 현재 판정 |
 |---|---|---|---|
-| COM-001 | P1 | `src/common` 전용 테스트 파일 부재 | 일회성 검사와 레퍼런스 테스트는 통과했으나 저장소 재현 가능한 공통 테스트 증거는 없음 |
+| COM-001 | P2-조건부 | `src/common` 전용 테스트 증거 | 전용 테스트 파일은 존재하며 10개 함수의 직접 검증은 통과했으나 현재 런타임에 pytest가 없어 native pytest 결과는 보류 |
 | COM-002 | P2 | `common` 파일·README·export 정합성 | 현재 작업 트리 기준 이상 없음 |
 | COM-003 | P1 | production MongoDB URI scheme 검증 부족 | 잘못된 scheme이 설정 단계에서 통과할 수 있음 |
 | COM-004 | P1 | 명시적 URI와 별도 MongoDB 인증정보 계약 충돌 | 설정은 통과하지만 loader가 별도 인증정보를 URI에 반영하지 않음 |
-| COM-005 | P1-조건부 | 실제 Replica Set URI·DB 연결 검증 | URI 미전달 및 실제 DB 미연결로 검증 보류 |
+| COM-005 | P1-조건부 | 실제 Replica Set URI·DB 연결 검증 | URI·인증 변수는 설정되어 있으나 실제 DB 미연결로 검증 보류 |
 | COM-006 | P1-조건부 | `RunContext` reference source와 문서의 signature 차이 | current 코드는 문서와 일치하지만 reference source와 positional 호환성이 다름 |
 | COM-007 | P2 | 로그 마스킹의 일반 `key` 과잉 매칭 | 정상 문자열 일부가 `[REDACTED]`로 변형될 수 있음 |
 | COM-008 | P2 | README의 host 하드코딩 설명과 fallback 코드 불일치 | 문서 표현과 실제 기본값이 다름 |
 | COM-009 | P1-조건부 | 실제 외부 API·MySQL·MongoDB 동작 검증 부재 | fixture·mock 범위 밖의 운영 동작은 승인할 수 없음 |
-| COM-010 | P2-조건부 | project root 외부 import 경로 의존 | 문서화된 실행 방식에서는 통과하나 `PYTHONPATH=src`만 사용하는 환경에서는 wrapper import 실패 |
+| COM-010 | P2-조건부 | project root 외부 import 경로 의존 | `common`을 사용하려면 `src`를 Python path에 추가하거나 package로 설치해야 함 |
 
 ## 1. 판정 기준
 
@@ -38,19 +38,21 @@
 
 ### 2.1 현재 저장소에 저장된 테스트 파일
 
-현재 `src/common` 전용 테스트 파일은 존재하지 않는다. 확인된 저장 테스트 파일은 참고 폴더의 다음 파일이다.
+현재 저장소에는 다음 `src/common` 전용 테스트 파일이 있다.
 
-- `C:\encore_first_project\ref\mlo-01-p1-team3-a\tests\conftest.py`
-- `C:\encore_first_project\ref\mlo-01-p1-team3-a\tests\test_data_preprocessing.py`
-- `C:\encore_first_project\ref\mlo-01-p1-team3-a\tests\test_layer_boundaries.py`
+- `C:\encore_first_project\tests\test_common_config.py`
+- `C:\encore_first_project\tests\test_common_contracts.py`
+- `C:\encore_first_project\tests\test_common_logging_utils.py`
+- `C:\encore_first_project\tests\test_common_sql_utils.py`
+- `C:\encore_first_project\tests\test_common_time_utils.py`
 
-위 테스트는 공통 모듈만 검증하는 테스트가 아니라 collection·preprocessing·loading·pipeline fixture를 포함한 레퍼런스 테스트다.
+참고 폴더의 테스트는 별도로 collection·preprocessing·loading·pipeline fixture를 검증하며, 이번 common 범위에는 포함하지 않았다.
 
 ### 2.2 실행한 검증
 
 | 검증 | 결과 | 한계 |
 |---|---:|---|
-| `src/common` 직접 모듈 검사 | `8 passed, 0 failed` | PowerShell에서 일회성으로 실행했으며 테스트 파일로 저장되지 않음 |
+| `src/common` 전용 직접 테스트 harness | `10 passed, 0 failed` | 현재 런타임에 pytest가 없어 native pytest 실행 결과는 확인하지 못함 |
 | 전체 `src` compile 검사 | 통과 | 문법만 검증하며 외부 시스템 연결은 검증하지 않음 |
 | 레퍼런스 테스트 | `16 passed` | fixture·JSON sink 중심이며 실제 운영 DB/API 연결은 포함하지 않음 |
 | common README 파일 목록·`__all__` 검사 | 이상 없음 | 정적 구조 검증만 수행 |
@@ -69,39 +71,34 @@
 4. production `APP_ENV`에서 EnvironmentFile 또는 systemd가 주입하는 값의 우선순위
 5. 실제 외부 API의 응답 크기·schema 변경·timeout·HTTP 오류 계약
 6. clean checkout에서 별도 설치 없이 공통 모듈과 전체 pipeline을 import하는지 여부
-7. `common.logging_utils`를 project root 외부에서 호출하는 배포 방식
+7. `common.logging_utils`를 project root 외부에서 호출할 때의 `PYTHONPATH`·package 설치 방식
 
 일회성 검사 결과만으로 위 항목을 통과했다고 판정할 수 없다.
 
 ---
 
-## COM-001. `src/common` 전용 테스트 증거 부재
+## COM-001. `src/common` 전용 테스트 증거
 
 ### 우선순위
 
-**P1 — 검수 완료 기준 미충족**
+**P2-조건부 — 테스트 파일은 존재하나 native pytest 실행 환경 확인 필요**
 
 ### 확인 내용
 
-현재 `C:\encore_first_project\src\common`에는 구현 파일과 README만 있으며, `tests/test_common.py` 같은 공통 모듈 전용 테스트 파일이 없다.
-
-이번 검증에서 `config`, `contracts`, `sql_utils`, logging wrapper/implementation을 직접 실행해 `8 passed`를 확인했지만, 해당 코드는 파일로 저장되지 않았다. 따라서 다른 작업자가 clean checkout에서 같은 검증을 재실행할 수 있는 저장소 증거가 없다.
-
-레퍼런스의 `16 passed`도 공통 모듈 전용 결과가 아니며 fixture 기반 pipeline 테스트 결과다.
+`config`, `contracts`, `logging_utils`, `sql_utils`, `time_utils`별 전용 테스트 파일이 저장되어 있다. wrapper를 참조하던 logging 테스트는 제거 후 `common.logging_utils`의 구현 module ownership과 redaction·JSONL 출력을 직접 검증하도록 변경했다. 의존성 없는 직접 harness에서는 10개 테스트 함수가 통과했다.
 
 ### 영향
 
-- 공통 계약 변경 시 회귀를 자동 감지할 테스트가 없다.
+- native pytest가 설치되지 않은 환경에서는 표준 pytest 결과를 재현할 수 없다.
 - `Settings` production 검증, secret redaction, SQL 날짜 변환의 경계값을 CI에서 반복 검증할 수 없다.
-- 현재 통과 결과를 GitHub commit의 검수 증거로 직접 제시할 수 없다.
+- 실제 MongoDB·MySQL·외부 API 연결은 이 단위 테스트 범위에 포함되지 않는다.
 
 ### 승인 기준
 
-- 현재 저장소에 `src/common` 전용 테스트 파일을 추가한다.
-- 정상값·빈값·legacy alias·invalid URL·production credentials·timezone 변환·nested redaction을 테스트한다.
-- clean checkout에서 동일 명령으로 결과가 재현되어야 한다.
+- CI 또는 clean checkout에 pytest를 설치하고 동일한 `tests/test_common_*.py` 명령을 실행한다.
+- 실제 DB/API 검증은 별도 통합 테스트 환경에서 수행한다.
 
-본 보고서에서는 테스트 파일을 추가하지 않았다.
+이번 정리에서는 common 전용 테스트 파일을 유지하고 구 logging wrapper 의존성을 제거했다.
 
 ---
 
@@ -119,9 +116,7 @@
 - `Settings` 속성 사용처와 dataclass 필드
 - 루트 `.env` 44개 key와 `config.py`가 해석하는 환경변수 이름
 
-`common.logging_utils`는 구현체가 아니라 [호환 re-export](C:/encore_first_project/src/common/logging_utils.py:3)이고, 실제 구현은 [src/logging/logging_utils.py](C:/encore_first_project/src/logging/logging_utils.py)에 있다. 현재 `src/common/README.md`의 설명과 실제 import는 일치한다.
-
-다만 레퍼런스 폴더의 `common/logging_utils.py`는 직접 구현체이므로, reference layout을 그대로 전제로 하는 외부 호출자가 있는지는 별도 확인이 필요하다.
+`common.logging_utils`는 [직접 구현체](C:/encore_first_project/src/common/logging_utils.py)이며, 레퍼런스의 `common/logging_utils.py` 배치와 일치한다. 기존 별도 logging 영역의 호환 wrapper와 README는 제거했고, 내부 import·테스트는 `common.logging_utils`만 사용한다. 외부 배포물이 제거된 이전 경로를 직접 호출한다면 별도 마이그레이션이 필요하다.
 
 ---
 
@@ -268,8 +263,8 @@ RunContext(run_id, pipeline_name, schedule_name, started_at)
 
 ### 관련 구현
 
-- [logging_utils.py:13-14](C:/encore_first_project/src/logging/logging_utils.py:13)
-- [logging_utils.py:31](C:/encore_first_project/src/logging/logging_utils.py:31)
+- [logging_utils.py:13-14](C:/encore_first_project/src/common/logging_utils.py:13)
+- [logging_utils.py:31](C:/encore_first_project/src/common/logging_utils.py:31)
 
 ### 확인 결과
 
@@ -349,19 +344,17 @@ fallback을 의도된 local default로 인정한다면 README를 그 의미에 �
 
 ### 확인 결과
 
-project root에서 실행하면 다음 호환 import는 정상이다.
+`PYTHONPATH=C:\encore_first_project\src`를 지정하면 다음 canonical import가 정상이다.
 
 ```python
 from common.logging_utils import JsonlLogger, redact
 ```
 
-하지만 project root 밖에서 `PYTHONPATH=C:\encore_first_project\src`만 지정하면 [common/logging_utils.py:3](C:/encore_first_project/src/common/logging_utils.py:3)가 참조하는 top-level `src` package를 찾지 못해 import가 실패한다.
-
-현재 [logging README](C:/encore_first_project/src/logging/README.md:22)는 project root package path를 포함하라고 명시하므로, 문서화된 실행 조건에서는 결함으로 확정하지 않는다.
+project root만 제공하고 `src`를 Python path에 추가하지 않으면 `common` 패키지를 찾지 못한다. 이는 wrapper 의존성 문제가 아니라 배포 시 `src`를 설치하거나 `PYTHONPATH`에 포함해야 하는 패키징 조건이다.
 
 ### 승인 기준
 
-배포 실행 방식이 project root 기준인지, package 설치 방식인지 확정하고 그 방식의 import smoke test를 저장해야 한다.
+배포 실행 방식이 `PYTHONPATH=...\\src` 기준인지 package 설치 방식인지 확정하고 그 방식의 import smoke test를 저장해야 한다.
 
 ---
 
