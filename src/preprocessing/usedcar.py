@@ -11,10 +11,10 @@ import hashlib
 import json
 import re
 from dataclasses import dataclass
-from datetime import datetime, timezone
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple
 
 from common.config import Settings
+from common.time_utils import format_utc_date, format_utc_datetime, utc_now_iso
 
 
 class PreprocessError(ValueError):
@@ -102,22 +102,23 @@ def _iso_value(value: Any, field: str) -> Optional[str]:
     if text is None:
         return None
     try:
-        parsed = datetime.fromisoformat(text.replace("Z", "+00:00"))
-    except ValueError as exc:
+        return format_utc_datetime(text, required=True)
+    except (TypeError, ValueError) as exc:
         raise PreprocessError(f"{field} must be ISO 8601", code=f"invalid_{field}") from exc
-    if parsed.tzinfo is None:
-        parsed = parsed.replace(tzinfo=timezone.utc)
-    return parsed.astimezone(timezone.utc).isoformat()
 
 
 def _date_value(value: Any, field: str) -> Optional[str]:
     text = _text_value(value)
     if text is None:
         return None
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", text):
+        raise PreprocessError(f"{field} must be YYYY-MM-DD", code=f"invalid_{field}")
     try:
-        return datetime.strptime(text, "%Y-%m-%d").date().isoformat()
-    except ValueError as exc:
+        normalized = format_utc_date(text, required=True)
+    except (TypeError, ValueError) as exc:
         raise PreprocessError(f"{field} must be YYYY-MM-DD", code=f"invalid_{field}") from exc
+    assert normalized is not None
+    return normalized
 
 
 def _canonical_hash(value: Mapping[str, Any]) -> str:
@@ -180,6 +181,12 @@ def transform_record(
     upsert policy stay in ``loading.usedcar``.
     """
 
+    try:
+        normalized_collected_at = format_utc_datetime(collected_at, required=True)
+    except (TypeError, ValueError) as exc:
+        raise PreprocessError("collected_at must be ISO 8601", code="invalid_collected_at") from exc
+    assert normalized_collected_at is not None
+
     source_id = _record_id(record)
     if source_id is None:
         raise PreprocessError("id or listingNumber is required", code="missing_listing_id")
@@ -213,7 +220,7 @@ def transform_record(
     price_krw = _nonnegative_int(price, "price_krw")
     source_created_at = _iso_value(record.get("createdAt"), "created_at")
     source_updated_at = _iso_value(record.get("updatedAt"), "source_updated_at")
-    now = datetime.now(timezone.utc).isoformat()
+    now = utc_now_iso()
 
     brand_entity = None
     if brand is not None:
@@ -223,7 +230,7 @@ def transform_record(
             "slug": _nested_text(brand, "slug"),
             "country": _nested_text(brand, "country"),
             **_entity_metadata(
-                source_updated_at=source_updated_at, run_id=run_id, collected_at=collected_at, now=now
+                source_updated_at=source_updated_at, run_id=run_id, collected_at=normalized_collected_at, now=now
             ),
         }
 
@@ -236,7 +243,7 @@ def transform_record(
             "slug": _nested_text(model, "slug"),
             "body_type": _nested_text(model, "bodyType", "vehicleType"),
             **_entity_metadata(
-                source_updated_at=source_updated_at, run_id=run_id, collected_at=collected_at, now=now
+                source_updated_at=source_updated_at, run_id=run_id, collected_at=normalized_collected_at, now=now
             ),
         }
 
@@ -249,7 +256,7 @@ def transform_record(
             "sigungu": _nested_text(location, "sigungu", "district"),
             "slug": _nested_text(location, "slug"),
             **_entity_metadata(
-                source_updated_at=source_updated_at, run_id=run_id, collected_at=collected_at, now=now
+                source_updated_at=source_updated_at, run_id=run_id, collected_at=normalized_collected_at, now=now
             ),
         }
 
@@ -261,7 +268,7 @@ def transform_record(
             "department": _nested_text(dealer, "department"),
             "position": _nested_text(dealer, "position"),
             **_entity_metadata(
-                source_updated_at=source_updated_at, run_id=run_id, collected_at=collected_at, now=now
+                source_updated_at=source_updated_at, run_id=run_id, collected_at=normalized_collected_at, now=now
             ),
         }
 
@@ -282,7 +289,7 @@ def transform_record(
                 else None
             ),
             **_entity_metadata(
-                source_updated_at=source_updated_at, run_id=run_id, collected_at=collected_at, now=now
+                source_updated_at=source_updated_at, run_id=run_id, collected_at=normalized_collected_at, now=now
             ),
         }
 
@@ -359,7 +366,7 @@ def transform_record(
         "source_created_at": source_created_at,
         "source_updated_at": source_updated_at,
         "run_id": run_id,
-        "collected_at": collected_at,
+        "collected_at": normalized_collected_at,
         "created_at": now,
         "updated_at": now,
     }
@@ -376,7 +383,7 @@ def transform_record(
 def transform_records(
     records: Iterable[Mapping[str, Any]], *, settings: Settings, run_id: str, dataset_epoch: Optional[str]
 ) -> Tuple[List[Dict[str, Any]], List[RejectedRecord]]:
-    collected_at = datetime.now(timezone.utc).isoformat()
+    collected_at = utc_now_iso()
     valid: List[Dict[str, Any]] = []
     rejected: List[RejectedRecord] = []
     for index, raw in enumerate(records):

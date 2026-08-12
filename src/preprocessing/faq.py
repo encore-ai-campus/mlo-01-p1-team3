@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple
 
 from common.config import Settings
+from common.time_utils import format_utc_date, format_utc_datetime
 
 
 class FaqPreprocessError(ValueError):
@@ -53,10 +54,20 @@ def _iso_date(value: Any) -> Optional[str]:
     if not text:
         return None
     if re.fullmatch(r"\d{4}-\d{2}-\d{2}", text):
-        return f"{text}T00:00:00+00:00"
-    if re.fullmatch(r"\d{8}", text):
-        return f"{text[:4]}-{text[4:6]}-{text[6:]}T00:00:00+00:00"
-    raise FaqPreprocessError("reviewed_at must be YYYY-MM-DD", code="invalid_reviewed_at")
+        normalized = text
+    elif re.fullmatch(r"\d{8}", text):
+        normalized = f"{text[:4]}-{text[4:6]}-{text[6:]}"
+    else:
+        raise FaqPreprocessError(
+            "reviewed_at must be YYYY-MM-DD or YYYYMMDD", code="invalid_reviewed_at"
+        )
+    try:
+        canonical_date = format_utc_date(normalized, required=True)
+        canonical_datetime = format_utc_datetime(canonical_date, required=True)
+    except (TypeError, ValueError) as exc:
+        raise FaqPreprocessError("reviewed_at is not a calendar date", code="invalid_reviewed_at") from exc
+    assert canonical_datetime is not None
+    return canonical_datetime
 
 
 def _canonical_hash(value: Mapping[str, Any]) -> str:
@@ -67,6 +78,12 @@ def _canonical_hash(value: Mapping[str, Any]) -> str:
 def transform_faq_record(
     record: Mapping[str, Any], *, settings: Settings, run_id: str, collected_at: str
 ) -> Dict[str, Any]:
+    try:
+        normalized_collected_at = format_utc_datetime(collected_at, required=True)
+    except (TypeError, ValueError) as exc:
+        raise FaqPreprocessError("collected_at must be ISO 8601", code="invalid_collected_at") from exc
+    assert normalized_collected_at is not None
+
     faq_id = normalize_text(record.get("faq_id"))
     question = normalize_text(record.get("question"))
     answer = normalize_text(record.get("answer"))
@@ -109,11 +126,11 @@ def transform_faq_record(
     return {
         **stable,
         "run_id": run_id,
-        "collected_at": collected_at,
+        "collected_at": normalized_collected_at,
         "content_hash": _canonical_hash(stable),
         "is_active": True,
-        "created_at": collected_at,
-        "updated_at": collected_at,
+        "created_at": normalized_collected_at,
+        "updated_at": normalized_collected_at,
     }
 
 
