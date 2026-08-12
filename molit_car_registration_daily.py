@@ -1,14 +1,8 @@
-"""자동차등록현황보고 파이프라인의 호환 실행 진입점.
+"""우리 자동차등록 파이프라인의 호환 실행 진입점.
 
-실제 구현은 조장님이 정의한 다음 단계별 구조에 있습니다.
-
-    ref/mlo-01-p1-team3-a/src/
-        collection/registration.py
-        preprocessing/registration.py
-        loading/registration.py
-        pipelines/registration.py
-
-이 파일은 기존 실행 명령을 유지하면서 canonical pipeline만 호출합니다.
+실제 구현은 조장님 reference 폴더와 분리된
+``molit_car_registration/src`` 아래에 있습니다.
+이 파일은 기존 실행 명령을 유지하면서 우리 파이프라인만 호출합니다.
 """
 
 from __future__ import annotations
@@ -18,9 +12,9 @@ from pathlib import Path
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent
-SOURCE_ROOT = PROJECT_ROOT / "ref" / "mlo-01-p1-team3-a" / "src"
+SOURCE_ROOT = PROJECT_ROOT / "molit_car_registration" / "src"
 if not SOURCE_ROOT.exists():
-    raise SystemExit(f"canonical source directory not found: {SOURCE_ROOT}")
+    raise SystemExit(f"our source directory not found: {SOURCE_ROOT}")
 
 sys.path.insert(0, str(SOURCE_ROOT))
 
