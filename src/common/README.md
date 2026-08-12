@@ -32,7 +32,8 @@ flowchart TD
 ## 핵심
 
 - `Settings.from_env()`와 `settings_from_env()`가 운영·로컬 환경의 유일한 설정 진입점이다.
-- 구조화 로그 구현은 `src.logging.JsonlLogger`에 분리한다.
+- 구조화 로그 구현은 `src.logging.logging_utils.JsonlLogger`에 분리한다.
+- `common.logging_utils`는 이전 import 경로를 위한 호환용 re-export만 제공하며, 구현을 갖지 않는다.
 - 코드 어디에도 API key, DB password, host를 하드코딩하지 않는다.
 - 빈 계정 비밀번호는 Python `None`으로 취급한다.
 - `CollectionEnvelope`는 수집 결과와 metadata를 전처리로 전달한다.
