@@ -45,18 +45,20 @@
 
 ## 4. WBS
 
-- [1일차 상세 가이드](docs/1일차_상세가이드.md)
-- [회의록](docs/Minutes/2026-08-11_MEETING_NOTES.md)
+- [문서 인덱스](docs/00_index.md)
+- [1일차 상세 가이드](docs/Day1_Detailed_Guide.md)
+- [회의록](docs/Minutes/Meeting_Notes_2026-08-11.md)
 - 세부 WBS는 추가 예정
 
 ## 5. 요구사항 명세서
 
-- [비즈니스 시나리오](docs/business-scenario.md)
+- [비즈니스 시나리오](docs/Business_Scenario.md)
 - [Business Requirements Document](docs/Business_Requirements_Document.md)
 - [Product Requirements Document](docs/Product_Requirements_Document.md)
-- [요구사항 추적성](docs/requirements-traceability.md)
-- [Data Specification](docs/Data%20Specification.md)
-- [비용 산정](docs/17_비용_산정.md), [비용 산정 요약](docs/비용산정2.md)
+- [요구사항 추적성](docs/Requirements_Traceability.md)
+- [Data Specification](docs/Data_Specification.md)
+- [비용 산정](docs/Cost_Estimation.md)
+- [AWS DB 인프라 PoC 리포트](docs/AWS_DB_Infrastructure_PoC_Report_2026-08-11.md)
 
 ## 6. ERD
 
@@ -85,5 +87,5 @@
 .
 ├── docs/       # 프로젝트 문서와 회의록
 ├── samples/    # 자동차등록현황보고 샘플 CSV
-└── notebooks/  # Jupyter 노트북
+└── ref/        # 참고 자료
 ```
