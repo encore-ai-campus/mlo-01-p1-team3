@@ -40,7 +40,7 @@ flowchart TD
 ### 실행 입력
 
 - 환경변수: `common.config.settings_from_env()`가 해석
-- 구조화 로그: `src.logging.logging_utils.JsonlLogger`가 기록하고 비밀값을 마스킹
+- 구조화 로그: `common.logging_utils.JsonlLogger`가 기록하고 비밀값을 마스킹
 - 공통 CLI: `--fixture`, `--sink`, `--dry-run`, `--output-dir`
 - 중고차: `--mode auto|initial|incremental`
 - 등록현황: `--period YYYY-MM`

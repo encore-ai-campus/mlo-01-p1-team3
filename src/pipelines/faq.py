@@ -15,7 +15,7 @@ if __package__ in {None, ""}:
 
 from collection.faq import FaqCollector, FaqError, fixture_pages
 from common.config import Settings, settings_from_env
-from src.logging.logging_utils import JsonlLogger
+from common.logging_utils import JsonlLogger
 from common.contracts import CollectionEnvelope, PreparedBatch, RejectedRecord
 from loading.faq import FaqLoadStats, JsonlFaqUpsertSink, MongoFaqUpsertSink
 from preprocessing.faq import (

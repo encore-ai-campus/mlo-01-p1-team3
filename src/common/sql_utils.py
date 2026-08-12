@@ -4,19 +4,22 @@ from __future__ import annotations
 
 import json
 from datetime import date, datetime, timezone
-from typing import Any
+from typing import Any, Optional
 
 
 def to_sql_datetime(value: Any) -> Any:
     """Convert an ISO datetime to UTC MySQL DATETIME text; preserve NULL."""
 
-    if value in (None, "") or isinstance(value, datetime):
+    if value in (None, ""):
         return value
-    text = str(value).strip()
-    try:
-        parsed = datetime.fromisoformat(text.replace("Z", "+00:00"))
-    except ValueError:
-        return value
+    if isinstance(value, datetime):
+        parsed = value
+    else:
+        text = str(value).strip()
+        try:
+            parsed = datetime.fromisoformat(text.replace("Z", "+00:00"))
+        except ValueError:
+            return value
     if parsed.tzinfo is None:
         parsed = parsed.replace(tzinfo=timezone.utc)
     return parsed.astimezone(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
@@ -25,11 +28,24 @@ def to_sql_datetime(value: Any) -> Any:
 def to_sql_date(value: Any) -> Any:
     """Convert ISO date/datetime text to a MySQL DATE value representation."""
 
-    if value in (None, "") or isinstance(value, (date, datetime)):
+    if value in (None, ""):
+        return value
+    if isinstance(value, datetime):
+        parsed = value
+        if parsed.tzinfo is None:
+            parsed = parsed.replace(tzinfo=timezone.utc)
+        return parsed.astimezone(timezone.utc).date().isoformat()
+    if isinstance(value, date):
         return value
     text = str(value).strip()
     if len(text) >= 10 and text[4] == "-" and text[7] == "-":
-        return text[:10]
+        try:
+            parsed = datetime.fromisoformat(text.replace("Z", "+00:00"))
+        except ValueError:
+            return text[:10]
+        if parsed.tzinfo is None:
+            parsed = parsed.replace(tzinfo=timezone.utc)
+        return parsed.astimezone(timezone.utc).date().isoformat()
     return value
 
 

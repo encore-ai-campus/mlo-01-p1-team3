@@ -11,7 +11,7 @@
 프로젝트 루트에서 실행하는 코드에서는 다음처럼 가져온다.
 
 ```python
-from src.logging.logging_utils import JsonlLogger
+from common.logging_utils import JsonlLogger
 ```
 
 `JsonlLogger.event()`는 `ts`, `level`, `event_name`, `message`, `run_id` 등의 구조화 필드를 JSONL 파일과 stderr에 기록한다. `api_key`, `password`, Bearer token, MongoDB URI, Slack/Discord webhook은 `[REDACTED]`로 마스킹한다.
@@ -19,5 +19,6 @@ from src.logging.logging_utils import JsonlLogger
 ## 경계
 
 - `logging`은 표준 라이브러리 이름과 겹치므로 `from logging import ...`로 가져오지 않는다.
-- 반드시 프로젝트 최상위 패키지 경로를 포함한 `from src.logging.logging_utils import ...` 형태를 사용한다.
+- 신규 코드는 `from common.logging_utils import ...`를 사용한다.
+- `src.logging.logging_utils`는 기존 호출부를 위한 호환 import 경로다.
 - 어느 단계에도 직접 의존하지 않으며, 파일 기록만 수행한다.

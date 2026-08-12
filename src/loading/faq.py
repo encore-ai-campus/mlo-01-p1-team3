@@ -3,20 +3,16 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Mapping, Sequence
 
 from common.config import Settings
+from common.contracts import LoadStats
 
 from .common import atomic_write
 
 
-@dataclass(frozen=True)
-class FaqLoadStats:
-    inserted_count: int = 0
-    updated_count: int = 0
-    unchanged_count: int = 0
+FaqLoadStats = LoadStats
 
 
 class JsonlFaqUpsertSink:

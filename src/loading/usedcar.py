@@ -3,21 +3,14 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Sequence
 
 from common.config import Settings
+from common.contracts import LoadStats
 from common.sql_utils import to_sql_date, to_sql_datetime
 
 from .common import atomic_write
-
-
-@dataclass(frozen=True)
-class LoadStats:
-    inserted_count: int = 0
-    updated_count: int = 0
-    unchanged_count: int = 0
 
 
 def _listing(record: Mapping[str, Any]) -> Mapping[str, Any]:

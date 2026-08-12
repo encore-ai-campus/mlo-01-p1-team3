@@ -3,13 +3,13 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Mapping, Sequence
 from zoneinfo import ZoneInfo
 
 from common.config import Settings
+from common.contracts import LoadStats as CommonLoadStats
 from common.sql_utils import to_sql_date, to_sql_datetime
 
 from .common import atomic_write
@@ -26,11 +26,7 @@ class QuotaExceeded(RegistrationError):
         super().__init__(message, code="registration_quota_exhausted")
 
 
-@dataclass(frozen=True)
-class RegistrationLoadStats:
-    inserted_count: int = 0
-    updated_count: int = 0
-    unchanged_count: int = 0
+RegistrationLoadStats = CommonLoadStats
 
 
 # Existing standalone code called this result type simply LoadStats.

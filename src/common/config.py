@@ -42,7 +42,10 @@ def _optional_env(values: Mapping[str, str], *keys: str) -> Optional[str]:
     for key in keys:
         if key in values:
             value = _env(values, key)
-            return value or None
+            # An empty preferred variable must not hide a populated legacy
+            # alias while the environment names are being migrated.
+            if value:
+                return value
     return None
 
 
@@ -202,12 +205,13 @@ class Settings:
         if registration_quota > 3000:
             raise ValueError("REGISTRATION_DAILY_QUOTA must not exceed 3000")
 
-        jdbc_host, jdbc_port, jdbc_database = _parse_mysql_jdbc_url(
-            _env(values, "SQL_JDBC_URL") or _env(values, "MYSQL_JDBC_URL")
-        )
+        explicit_sql_url = _env(values, "SQL_JDBC_URL") or _env(values, "MYSQL_JDBC_URL")
+        jdbc_host, jdbc_port, jdbc_database = _parse_mysql_jdbc_url(explicit_sql_url)
         sql_host = _env(values, "SQL_HOST") or jdbc_host
         sql_port = _positive_int(values, "SQL_PORT", jdbc_port or 3306)
         sql_database = _env(values, "SQL_DATABASE") or jdbc_database or "sales_support_db"
+        sql_user = _optional_env(values, "SQL_USER", "MYSQL_USER")
+        sql_password = _optional_env(values, "SQL_PASSWORD", "MYSQL_PASSWORD")
         mongo_host = _env(values, "MONGODB_HOST") or _env(values, "MONGO_HOST", "localhost")
         mongo_port_raw = _env(values, "MONGODB_PORT") or _env(values, "MONGO_PORT", "27017")
         try:
@@ -219,6 +223,32 @@ class Settings:
         mongo_user = _optional_env(values, "MONGODB_USER", "MONGO_USER")
         mongo_password = _optional_env(values, "MONGODB_PASSWORD", "MONGO_PASSWORD")
         mongo_auth_source = _env(values, "MONGODB_AUTH_SOURCE", "admin")
+        explicit_mongo_uri = _env(values, "MONGODB_URI") or _env(values, "MONGO_URI")
+        app_env = _env(values, "APP_ENV", "local").lower()
+        mongo_uri = _mongo_uri(
+            explicit_mongo_uri,
+            host=mongo_host,
+            port=mongo_port,
+            user=mongo_user,
+            password=mongo_password,
+            auth_source=mongo_auth_source,
+        )
+
+        if app_env in {"production", "prod"}:
+            # Production must not silently fall back to localhost or a
+            # password-less account when a variable is missing.
+            if not sql_host or not sql_user or not sql_password:
+                raise ValueError(
+                    "production requires SQL_HOST/SQL_JDBC_URL, SQL_USER, and SQL_PASSWORD"
+                )
+            if not explicit_mongo_uri:
+                raise ValueError("production requires an explicit MONGODB_URI")
+            parsed_mongo = urlsplit(mongo_uri)
+            has_uri_credentials = bool(parsed_mongo.username and parsed_mongo.password)
+            if not has_uri_credentials and not (mongo_user and mongo_password):
+                raise ValueError(
+                    "production requires MongoDB credentials in MONGODB_URI or MONGODB_USER/MONGODB_PASSWORD"
+                )
 
         return cls(
             base_url=base_url,
@@ -235,9 +265,9 @@ class Settings:
             sql_host=sql_host,
             sql_port=sql_port,
             sql_database=sql_database,
-            sql_user=_optional_env(values, "SQL_USER", "MYSQL_USER"),
-            sql_password=_optional_env(values, "SQL_PASSWORD", "MYSQL_PASSWORD"),
-            app_env=_env(values, "APP_ENV", "local"),
+            sql_user=sql_user,
+            sql_password=sql_password,
+            app_env=app_env,
             time_zone=_env(values, "TIMEZONE", "Asia/Seoul"),
             faq_source_url=faq_source_url,
             faq_allowed_paths=faq_allowed_paths,
@@ -254,14 +284,7 @@ class Settings:
             registration_daily_quota=registration_quota,
             registration_start_period=_env(values, "REGISTRATION_START_PERIOD"),
             registration_state_path=Path(_env(values, "REGISTRATION_STATE_PATH", str(output_dir / "registration_state.json"))),
-            mongo_uri=_mongo_uri(
-                _env(values, "MONGODB_URI") or _env(values, "MONGO_URI"),
-                host=mongo_host,
-                port=mongo_port,
-                user=mongo_user,
-                password=mongo_password,
-                auth_source=mongo_auth_source,
-            ),
+            mongo_uri=mongo_uri,
             mongo_host=mongo_host,
             mongo_port=mongo_port,
             mongo_user=mongo_user,
