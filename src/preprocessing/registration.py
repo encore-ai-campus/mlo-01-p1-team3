@@ -6,10 +6,10 @@ import hashlib
 import json
 import re
 from dataclasses import dataclass
-from datetime import date
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
 
 from common.config import Settings
+from common.time_utils import format_utc_date, format_utc_datetime
 
 
 class RegistrationPreprocessError(ValueError):
@@ -89,19 +89,26 @@ def _reference_month(period: str, row: Mapping[str, Any]) -> str:
     digits = re.sub(r"[^0-9]", "", str(raw).strip())
     if len(digits) == 6:
         try:
-            return date(int(digits[:4]), int(digits[4:]), 1).isoformat()
-        except ValueError as exc:
+            normalized = format_utc_date(f"{digits[:4]}-{digits[4:]}-01", required=True)
+        except (TypeError, ValueError) as exc:
             raise RegistrationPreprocessError(
                 "reference month is invalid", code="invalid_reference_month"
             ) from exc
+        assert normalized is not None
+        return normalized
     if len(digits) == 8:
         try:
-            parsed = date(int(digits[:4]), int(digits[4:6]), int(digits[6:]))
-        except ValueError as exc:
+            parsed = format_utc_date(
+                f"{digits[:4]}-{digits[4:6]}-{digits[6:]}", required=True
+            )
+        except (TypeError, ValueError) as exc:
             raise RegistrationPreprocessError(
                 "reference date is invalid", code="invalid_reference_month"
             ) from exc
-        return parsed.replace(day=1).isoformat()
+        assert parsed is not None
+        normalized = format_utc_date(f"{parsed[:7]}-01", required=True)
+        assert normalized is not None
+        return normalized
     raise RegistrationPreprocessError("reference month is invalid", code="invalid_reference_month")
 
 
@@ -159,6 +166,14 @@ def transform_registration_row(
 ) -> List[Dict[str, Any]]:
     """Flatten one API row into one prepared row per vehicle/use measure."""
 
+    try:
+        normalized_collected_at = format_utc_datetime(collected_at, required=True)
+    except (TypeError, ValueError) as exc:
+        raise RegistrationPreprocessError(
+            "collected_at must be ISO 8601", code="invalid_collected_at"
+        ) from exc
+    assert normalized_collected_at is not None
+
     normalized_period = normalize_period(period)
     report_month = _reference_month(normalized_period, raw)
     sido_name, sigungu_name = _location(raw)
@@ -200,9 +215,9 @@ def transform_registration_row(
                 "source_name": "molit_car_registration",
                 "source_url": settings.registration_api_url,
                 "run_id": run_id,
-                "collected_at": collected_at,
-                "created_at": collected_at,
-                "updated_at": collected_at,
+                "collected_at": normalized_collected_at,
+                "created_at": normalized_collected_at,
+                "updated_at": normalized_collected_at,
                 "content_hash": _canonical_hash(stable),
             }
         )
