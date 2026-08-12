@@ -25,17 +25,13 @@ for import_path in (str(ROOT), str(SRC)):
         sys.path.insert(0, import_path)
 
 from common.logging_utils import JsonlLogger, redact  # noqa: E402
-from src.logging.logging_utils import (  # noqa: E402
-    JsonlLogger as CompatibilityLogger,
-    redact as compatibility_redact,
-)
 
 
 def test_common_logging_utils_masks_secrets_and_writes_jsonl() -> None:
-    """Check compatibility exports, nested redaction, file output, and stderr."""
+    """Check module ownership, nested redaction, file output, and stderr."""
 
-    assert CompatibilityLogger is JsonlLogger
-    assert compatibility_redact is redact
+    assert JsonlLogger.__module__ == "common.logging_utils"
+    assert redact.__module__ == "common.logging_utils"
     assert redact(
         {
             "api_key": "secret-api",
