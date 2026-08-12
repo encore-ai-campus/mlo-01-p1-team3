@@ -1,0 +1,36 @@
+{
+  "pages": [
+    {
+      "data": [
+        {
+          "seq": 3,
+          "eventId": "evt-000003",
+          "eventType": "UPSERT",
+          "data": {
+            "id": 100053,
+            "listingNumber": "UC-00100053",
+            "brand": {"id": 1, "name": "현대", "slug": "hyundai"},
+            "model": {"id": 11, "name": "그랜저", "slug": "grandeur"},
+            "modelYear": 2023,
+            "mileageKm": 12500,
+            "price": 31500000,
+            "currency": "KRW",
+            "status": "AVAILABLE",
+            "location": {"id": 1, "province": "서울특별시", "city": "강남구", "slug": "seoul"},
+            "dealer": {"code": "D-001", "name": "마스킹딜러"},
+            "businessArea": {"id": "BIZ_001", "slug": "retail", "name": "소매"},
+            "createdAt": "2026-08-10T12:00:00+09:00",
+            "updatedAt": "2026-08-11T09:00:00+09:00"
+          }
+        }
+      ],
+      "meta": {
+        "returned": 1,
+        "has_more": false,
+        "dataset_epoch": "epoch-2026-08-11",
+        "high_water_seq": 3
+      },
+      "links": {}
+    }
+  ]
+}
