@@ -5,9 +5,10 @@ from __future__ import annotations
 import json
 import re
 import sys
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Mapping, Optional
+
+from common.time_utils import utc_now_iso
 
 
 SECRET_KEYS = {
@@ -61,7 +62,7 @@ class JsonlLogger:
 
     def event(self, level: str, event_name: str, message: str, **fields: Any) -> Dict[str, Any]:
         record: Dict[str, Any] = {
-            "ts": datetime.now(timezone.utc).isoformat(),
+            "ts": utc_now_iso(),
             "level": level,
             "event_name": event_name,
             "message": message,

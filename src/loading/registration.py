@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Mapping, Sequence
 from zoneinfo import ZoneInfo
@@ -11,6 +11,7 @@ from zoneinfo import ZoneInfo
 from common.config import Settings
 from common.contracts import LoadStats as CommonLoadStats
 from common.sql_utils import to_sql_date, to_sql_datetime
+from common.time_utils import format_utc_date, format_utc_datetime, utc_now_iso
 
 from .common import atomic_write
 
@@ -31,6 +32,23 @@ RegistrationLoadStats = CommonLoadStats
 
 # Existing standalone code called this result type simply LoadStats.
 LoadStats = RegistrationLoadStats
+
+
+def _with_load_timestamps(
+    row: Mapping[str, Any],
+    previous: Mapping[str, Any] | None,
+    load_now: str,
+) -> Dict[str, Any]:
+    """Apply loading-owned timestamps while preserving an existing creation time."""
+
+    value = dict(row)
+    previous_created_at = previous.get("created_at") if previous is not None else None
+    if previous_created_at not in (None, ""):
+        value["created_at"] = format_utc_datetime(previous_created_at, required=True)
+    else:
+        value["created_at"] = load_now
+    value["updated_at"] = load_now
+    return value
 
 
 class RegistrationStateStore:
@@ -76,7 +94,9 @@ class JsonQuotaLedger:
         self._rollover_if_needed()
 
     def _today(self) -> str:
-        return datetime.now(ZoneInfo(self.time_zone)).date().isoformat()
+        today = format_utc_date(datetime.now(ZoneInfo(self.time_zone)).date(), required=True)
+        assert today is not None
+        return today
 
     def _rollover_if_needed(self) -> None:
         today = self._today()
@@ -102,7 +122,7 @@ class JsonQuotaLedger:
             raise QuotaExceeded()
         self._state["used_count"] = used + 1
         self._state["quota_status"] = "EXHAUSTED" if used + 1 >= self.limit else "AVAILABLE"
-        self._state["last_call_at"] = datetime.now(timezone.utc).isoformat()
+        self._state["last_call_at"] = utc_now_iso()
         self.store.save(self._state)
 
     @property
@@ -140,11 +160,13 @@ class SqlQuotaLedger:
         self.time_zone = settings.time_zone
 
     def _today(self) -> str:
-        return datetime.now(ZoneInfo(self.time_zone)).date().isoformat()
+        today = format_utc_date(datetime.now(ZoneInfo(self.time_zone)).date(), required=True)
+        assert today is not None
+        return today
 
     def reserve(self) -> None:
         quota_date = self._today()
-        now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+        now = to_sql_datetime(utc_now_iso())
         try:
             with self._client.cursor() as cursor:
                 cursor.execute(
@@ -246,15 +268,17 @@ class JsonlRegistrationUpsertSink:
         for row in rows:
             incoming[self._key(row)] = row
         inserted = updated = unchanged = 0
+        load_now = utc_now_iso()
         for key, row in incoming.items():
             previous = existing.get(key)
             if previous is None:
                 inserted += 1
             elif previous.get("content_hash") == row.get("content_hash"):
                 unchanged += 1
+                continue
             else:
                 updated += 1
-            existing[key] = dict(row)
+            existing[key] = _with_load_timestamps(row, previous, load_now)
         ordered = sorted(existing.values(), key=self._key)
         atomic_write(
             self.path,
@@ -299,7 +323,7 @@ class SqlRegistrationUpsertSink:
         if column == "report_month":
             return to_sql_date(value)
         if column in {"collected_at", "created_at", "updated_at"}:
-            return to_sql_datetime(value)
+            return to_sql_datetime(format_utc_datetime(value))
         return value
 
     def save(self, rows: Sequence[Mapping[str, Any]]) -> RegistrationLoadStats:
@@ -309,6 +333,9 @@ class SqlRegistrationUpsertSink:
         records = list(unique.values())
         if not records:
             return RegistrationLoadStats()
+
+        load_now = utc_now_iso()
+        records = [_with_load_timestamps(row, None, load_now) for row in records]
 
         placeholders = ", ".join(["%s"] * len(self.COLUMNS))
         key_columns = set(JsonlRegistrationUpsertSink.KEY_COLUMNS)

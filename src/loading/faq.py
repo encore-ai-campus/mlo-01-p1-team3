@@ -8,11 +8,29 @@ from typing import Any, Dict, Mapping, Sequence
 
 from common.config import Settings
 from common.contracts import LoadStats
+from common.time_utils import format_utc_datetime, utc_now_iso
 
 from .common import atomic_write
 
 
 FaqLoadStats = LoadStats
+
+
+def _with_load_timestamps(
+    document: Mapping[str, Any],
+    previous: Mapping[str, Any] | None,
+    load_now: str,
+) -> Dict[str, Any]:
+    """Apply loading-owned timestamps while preserving an existing creation time."""
+
+    value = dict(document)
+    previous_created_at = previous.get("created_at") if previous is not None else None
+    if previous_created_at not in (None, ""):
+        value["created_at"] = format_utc_datetime(previous_created_at, required=True)
+    else:
+        value["created_at"] = load_now
+    value["updated_at"] = load_now
+    return value
 
 
 class JsonlFaqUpsertSink:
@@ -44,6 +62,7 @@ class JsonlFaqUpsertSink:
     def save(self, documents: Sequence[Mapping[str, Any]]) -> FaqLoadStats:
         existing = self._read()
         inserted = updated = unchanged = 0
+        load_now = utc_now_iso()
         for document in documents:
             if document.get("faq_id") in (None, ""):
                 raise ValueError("prepared FAQ document requires faq_id")
@@ -53,9 +72,10 @@ class JsonlFaqUpsertSink:
                 inserted += 1
             elif previous.get("content_hash") == document.get("content_hash"):
                 unchanged += 1
+                continue
             else:
                 updated += 1
-            existing[key] = dict(document)
+            existing[key] = _with_load_timestamps(document, previous, load_now)
         ordered = sorted(existing.values(), key=lambda item: str(item["faq_id"]))
         atomic_write(
             self.path,
@@ -86,18 +106,23 @@ class MongoFaqUpsertSink:
 
     def save(self, documents: Sequence[Mapping[str, Any]]) -> FaqLoadStats:
         inserted = updated = unchanged = 0
+        load_now = utc_now_iso()
         for document in documents:
             if document.get("faq_id") in (None, ""):
                 raise ValueError("prepared FAQ document requires faq_id")
             key = str(document["faq_id"])
-            previous = self._collection.find_one({"faq_id": key}, {"content_hash": 1})
+            previous = self._collection.find_one(
+                {"faq_id": key},
+                {"content_hash": 1, "created_at": 1},
+            )
             if previous is None:
                 inserted += 1
             elif previous.get("content_hash") == document.get("content_hash"):
                 unchanged += 1
+                continue
             else:
                 updated += 1
-            mutable = dict(document)
+            mutable = _with_load_timestamps(document, previous, load_now)
             created_at = mutable.pop("created_at", None)
             self._collection.update_one(
                 {"faq_id": key},

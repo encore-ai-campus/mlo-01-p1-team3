@@ -9,6 +9,7 @@ from typing import Any, Dict, Iterable, List, Mapping, Sequence
 from common.config import Settings
 from common.contracts import LoadStats
 from common.sql_utils import to_sql_date, to_sql_datetime
+from common.time_utils import format_utc_datetime, utc_now_iso
 
 from .common import atomic_write
 
@@ -32,6 +33,34 @@ def _entity(record: Mapping[str, Any], name: str) -> Mapping[str, Any] | None:
         return None
     if not isinstance(value, Mapping):
         raise ValueError(f"prepared used-car {name} must be an object or null")
+    return value
+
+
+def _with_load_timestamps(
+    record: Mapping[str, Any],
+    previous: Mapping[str, Any] | None,
+    load_now: str,
+) -> Dict[str, Any]:
+    """Apply loading-owned timestamps to the listing aggregate and dimensions."""
+
+    value = dict(record)
+    for name in ("listing", "brand", "model", "location", "dealer", "business_area"):
+        current = value.get(name)
+        if not isinstance(current, Mapping):
+            continue
+        previous_entity = previous.get(name) if previous is not None else None
+        previous_created_at = (
+            previous_entity.get("created_at")
+            if isinstance(previous_entity, Mapping)
+            else None
+        )
+        normalized = dict(current)
+        if previous_created_at not in (None, ""):
+            normalized["created_at"] = format_utc_datetime(previous_created_at, required=True)
+        else:
+            normalized["created_at"] = load_now
+        normalized["updated_at"] = load_now
+        value[name] = normalized
     return value
 
 
@@ -85,6 +114,7 @@ class JsonlUpsertSink:
     def save(self, rows: Sequence[Mapping[str, Any]]) -> LoadStats:
         existing = self._read()
         inserted = updated = unchanged = 0
+        load_now = utc_now_iso()
         # Duplicate keys in one prepared batch are resolved deterministically
         # by the final item, at listing grain.
         incoming: Dict[str, Mapping[str, Any]] = {}
@@ -97,9 +127,10 @@ class JsonlUpsertSink:
                 inserted += 1
             elif _listing(previous).get("content_hash") == listing.get("content_hash"):
                 unchanged += 1
+                continue
             else:
                 updated += 1
-            existing[key] = dict(row)
+            existing[key] = _with_load_timestamps(row, previous, load_now)
         ordered = sorted(existing.values(), key=_record_key)
         atomic_write(
             self.path,
@@ -165,7 +196,7 @@ class SqlUpsertSink:
         if column in {
             "source_created_at", "source_updated_at", "collected_at", "created_at", "updated_at"
         }:
-            return to_sql_datetime(value)
+            return to_sql_datetime(format_utc_datetime(value))
         return value
 
     @classmethod
@@ -258,6 +289,9 @@ class SqlUpsertSink:
         records = list(unique_rows.values())
         if not records:
             return LoadStats()
+
+        load_now = utc_now_iso()
+        records = [_with_load_timestamps(record, None, load_now) for record in records]
 
         brands = self._unique_entities(records, "brand", "brand_id")
         models = self._unique_entities(records, "model", "model_id")

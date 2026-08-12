@@ -43,20 +43,25 @@ sequenceDiagram
     participant C as Collection or fixture
     participant P as Pipeline
     participant T as preprocessing
+    participant U as common.time_utils
     participant L as Loading
 
-    C->>P: CollectionEnvelope.records
+    C->>P: CollectionEnvelope.records + collected_at(datetime)
     P->>T: transform_*_records(records, settings, run_id, collected_at)
     loop each raw record
         T->>T: normalize and validate
+        T->>U: normalize source date/datetime and collected_at
+        U-->>T: canonical UTC date/datetime
         alt contract valid
-            T-->>P: append valid prepared record(s)
+            T-->>P: append valid record(s) with source_* and collected_at
         else contract invalid
             T-->>P: append RejectedRecord with index and error_code
         end
     end
     T-->>P: (valid_records, rejected_records)
     P->>L: valid records only
+    L->>U: generate DB load timestamps when required
+    U-->>L: canonical UTC datetime
     P-->>P: rejected count and codes are logged
 ```
 
@@ -95,9 +100,21 @@ sequenceDiagram
 - `run_id`은 호출자가 제공한 실행 문맥을 그대로 보존한다.
 - `collected_at`과 원천 datetime은 `common.time_utils.format_utc_datetime()`으로 `YYYY-MM-DDTHH:MM:SS+00:00`으로 정규화한다.
 - 날짜만 의미하는 source 값은 `common.time_utils.format_utc_date()`로 `YYYY-MM-DD`로 표준화한다.
-- `created_at`, `updated_at`은 DB 적재 시각이라는 상위 계약을 따른다. 현재 전처리 출력 호환성을 위해 필드를 전달하지만, 적재 시각 생성·갱신 책임은 loading에 둔다.
+- 시간의 정규화와 생성 책임은 시간의 의미에 따라 분리한다. preprocessing은 원천 데이터의 의미를 표준화하지만 모든 시간값을 소유하거나 생성하지 않는다.
 - 시간대 없는 중고차 datetime은 UTC로 해석하고, 시간대가 있으면 UTC로 변환한다.
 - 입력 source 날짜가 형식 또는 달력상 유효성을 만족하지 않으면 임의 보정하지 않고 Reject한다.
+
+#### 시간 종류별 책임
+
+| 시간 종류 | 생성·정규화 책임 | preprocessing 계약과 후속 사용 |
+|---|---|---|
+| 원천 데이터 시간 | preprocessing | `reviewed_at`, `createdAt`, `updatedAt` 등 원천 field를 의미에 맞는 `source_updated_at`, `source_created_at` 등으로 정규화한다. FAQ의 `reviewed_at`은 날짜 전용 입력을 UTC 자정의 `source_updated_at` datetime으로 변환한다. |
+| `collected_at` | collection/common contract | 수집 시각은 `CollectionEnvelope.collected_at`이 소유한다. preprocessing은 호출자가 전달한 값을 `format_utc_datetime()`으로 검증·정규화하여 준비 출력에 보존한다. |
+| `created_at`, `updated_at` | loading | DB 적재 시각이다. preprocessing은 현재 출력 호환성을 위해 값을 전달하지만 authoritative한 생성·갱신을 하지 않는다. loading이 insert 시 `created_at`·`updated_at`을 생성하고, update 시 기존 `created_at`을 보존하면서 `updated_at`을 갱신한다. unchanged 판정과 timestamp 보존 정책은 sink별 loading 계약으로 검증한다. |
+| 로그 `ts` | logging/common | 로그 이벤트 발생 시각은 canonical 구현인 `common.logging_utils.JsonlLogger`가 `common.time_utils.utc_now_iso()`로 생성한다. `src/logging/logging_utils.py`는 기존 import를 위한 compatibility re-export이며 시간 생성 책임을 갖지 않는다. |
+| pipeline·checkpoint 시각 | pipeline | 실행 시작·성공·checkpoint 갱신 시각은 orchestration이 생성한다. 생성 시 `common.time_utils`의 canonical formatter를 사용해야 하며, 해당 call site의 구현·테스트는 pipeline 모듈 책임이다. preprocessing은 해당 시각을 소유하지 않는다. |
+
+따라서 `source_*`와 `collected_at`은 원천 provenance·수집 시각이고, `created_at`·`updated_at`은 저장소의 적재 상태 시각이다. 두 의미를 같은 값으로 취급하거나 preprocessing 시각으로 재정의하지 않는다. 모든 canonical datetime 문자열은 `YYYY-MM-DDTHH:MM:SS+00:00`, 날짜 전용 문자열은 `YYYY-MM-DD` 형식을 따른다.
 
 ## 5. FAQ 계약
 
