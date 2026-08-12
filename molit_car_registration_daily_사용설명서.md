@@ -237,3 +237,30 @@ C:\Users\Playdata\Documents\ChatGPT\프로젝트 1
 - `--insecure`는 임시 확인용으로만 사용합니다.
 - 누적 CSV를 삭제하면 다음 실행 시 최신 월부터 다시 시작합니다.
 
+## 11. 코드 구조
+
+수집기 코드는 기능별 모듈로 나누어져 있습니다.
+
+```text
+molit_car_registration_daily.py  ← 기존 실행 명령을 유지하는 진입점
+molit_car_registration/
+├─ config.py       ← API 주소, 통계표 ID, 환경변수 설정
+├─ periods.py      ← 월 검증과 월 이동 계산
+├─ api_client.py   ← 통계누리 Open API 호출과 응답 파싱
+├─ storage.py      ← CSV 읽기, 중복 제거, 병합, 저장
+├─ collector.py    ← 최신 월 탐색과 일일 적재 흐름
+├─ cli.py          ← 명령줄 옵션과 오류 메시지
+└─ __main__.py     ← python -m molit_car_registration 실행 지원
+```
+
+기존 실행 방식은 바뀌지 않았습니다.
+
+```powershell
+python .\molit_car_registration_daily.py --output-dir outputs --insecure
+```
+
+모듈 실행 방식도 사용할 수 있습니다.
+
+```powershell
+python -m molit_car_registration --output-dir outputs --insecure
+```
