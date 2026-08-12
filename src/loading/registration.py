@@ -230,9 +230,46 @@ class JsonlRegistrationUpsertSink:
         self.path = path
 
     @classmethod
+    def _validate_row(cls, row: Mapping[str, Any]) -> str:
+        if not isinstance(row, Mapping):
+            raise RegistrationError("prepared registration row must be an object", "input_schema")
+        try:
+            report_month = format_utc_date(row.get("report_month"), required=True)
+            format_utc_datetime(row.get("collected_at"), required=True)
+        except (TypeError, ValueError) as exc:
+            raise RegistrationError(
+                "prepared registration row contains an invalid date", "input_schema"
+            ) from exc
+        assert report_month is not None
+
+        for name in cls.KEY_COLUMNS + ("source_name", "run_id", "content_hash"):
+            value = row.get(name)
+            if not isinstance(value, str) or not value.strip():
+                raise RegistrationError(
+                    f"prepared registration row requires non-empty {name}",
+                    "input_schema",
+                )
+        source_url = row.get("source_url")
+        if not isinstance(source_url, str) or not source_url.strip():
+            raise RegistrationError(
+                "prepared registration row requires non-empty source_url", "input_schema"
+            )
+        quantity = row.get("quantity")
+        if quantity is not None and (
+            isinstance(quantity, bool) or not isinstance(quantity, int) or quantity < 0
+        ):
+            raise RegistrationError(
+                "registration quantity must be a non-negative integer or null",
+                "input_schema",
+            )
+        return report_month
+
+    @classmethod
     def _key(cls, row: Mapping[str, Any]) -> str:
-        values = []
-        for name in cls.KEY_COLUMNS:
+        report_month = format_utc_date(row.get("report_month"), required=True)
+        assert report_month is not None
+        values = [report_month]
+        for name in cls.KEY_COLUMNS[1:]:
             value = row.get(name)
             if value in (None, ""):
                 raise ValueError(f"prepared registration row requires {name}")
@@ -259,6 +296,13 @@ class JsonlRegistrationUpsertSink:
                 ) from exc
             if not isinstance(value, dict):
                 raise RegistrationError(f"registration JSONL row is invalid at line {index}", "output_schema")
+            try:
+                self._validate_row(value)
+            except RegistrationError as exc:
+                raise RegistrationError(
+                    f"registration JSONL row is invalid at line {index}",
+                    "output_schema",
+                ) from exc
             rows[self._key(value)] = value
         return rows
 
@@ -266,6 +310,7 @@ class JsonlRegistrationUpsertSink:
         existing = self._read()
         incoming: Dict[str, Mapping[str, Any]] = {}
         for row in rows:
+            self._validate_row(row)
             incoming[self._key(row)] = row
         inserted = updated = unchanged = 0
         load_now = utc_now_iso()
@@ -329,13 +374,11 @@ class SqlRegistrationUpsertSink:
     def save(self, rows: Sequence[Mapping[str, Any]]) -> RegistrationLoadStats:
         unique: Dict[str, Mapping[str, Any]] = {}
         for row in rows:
+            JsonlRegistrationUpsertSink._validate_row(row)
             unique[JsonlRegistrationUpsertSink._key(row)] = row
         records = list(unique.values())
         if not records:
             return RegistrationLoadStats()
-
-        load_now = utc_now_iso()
-        records = [_with_load_timestamps(row, None, load_now) for row in records]
 
         placeholders = ", ".join(["%s"] * len(self.COLUMNS))
         key_columns = set(JsonlRegistrationUpsertSink.KEY_COLUMNS)
@@ -348,10 +391,6 @@ class SqlRegistrationUpsertSink:
             f"INSERT INTO vehicle_registration_reports ({', '.join(self.COLUMNS)}) "
             f"VALUES ({placeholders}) ON DUPLICATE KEY UPDATE {updates}"
         )
-        values = [
-            tuple(self._sql_value(row, column) for column in self.COLUMNS)
-            for row in records
-        ]
         predicates = " OR ".join(
             "(report_month=%s AND sido_name=%s AND sigungu_name=%s AND vehicle_type=%s AND usage_type=%s)"
             for _ in records
@@ -378,30 +417,34 @@ class SqlRegistrationUpsertSink:
                     "|".join(str(value or "") for value in existing[:5]): existing[5]
                     for existing in cursor.fetchall()
                 }
-                cursor.executemany(query, values)
+                inserted = updated = unchanged = 0
+                write_records: list[Mapping[str, Any]] = []
+                for row in records:
+                    key = JsonlRegistrationUpsertSink._key(row)
+                    if key not in previous:
+                        inserted += 1
+                        write_records.append(row)
+                    elif previous[key] == row.get("content_hash"):
+                        unchanged += 1
+                    else:
+                        updated += 1
+                        write_records.append(row)
+
+                if write_records:
+                    load_now = utc_now_iso()
+                    normalized_records = [
+                        _with_load_timestamps(row, None, load_now)
+                        for row in write_records
+                    ]
+                    values = [
+                        tuple(self._sql_value(row, column) for column in self.COLUMNS)
+                        for row in normalized_records
+                    ]
+                    cursor.executemany(query, values)
             self.connection.commit()
         except Exception:
             self.connection.rollback()
             raise
-
-        inserted = updated = unchanged = 0
-        for row in records:
-            key = "|".join(
-                str(value or "")
-                for value in (
-                    to_sql_date(row.get("report_month")),
-                    row.get("sido_name"),
-                    row.get("sigungu_name"),
-                    row.get("vehicle_type"),
-                    row.get("usage_type"),
-                )
-            )
-            if key not in previous:
-                inserted += 1
-            elif previous[key] == row.get("content_hash"):
-                unchanged += 1
-            else:
-                updated += 1
         return RegistrationLoadStats(inserted, updated, unchanged)
 
     def close(self) -> None:

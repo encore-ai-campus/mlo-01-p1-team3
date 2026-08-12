@@ -8,23 +8,31 @@ import sys
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Mapping, Optional, Sequence
+from typing import Any, Dict, Mapping, Optional, Sequence
 
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from collection.api import ApiClient, ApiError
+from collection.api import ApiError
 from collection.usedcar import FetchError, load_fetcher, page_checkpoint
 from common.config import Settings, settings_from_env
 from common.logging_utils import JsonlLogger
 from common.contracts import CollectionEnvelope, PreparedBatch, RejectedRecord
-from loading.usedcar import CheckpointStore, LoadStats, sink_for
+from common.time_utils import utc_now_iso
+from loading.usedcar import CheckpointStore, sink_for
 from preprocessing.usedcar import PreprocessError, transform_records
 
 
-def _extract_last_seq(records: Sequence[Mapping[str, Any]]) -> Optional[int]:
-    values = [record.get("seq") for record in records if isinstance(record.get("seq"), int)]
-    return max(values) if values else None
+def _require_incremental_contract(page_state: Mapping[str, Any]) -> int:
+    """Fail closed when the source cannot provide the next after_seq value."""
+
+    value = page_state.get("high_water_seq")
+    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+        raise FetchError(
+            "source does not provide a sequence checkpoint for incremental loading",
+            code="incremental_contract_missing",
+        )
+    return value
 
 
 def run_once(
@@ -36,22 +44,29 @@ def run_once(
         {"service": "data_preprocessing", "pipeline_name": "used_car", "run_id": run_id},
     )
     checkpoint_store = CheckpointStore(settings.state_path)
-    checkpoint = checkpoint_store.load()
+    local_checkpoint = checkpoint_store.load()
     selected_mode = mode
-    if selected_mode == "auto":
-        selected_mode = "incremental" if checkpoint.get("initialized") else "initial"
-    if selected_mode not in {"initial", "incremental"}:
-        raise ValueError("mode must be auto, initial, or incremental")
-
-    logger.event("INFO", "run_started", "one-shot used-car run started", mode=selected_mode)
     sink = None
     total_collected = total_valid = total_rejected = 0
     total_inserted = total_updated = total_unchanged = 0
     batches = 0
-    last_checkpoint: Dict[str, Any] = dict(checkpoint)
+    checkpoint: Dict[str, Any] = dict(local_checkpoint)
+    last_checkpoint: Dict[str, Any] = dict(local_checkpoint)
+    missing_incremental_contract = False
     try:
         fetcher = load_fetcher(settings, fixture)
         sink = None if dry_run else sink_for(settings, sink_name)
+        if sink_name == "sql" and sink is not None:
+            sql_checkpoint = sink.load_checkpoint()
+            if sql_checkpoint:
+                checkpoint = sql_checkpoint
+        selected_mode = mode
+        if selected_mode == "auto":
+            selected_mode = "incremental" if checkpoint.get("initialized") else "initial"
+        if selected_mode not in {"initial", "incremental"}:
+            raise ValueError("mode must be auto, initial, or incremental")
+        last_checkpoint = dict(checkpoint)
+        logger.event("INFO", "run_started", "one-shot used-car run started", mode=selected_mode)
         if selected_mode == "incremental":
             after_seq = int(checkpoint.get("after_seq") or 0)
             page_iterator = fetcher.iter_incremental(after_seq, settings.batch_size, settings.max_batches)
@@ -60,12 +75,34 @@ def run_once(
 
         for page in page_iterator:
             batches += 1
+            batch_run_id = str(uuid.uuid4())
+            batch_started_at = utc_now_iso()
             page_meta = page.meta
             page_state = page_checkpoint(page_meta, page.records)
             page_epoch = page_state.get("dataset_epoch")
             stored_epoch = checkpoint.get("dataset_epoch")
             if stored_epoch and page_epoch and stored_epoch != page_epoch:
                 raise FetchError("dataset_epoch changed; checkpoint was not advanced", code="dataset_epoch_changed")
+            raw_next_seq = page_state.get("high_water_seq")
+            if selected_mode == "incremental":
+                next_seq = _require_incremental_contract(page_state)
+            elif isinstance(raw_next_seq, int) and not isinstance(raw_next_seq, bool) and raw_next_seq >= 0:
+                next_seq = raw_next_seq
+            else:
+                next_seq = None
+                missing_incremental_contract = True
+
+            next_checkpoint = {
+                **last_checkpoint,
+                "initialized": True,
+                "mode": selected_mode,
+                "dataset_epoch": page_epoch or last_checkpoint.get("dataset_epoch"),
+                "updated_at": utc_now_iso(),
+            }
+            if next_seq is not None:
+                next_checkpoint["after_seq"] = next_seq
+            if page_state.get("until_id") is not None:
+                next_checkpoint["after_id"] = page_state["until_id"]
 
             envelope = CollectionEnvelope(
                 source_name="used_car",
@@ -120,27 +157,25 @@ def run_once(
                     reject_codes=sorted({item.error_code for item in prepared.rejected}),
                 )
             if sink is not None:
-                stats = sink.save(prepared.records)
+                if sink_name == "sql":
+                    stats = sink.save(
+                        prepared.records,
+                        checkpoint=(
+                            next_checkpoint
+                            if next_seq is not None and not missing_incremental_contract
+                            else None
+                        ),
+                        run_id=batch_run_id,
+                        started_at=batch_started_at,
+                    )
+                else:
+                    stats = sink.save(prepared.records)
                 total_inserted += stats.inserted_count
                 total_updated += stats.updated_count
                 total_unchanged += stats.unchanged_count
 
-            last_checkpoint = {
-                **last_checkpoint,
-                "initialized": True,
-                "mode": selected_mode,
-                "dataset_epoch": page_state.get("dataset_epoch") or last_checkpoint.get("dataset_epoch"),
-                "updated_at": datetime.now(timezone.utc).isoformat(),
-            }
-            if selected_mode == "initial":
-                if page_state.get("until_id") is not None:
-                    last_checkpoint["after_id"] = page_state["until_id"]
-                last_checkpoint["after_seq"] = page_state.get("high_water_seq") or last_checkpoint.get("after_seq", 0)
-            else:
-                next_seq = page_state.get("high_water_seq") or _extract_last_seq(page.records)
-                if next_seq is not None:
-                    last_checkpoint["after_seq"] = int(next_seq)
-            if not dry_run:
+            last_checkpoint = next_checkpoint
+            if not dry_run and next_seq is not None and not missing_incremental_contract:
                 checkpoint_store.save(last_checkpoint)
             logger.event(
                 "INFO",
@@ -157,6 +192,11 @@ def run_once(
                     "after_seq": last_checkpoint.get("after_seq"),
                     "dataset_epoch": last_checkpoint.get("dataset_epoch"),
                 },
+            )
+        if selected_mode == "initial" and missing_incremental_contract:
+            raise FetchError(
+                "initial sync completed without an incremental checkpoint contract",
+                code="incremental_contract_missing",
             )
         result = {
             "status": "OK",

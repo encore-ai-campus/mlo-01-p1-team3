@@ -32,6 +32,9 @@ flowchart TD
 - 세 단계 패키지를 직접 조합하는 곳은 `pipelines/`뿐이다.
 - 각 run은 `run_id`를 만들고 `Collect → Preprocess → Validate → Load` 순서로 로그를 남긴다.
 - 적재 성공 전에는 checkpoint를 전진시키지 않는다.
+- SQL sink를 선택하면 마지막 `pipeline_runs.status=SUCCESS`의 `progress_key`를 우선 checkpoint로 사용하고, SQL 성공 뒤 local JSON checkpoint를 fallback으로 저장한다.
+- 전체 실행의 구조화 로그 `run_id`와 SQL `pipeline_runs`의 batch별 `run_id`는 분리하여 batch 성공 이력을 보존한다.
+- 중고차 증분 page에 `high_water_seq`가 없으면 `incremental_contract_missing`으로 중단하여 source 기준 없는 증분 실행을 허용하지 않는다. 초기 cursor 적재에서 증분 기준이 끝까지 없으면 checkpoint를 남기지 않고 동일 오류로 종료한다.
 - 중고차 `initial`은 cursor, `incremental`은 `after_seq` 기준이며 1초 간격과 500건 상한을 collector에 전달한다.
 - 등록현황 run은 `start_dt=end_dt=YYYYMM`으로 논리적 API 호출 1회를 수행한다.
 
@@ -60,4 +63,3 @@ flowchart TD
 ## 의존성 경계
 
 `pipelines`는 `common`, `collection`, `preprocessing`, `loading`을 모두 import할 수 있다. 반대로 stage package가 `pipelines`를 import하지 않도록 유지한다. SQL 문장과 HTML selector는 pipeline에 직접 작성하지 않는다.
-
