@@ -45,11 +45,18 @@
 
 ## 4. WBS
 
-- 추가 예정
+- [1일차 상세 가이드](docs/1일차_상세가이드.md)
+- [회의록](docs/Minutes/2026-08-11_MEETING_NOTES.md)
+- 세부 WBS는 추가 예정
 
 ## 5. 요구사항 명세서
 
-- 추가 예정
+- [비즈니스 시나리오](docs/business-scenario.md)
+- [Business Requirements Document](docs/Business_Requirements_Document.md)
+- [Product Requirements Document](docs/Product_Requirements_Document.md)
+- [요구사항 추적성](docs/requirements-traceability.md)
+- [Data Specification](docs/Data%20Specification.md)
+- [비용 산정](docs/17_비용_산정.md), [비용 산정 요약](docs/비용산정2.md)
 
 ## 6. ERD
 
@@ -71,3 +78,12 @@
 | 신성민 | 한 줄 회고를 작성하세요. |
 | 이인건 | 한 줄 회고를 작성하세요. |
 | 이재원 | 한 줄 회고를 작성하세요. |
+
+## 10. 저장소 구조
+
+```text
+.
+├── docs/       # 프로젝트 문서와 회의록
+├── samples/    # 자동차등록현황보고 샘플 CSV
+└── notebooks/  # Jupyter 노트북
+```
