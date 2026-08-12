@@ -15,6 +15,11 @@ from urllib.request import Request, urlopen
 
 from common.config import Settings
 
+try:
+    import truststore
+except ImportError:  # pragma: no cover - 환경에 패키지가 없으면 기본 SSL로 fallback
+    truststore = None
+
 
 class RegistrationCollectionError(RuntimeError):
     def __init__(self, message: str, code: str = "registration_collection_error"):
@@ -74,6 +79,13 @@ def extract_record_list(payload: Any) -> list[dict[str, Any]]:
     return []
 
 
+def _ssl_context() -> ssl.SSLContext:
+    """Windows 인증서 저장소를 우선 사용하고, truststore가 없으면 기본 SSL을 사용합니다."""
+    if truststore is not None:
+        return truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+    return ssl.create_default_context()
+
+
 class RegistrationApiClient:
     def __init__(self, settings: Settings):
         if not settings.registration_api_key:
@@ -103,7 +115,7 @@ class RegistrationApiClient:
         )
         reserve_call()
         try:
-            with urlopen(request, timeout=self.settings.timeout_seconds, context=ssl.create_default_context()) as response:
+            with urlopen(request, timeout=self.settings.timeout_seconds, context=_ssl_context()) as response:
                 body = response.read()
         except HTTPError as exc:
             body = exc.read(512 * 1024)
@@ -115,7 +127,7 @@ class RegistrationApiClient:
                 return {"status_code": "INFO-200", "data": []}, body
             raise RegistrationCollectionError(f"upstream HTTP {exc.code}", f"http_{exc.code}") from exc
         except (URLError, TimeoutError) as exc:
-            raise RegistrationCollectionError("upstream connection failed", "connection_error") from exc
+            raise RegistrationCollectionError(f"upstream connection failed: {exc}", "connection_error") from exc
 
         try:
             payload = json.loads(body.decode("utf-8-sig"))

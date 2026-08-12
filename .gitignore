@@ -46,3 +46,4 @@ dist/
 # 통계 수집 실행 결과
 outputs/
 output/
+api_test/

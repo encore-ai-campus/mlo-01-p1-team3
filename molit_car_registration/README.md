@@ -2,6 +2,12 @@
 
 이 폴더는 조장님 reference 폴더와 분리된 자동차등록 전용 구현입니다.
 
+실제 API 호출 환경에서는 Windows 인증서 저장소를 사용하기 위해 다음 의존성을 설치합니다.
+
+```powershell
+python -m pip install -r .\molit_car_registration\requirements.txt
+```
+
 ```text
 molit_car_registration/
 ├─ src/
