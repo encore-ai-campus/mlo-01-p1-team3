@@ -49,8 +49,8 @@ class LoadStats:
 class RunContext:
     run_id: str
     pipeline_name: str
+    schedule_name: Optional[str]
     started_at: datetime
-    schedule_name: Optional[str] = None
 
 
 def as_tuple(records: Sequence[Mapping[str, Any]]) -> Tuple[Mapping[str, Any], ...]:

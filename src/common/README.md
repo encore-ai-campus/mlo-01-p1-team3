@@ -9,8 +9,9 @@
 | 파일 | 모듈 | 담당 |
 |---|---|---|
 | `__init__.py` | `common` | 주요 설정·계약 타입 재export |
-| `config.py` | `common.config` | `.env`·환경변수 해석, SQL JDBC URL 파싱, MongoDB URI 조합, 기본값·빈 비밀번호 `None` 처리 |
+| `config.py` | `common.config` | `.env`·환경변수 해석, SQL JDBC URL 파싱, MongoDB URI 조합, 기본값·빈 비밀번호 `None` 처리, production 자격증명 검증 |
 | `contracts.py` | `common.contracts` | `RawRecord`, `PreparedRecord`, `CollectionEnvelope`, `PreparedBatch`, `RejectedRecord`, `LoadStats`, `RunContext` |
+| `logging_utils.py` | `common.logging_utils` | `src.logging.logging_utils`의 `JsonlLogger`·`redact` 호환 re-export |
 | `sql_utils.py` | `common.sql_utils` | ISO datetime/date와 JSON 값을 SQL 입력값으로 변환 |
 
 ## 모듈 관계
@@ -36,8 +37,10 @@ flowchart TD
 - `common.logging_utils`는 이전 import 경로를 위한 호환용 re-export만 제공하며, 구현을 갖지 않는다.
 - 코드 어디에도 API key, DB password, host를 하드코딩하지 않는다.
 - 빈 계정 비밀번호는 Python `None`으로 취급한다.
+- `APP_ENV=production`에서는 SQL 사용자·비밀번호와 명시적 MongoDB URI 및 인증정보가 없으면 설정 생성을 거부한다.
 - `CollectionEnvelope`는 수집 결과와 metadata를 전처리로 전달한다.
 - `PreparedBatch`는 유효 데이터와 Reject 요약을 적재로 전달한다.
+- `common.contracts.LoadStats`가 공통 적재 통계의 기준 타입이며, 각 loader의 기존 `*LoadStats` 이름은 호환 alias다.
 - 로그에는 API key, DB password, MongoDB URI, Discord/Webhook URL을 남기지 않는다.
 - SQL 날짜·시간은 UTC 기준으로 변환하며, timezone 정보가 없는 입력은 UTC로 해석한다.
 

@@ -10,8 +10,8 @@ from pathlib import Path
 from typing import Any, Dict, Mapping, Optional
 
 
-SECRET_KEYS = {"api_key", "authorization", "cookie", "password", "secret", "token", "uri", "webhook"}
-SECRET_VALUE_PATTERN = re.compile(r"(?i)(api[_-]?key|authorization|password|token|secret)\s*[=:]\s*([^\s,;&]+)")
+SECRET_KEYS = {"api_key", "authorization", "cookie", "key", "password", "secret", "token", "uri", "webhook"}
+SECRET_VALUE_PATTERN = re.compile(r"(?i)(api[_-]?key|key|authorization|password|token|secret)\s*[=:]\s*([^\s,;&]+)")
 BEARER_TOKEN_PATTERN = re.compile(r"(?i)(authorization\s*[=:]\s*bearer\s+)[^\s,;&]+")
 MONGODB_URI_PATTERN = re.compile(r"(?i)mongodb(?:\+srv)?://[^\s,;&]+")
 WEBHOOK_URL_PATTERN = re.compile(r"(?i)https?://(?:(?:discord(?:app)?\.com/api/webhooks)|(?:hooks\.slack\.com))[^\s,;&]+")
