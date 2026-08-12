@@ -177,7 +177,7 @@ class UsedCarFetcher:
     @staticmethod
     def _validate_next_path(next_url: str, expected_path: str) -> str:
         parsed = urlsplit(next_url)
-        if parsed.path != expected_path:
+        if parsed.scheme or parsed.netloc or parsed.path != expected_path:
             raise FetchError(
                 "cursor next link points outside the documented endpoint",
                 code="source_allowlist",

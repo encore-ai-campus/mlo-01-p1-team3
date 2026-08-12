@@ -7,6 +7,15 @@
 - 목적: 현재 계약에서 동작을 위해 반드시 확정해야 할 구현 이슈와 조건부 계약 이슈를 우선순위별로 보고
 - 조치 범위: 분석 및 보고만 수행. 본 보고서 작성 중 소스·테스트·설정 파일은 수정하지 않음
 
+## 0. 결정 반영 상태
+
+| ID | 결정 및 현재 상태 |
+|---|---|
+| COL-001 | cursor 방식으로 확정. `/api/v1/cars/cursor` 초기 요청과 상대 `links.next` 검증을 구현·단위 테스트로 확인함 |
+| COL-002 | `requests`, `beautifulsoup4`, `pytest`를 `requirements.txt`에 추가함. 파일 추적(commit)은 지시자 수동 처리 대기 |
+| COL-003 | `tests/`에 collection 단위 테스트를 추가하고 전체 `23 passed` 확인함. 이 결과는 전체 pipeline 검증이 아님 |
+| COL-004 | 실제 upstream/상위 호출자 계약 확인 전 보류. 본 변경에서 동작을 임의 변경하지 않음 |
+
 ## 1. 판정 기준
 
 | 우선순위 | 의미 |
@@ -19,9 +28,9 @@
 
 | ID | 우선순위 | 모듈 | 이슈 | 현재 판정 |
 |---|---|---|---|---|
-| COL-001 | P0 | `usedcar.py` | 초기 중고차 API endpoint·pagination 계약 충돌 | 계약 확정 전 승인 불가 |
-| COL-002 | P0 | `api.py`, `faq.py`, 의존성 파일 | clean checkout 실행 의존성 및 Git 반영 불완전 | 새 환경 실행 보장 불가 |
-| COL-003 | P1 | collection 테스트 | 현재 저장소 기준 단위 테스트 증거 부재 | 완료 기준 미충족 |
+| COL-001 | P0 | `usedcar.py` | 초기 중고차 API endpoint·pagination 계약 충돌 | cursor 방식 결정 및 단위 테스트 반영 완료 |
+| COL-002 | P0 | `api.py`, `faq.py`, 의존성 파일 | clean checkout 실행 의존성 및 Git 반영 불완전 | 의존성 추가 완료, 수동 commit 대기 |
+| COL-003 | P1 | collection 테스트 | 현재 저장소 기준 단위 테스트 증거 부재 | 테스트 추가 및 `23 passed` 완료 |
 | COL-004 | P1-조건부 | `registration.py`, `api.py`, `faq.py` | 오류·무데이터·URL 보호·응답 제한 계약의 조건부 정합성 | 실제 계약 확인 후 승격 |
 
 ---
