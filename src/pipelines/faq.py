@@ -1,4 +1,11 @@
-"""FAQ pipeline orchestration: collection -> preprocessing -> loading."""
+"""FAQ business pipeline: bounded collection -> validation -> loading.
+
+This module owns the FAQ run-level business contract in addition to composing
+the stage packages. The current baseline requires an allow-listed source,
+at least one second between requests, no more than two pages, and no more
+than ten questions per page. Prepared documents retain identity, question,
+answer, category, source URL, license, attribution, and content hash.
+"""
 
 from __future__ import annotations
 
@@ -24,23 +31,59 @@ from preprocessing.faq import (
 )
 
 
+FAQ_MAX_PAGES = 2
+FAQ_MAX_QUESTIONS_PER_PAGE = 10
+FAQ_MIN_INTERVAL_SECONDS = 1.0
+
+
+def _validate_business_requirements(settings: Settings) -> None:
+    max_pages = int(getattr(settings, "faq_max_pages", FAQ_MAX_PAGES))
+    if not 1 <= max_pages <= FAQ_MAX_PAGES:
+        raise ValueError(f"FAQ_MAX_PAGES must be between 1 and {FAQ_MAX_PAGES}")
+    interval_seconds = float(getattr(settings, "faq_interval_seconds", FAQ_MIN_INTERVAL_SECONDS))
+    if interval_seconds < FAQ_MIN_INTERVAL_SECONDS:
+        raise ValueError("FAQ_INTERVAL_SECONDS must be at least 1 second")
+    max_questions = int(
+        getattr(settings, "faq_max_questions_per_page", FAQ_MAX_QUESTIONS_PER_PAGE)
+    )
+    if not 1 <= max_questions <= FAQ_MAX_QUESTIONS_PER_PAGE:
+        raise ValueError(
+            f"FAQ_MAX_QUESTIONS_PER_PAGE must be between 1 and {FAQ_MAX_QUESTIONS_PER_PAGE}"
+        )
+
+
 def run_once(
-    *, settings: Settings, fixture: Optional[Path] = None, sink_name: str = "json", dry_run: bool = False
+    *,
+    settings: Settings,
+    fixture: Optional[Path] = None,
+    sink_name: str = "json",
+    dry_run: bool = False,
+    run_id: Optional[str] = None,
 ) -> Dict[str, Any]:
-    run_id = str(uuid.uuid4())
+    _validate_business_requirements(settings)
+    if sink_name not in {"json", "mongo"}:
+        raise ValueError(f"unsupported FAQ sink: {sink_name}")
+    run_id = run_id or str(uuid.uuid4())
     logger = JsonlLogger(
         settings.log_path,
         {"service": "data_preprocessing", "pipeline_name": "faq", "run_id": run_id},
     )
     collected_at = datetime.now(timezone.utc)
     logger.event("INFO", "run_started", "FAQ run started", stage_name="Collect", logic_name="faq.collect")
-    pages = fixture_pages(fixture) if fixture else FaqCollector(settings).iter_pages()
     raw_records: List[Dict[str, Any]] = []
     page_count = 0
     response_hashes: List[str] = []
     try:
+        pages = fixture_pages(fixture) if fixture else FaqCollector(settings).iter_pages()
         for page in pages:
             page_count += 1
+            if page_count > FAQ_MAX_PAGES:
+                raise FaqError("FAQ page limit exceeded", code="faq_page_limit")
+            max_questions = int(
+                getattr(settings, "faq_max_questions_per_page", FAQ_MAX_QUESTIONS_PER_PAGE)
+            )
+            if len(page.records) > max_questions:
+                raise FaqError("FAQ question limit exceeded", code="faq_question_limit")
             response_hashes.append(page.response_sha256)
             raw_records.extend(page.records)
     except Exception as exc:
@@ -69,12 +112,23 @@ def run_once(
         collected_count=len(envelope.records),
         response_sha256=response_hashes,
     )
-    valid, rejected = transform_faq_records(
-        envelope.records,
-        settings=settings,
-        run_id=run_id,
-        collected_at=collected_at.isoformat(),
-    )
+    try:
+        valid, rejected = transform_faq_records(
+            envelope.records,
+            settings=settings,
+            run_id=run_id,
+            collected_at=collected_at.isoformat(),
+        )
+    except Exception as exc:
+        logger.event(
+            "ERROR",
+            "preprocess_failed",
+            "FAQ records could not be transformed",
+            stage_name="Preprocess",
+            logic_name="faq.preprocess",
+            error_code=getattr(exc, "code", "preprocess_failed"),
+        )
+        raise
     prepared = PreparedBatch(
         records=tuple(valid),
         rejected=tuple(
@@ -89,6 +143,16 @@ def run_once(
         stage_name="Preprocess",
         logic_name="faq.preprocess",
         preprocessed_count=len(prepared.records),
+        rejected_count=len(prepared.rejected),
+    )
+    logger.event(
+        "INFO",
+        "validation_completed",
+        "FAQ record validation completed",
+        stage_name="Validate",
+        logic_name="faq.validate",
+        input_count=len(envelope.records),
+        valid_count=len(prepared.records),
         rejected_count=len(prepared.rejected),
     )
     if prepared.rejected:
@@ -108,22 +172,23 @@ def run_once(
                 sink = JsonlFaqUpsertSink(settings.output_dir / "faq.jsonl")
             elif sink_name == "mongo":
                 sink = MongoFaqUpsertSink(settings)
-            else:
-                raise ValueError(f"unsupported FAQ sink: {sink_name}")
             stats = sink.save(prepared.records)
         else:
             stats = FaqLoadStats()
         result = {
             "status": "OK",
             "run_id": run_id,
+            "mode": "bounded",
             "pages": page_count,
             "collected_count": len(envelope.records),
+            "preprocessed_count": len(prepared.records) + len(prepared.rejected),
             "valid_count": len(prepared.records),
             "rejected_count": len(prepared.rejected),
             "inserted_count": stats.inserted_count,
             "updated_count": stats.updated_count,
             "unchanged_count": stats.unchanged_count,
             "dry_run": dry_run,
+            "checkpoint_path": None,
         }
         logger.event("INFO", "run_succeeded", "FAQ run completed", stage_name="Load", logic_name="faq.load", **result)
         return result

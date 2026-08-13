@@ -1,4 +1,12 @@
-"""Used-car pipeline orchestration: collection -> preprocessing -> loading."""
+"""Used-car business pipeline: cursor/change collection -> loading.
+
+The pipeline owns the source business contract for the AutoData Lab API:
+initial cursor and incremental ``after_seq`` modes, sequential one-second
+requests, a maximum page size of 500, stable listing identity, dataset epoch
+consistency, and a checkpoint that advances only after a successful load.
+Source response validation and relational normalization remain in their stage
+packages; this module decides the run mode and checkpoint policy.
+"""
 
 from __future__ import annotations
 
@@ -36,23 +44,32 @@ def _require_incremental_contract(page_state: Mapping[str, Any]) -> int:
 
 
 def run_once(
-    *, settings: Settings, mode: str = "auto", fixture: Optional[Path] = None, sink_name: str = "json", dry_run: bool = False
+    *,
+    settings: Settings,
+    mode: str = "auto",
+    fixture: Optional[Path] = None,
+    sink_name: str = "json",
+    dry_run: bool = False,
+    run_id: Optional[str] = None,
 ) -> Dict[str, Any]:
-    run_id = str(uuid.uuid4())
+    if sink_name not in {"json", "sql"}:
+        raise ValueError(f"unsupported used-car sink: {sink_name}")
+    run_id = run_id or str(uuid.uuid4())
     logger = JsonlLogger(
         settings.log_path,
         {"service": "data_preprocessing", "pipeline_name": "used_car", "run_id": run_id},
     )
     checkpoint_store = CheckpointStore(settings.state_path)
-    local_checkpoint = checkpoint_store.load()
     selected_mode = mode
     sink = None
     total_collected = total_valid = total_rejected = 0
     total_inserted = total_updated = total_unchanged = 0
     batches = 0
-    checkpoint: Dict[str, Any] = dict(local_checkpoint)
-    last_checkpoint: Dict[str, Any] = dict(local_checkpoint)
+    checkpoint: Dict[str, Any] = {}
+    last_checkpoint: Dict[str, Any] = {}
     missing_incremental_contract = False
+    current_stage = "Collect"
+    current_logic = "used_car.collect"
     try:
         fetcher = load_fetcher(settings, fixture)
         sink = None if dry_run else sink_for(settings, sink_name)
@@ -60,6 +77,10 @@ def run_once(
             sql_checkpoint = sink.load_checkpoint()
             if sql_checkpoint:
                 checkpoint = sql_checkpoint
+            else:
+                checkpoint = checkpoint_store.load()
+        else:
+            checkpoint = checkpoint_store.load()
         selected_mode = mode
         if selected_mode == "auto":
             selected_mode = "incremental" if checkpoint.get("initialized") else "initial"
@@ -80,7 +101,7 @@ def run_once(
             page_meta = page.meta
             page_state = page_checkpoint(page_meta, page.records)
             page_epoch = page_state.get("dataset_epoch")
-            stored_epoch = checkpoint.get("dataset_epoch")
+            stored_epoch = last_checkpoint.get("dataset_epoch")
             if stored_epoch and page_epoch and stored_epoch != page_epoch:
                 raise FetchError("dataset_epoch changed; checkpoint was not advanced", code="dataset_epoch_changed")
             raw_next_seq = page_state.get("high_water_seq")
@@ -120,12 +141,26 @@ def run_once(
                 batch_number=batches,
                 collected_count=len(envelope.records),
             )
-            valid_rows, rejected = transform_records(
-                envelope.records,
-                settings=settings,
-                run_id=run_id,
-                dataset_epoch=page_epoch or stored_epoch,
-            )
+            current_stage = "Preprocess"
+            current_logic = "used_car.preprocess"
+            try:
+                valid_rows, rejected = transform_records(
+                    envelope.records,
+                    settings=settings,
+                    run_id=run_id,
+                    dataset_epoch=page_epoch or stored_epoch,
+                )
+            except Exception as exc:
+                logger.event(
+                    "ERROR",
+                    "preprocess_failed",
+                    "used-car records could not be transformed",
+                    stage_name="Preprocess",
+                    logic_name="used_car.preprocess",
+                    error_code=getattr(exc, "code", "preprocess_failed"),
+                    batch_number=batches,
+                )
+                raise
             prepared = PreparedBatch(
                 records=tuple(valid_rows),
                 rejected=tuple(
@@ -146,6 +181,19 @@ def run_once(
                 valid_count=len(prepared.records),
                 rejected_count=len(prepared.rejected),
             )
+            current_stage = "Validate"
+            current_logic = "used_car.validate"
+            logger.event(
+                "INFO",
+                "validation_completed",
+                "used-car record validation completed",
+                stage_name="Validate",
+                logic_name="used_car.validate",
+                batch_number=batches,
+                input_count=len(envelope.records),
+                valid_count=len(prepared.records),
+                rejected_count=len(prepared.rejected),
+            )
             if prepared.rejected:
                 logger.event(
                     "WARNING",
@@ -156,6 +204,9 @@ def run_once(
                     rejected_count=len(prepared.rejected),
                     reject_codes=sorted({item.error_code for item in prepared.rejected}),
                 )
+            current_stage = "Load"
+            current_logic = "used_car.load"
+            batch_inserted = batch_updated = batch_unchanged = 0
             if sink is not None:
                 if sink_name == "sql":
                     stats = sink.save(
@@ -170,23 +221,27 @@ def run_once(
                     )
                 else:
                     stats = sink.save(prepared.records)
-                total_inserted += stats.inserted_count
-                total_updated += stats.updated_count
-                total_unchanged += stats.unchanged_count
+                batch_inserted = stats.inserted_count
+                batch_updated = stats.updated_count
+                batch_unchanged = stats.unchanged_count
+                total_inserted += batch_inserted
+                total_updated += batch_updated
+                total_unchanged += batch_unchanged
 
             last_checkpoint = next_checkpoint
             if not dry_run and next_seq is not None and not missing_incremental_contract:
                 checkpoint_store.save(last_checkpoint)
             logger.event(
                 "INFO",
-                "batch_committed",
-                "batch load and checkpoint completed",
+                "load_skipped" if dry_run else "batch_committed",
+                "batch load skipped in dry-run" if dry_run else "batch load and checkpoint completed",
                 stage_name="Load",
                 logic_name="used_car.load",
                 batch_number=batches,
-                inserted_count=0 if dry_run else total_inserted,
-                updated_count=0 if dry_run else total_updated,
-                unchanged_count=0 if dry_run else total_unchanged,
+                inserted_count=batch_inserted,
+                updated_count=batch_updated,
+                unchanged_count=batch_unchanged,
+                load_skipped=dry_run,
                 checkpoint={
                     "after_id": last_checkpoint.get("after_id"),
                     "after_seq": last_checkpoint.get("after_seq"),
@@ -204,6 +259,7 @@ def run_once(
             "mode": selected_mode,
             "batches": batches,
             "collected_count": total_collected,
+            "preprocessed_count": total_valid + total_rejected,
             "valid_count": total_valid,
             "rejected_count": total_rejected,
             "inserted_count": 0 if dry_run else total_inserted,
@@ -215,7 +271,14 @@ def run_once(
         logger.event("INFO", "run_succeeded", "one-shot used-car run completed", **result)
         return result
     except (ApiError, FetchError, PreprocessError, RuntimeError, ValueError) as exc:
-        logger.event("ERROR", "run_failed", "one-shot used-car run failed", error_code=getattr(exc, "code", "run_failed"))
+        logger.event(
+            "ERROR",
+            "run_failed",
+            "one-shot used-car run failed",
+            stage_name=current_stage,
+            logic_name=current_logic,
+            error_code=getattr(exc, "code", "run_failed"),
+        )
         raise
     finally:
         close = getattr(sink, "close", None)

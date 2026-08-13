@@ -199,7 +199,7 @@ class FaqCollector:
     def iter_pages(self) -> Iterable[FaqPage]:
         next_url: Optional[str] = self._safe_url(str(self.settings.faq_source_url))
         seen: set[str] = set()
-        max_pages = int(getattr(self.settings, "faq_max_pages", 100))
+        max_pages = int(getattr(self.settings, "faq_max_pages", 2))
         if max_pages <= 0:
             raise ValueError("FAQ_MAX_PAGES must be greater than zero")
         for _ in range(max_pages):
@@ -211,6 +211,9 @@ class FaqCollector:
             self._wait_for_next_start()
             page_url = next_url
             page = parse_faq_html(self._get(page_url), page_url)
+            max_questions = int(getattr(self.settings, "faq_max_questions_per_page", 10))
+            if len(page.records) > max_questions:
+                raise FaqError("FAQ question limit exceeded", code="faq_question_limit")
             yield page
             next_url = self._safe_url(page.next_url) if page.next_url else None
         if next_url is not None:

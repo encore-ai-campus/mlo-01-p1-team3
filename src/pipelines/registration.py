@@ -1,4 +1,12 @@
-"""Daily registration-report pipeline: collection -> preprocessing -> loading."""
+"""Registration business pipeline: one-period collection -> loading.
+
+This module owns the registration-report business rules as well as composing
+the stage packages: one logical request per run, ``form_id=5498``,
+``style_num=2``, ``start_dt=end_dt=YYYYMM``, wide-to-long normalization,
+non-negative measures, and a five-field business key. The source contract and
+the Day 22 workshop require sanitized errors, source provenance, and fixture
+reproducibility.
+"""
 
 from __future__ import annotations
 
@@ -38,6 +46,30 @@ from loading.registration import (
 from preprocessing.registration import RegistrationPreprocessError, transform_registration_records
 
 
+class _DryRunQuota:
+    """In-memory quota preview that never opens or updates a persistence sink."""
+
+    def __init__(self, limit: int) -> None:
+        self.limit = limit
+        self._used_count = 0
+
+    def reserve(self) -> None:
+        if self._used_count >= self.limit:
+            raise QuotaExceeded()
+        self._used_count += 1
+
+    @property
+    def used_count(self) -> int:
+        return self._used_count
+
+    @property
+    def remaining(self) -> int:
+        return max(0, self.limit - self._used_count)
+
+    def close(self) -> None:
+        return None
+
+
 def run_once(
     *,
     settings: Settings,
@@ -47,6 +79,7 @@ def run_once(
     period: Optional[str] = None,
     start_period: Optional[str] = None,
     max_calls: Optional[int] = None,
+    run_id: Optional[str] = None,
 ) -> Dict[str, Any]:
     """Run exactly one registration API request for the selected month.
 
@@ -61,17 +94,25 @@ def run_once(
         raise ValueError("registration pipeline performs exactly one API call per run")
     if period and start_period and normalize_period(period) != normalize_period(start_period):
         raise ValueError("period and start_period must identify the same month")
+    if getattr(settings, "registration_form_id", 5498) != 5498:
+        raise ValueError("registration_form_id must remain 5498")
+    if getattr(settings, "registration_style_num", 2) != 2:
+        raise ValueError("registration_style_num must remain 2")
 
-    run_id = str(uuid.uuid4())
+    run_id = run_id or str(uuid.uuid4())
     logger = JsonlLogger(
         settings.log_path,
         {"service": "pipeline", "pipeline_name": "vehicle_registration", "run_id": run_id},
     )
     state = RegistrationStateStore(settings.registration_state_path)
     quota: Any = (
-        SqlQuotaLedger(settings)
-        if sink_name == "sql"
-        else JsonQuotaLedger(state, limit=settings.registration_daily_quota, time_zone=settings.time_zone)
+        _DryRunQuota(settings.registration_daily_quota)
+        if dry_run
+        else (
+            SqlQuotaLedger(settings)
+            if sink_name == "sql"
+            else JsonQuotaLedger(state, limit=settings.registration_daily_quota, time_zone=settings.time_zone)
+        )
     )
     stored_state = state.load()
     requested_period = normalize_period(
@@ -93,8 +134,16 @@ def run_once(
 
     total_collected = total_preprocessed = total_valid = total_rejected = 0
     total_inserted = total_updated = total_unchanged = 0
-    api_calls_before = quota.used_count
+    request_count = 0
     collected = False
+    current_stage = "Collect"
+    current_logic = "vehicle_registration.collect"
+
+    def reserve_call() -> None:
+        nonlocal request_count
+        request_count += 1
+        quota.reserve()
+
     try:
         client: Any = FixtureRegistrationClient(fixture) if fixture else RegistrationApiClient(settings)
         if not dry_run:
@@ -103,8 +152,11 @@ def run_once(
             else:
                 sink = SqlRegistrationUpsertSink(settings)
 
+        if quota.remaining <= 0:
+            raise QuotaExceeded()
+
         if quota.remaining > 0:
-            payload, body = client.fetch_period(requested_period, reserve_call=quota.reserve)
+            payload, body = client.fetch_period(requested_period, reserve_call=reserve_call)
             records = extract_record_list(payload)
             status = find_value(payload, {"status_code", "statuscode"}) if isinstance(payload, dict) else None
             if not records and status not in {"INFO-200", 200, "200"} and not isinstance(payload, dict):
@@ -131,6 +183,8 @@ def run_once(
                 response_sha256=hashlib.sha256(body).hexdigest(),
             )
 
+            current_stage = "Preprocess"
+            current_logic = "vehicle_registration.preprocess"
             valid, rejected = transform_registration_records(
                 envelope.records,
                 period=requested_period,
@@ -167,6 +221,18 @@ def run_once(
                 rejected_count=len(prepared.rejected),
                 response_sha256=hashlib.sha256(body).hexdigest(),
             )
+            current_stage = "Validate"
+            current_logic = "vehicle_registration.validate"
+            logger.event(
+                "INFO",
+                "validation_completed",
+                "registration row validation completed",
+                stage_name="Validate",
+                logic_name="vehicle_registration.validate",
+                input_count=len(envelope.records),
+                valid_count=len(prepared.records),
+                rejected_count=len(prepared.rejected),
+            )
             if prepared.rejected:
                 logger.event(
                     "WARNING",
@@ -177,6 +243,8 @@ def run_once(
                     rejected_count=len(prepared.rejected),
                     reject_codes=sorted({item.error_code for item in prepared.rejected}),
                 )
+            current_stage = "Load"
+            current_logic = "vehicle_registration.load"
             if sink is not None:
                 stats = sink.save(prepared.records)
                 total_inserted = stats.inserted_count
@@ -199,6 +267,7 @@ def run_once(
         result = {
             "status": "OK",
             "run_id": run_id,
+            "mode": "daily",
             "period": month_label(requested_period) if collected else None,
             "periods": 1 if collected else 0,
             "collected_count": total_collected,
@@ -208,10 +277,11 @@ def run_once(
             "inserted_count": total_inserted,
             "updated_count": total_updated,
             "unchanged_count": total_unchanged,
-            "api_calls": quota.used_count - api_calls_before,
+            "api_calls": request_count,
             "quota_used": quota.used_count,
             "quota_remaining": quota.remaining,
             "dry_run": dry_run,
+            "checkpoint_path": str(settings.registration_state_path),
         }
         logger.event(
             "INFO",
@@ -227,8 +297,8 @@ def run_once(
             "ERROR",
             "run_failed",
             "registration run failed",
-            stage_name="Collect",
-            logic_name="vehicle_registration.collect",
+            stage_name=current_stage,
+            logic_name=current_logic,
             error_code=getattr(exc, "code", "registration_error"),
             quota_used=quota.used_count,
         )

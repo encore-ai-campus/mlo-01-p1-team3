@@ -137,7 +137,8 @@ class Settings:
     time_zone: str = "Asia/Seoul"
     faq_source_url: str = ""
     faq_allowed_paths: Tuple[str, ...] = ("/faqs",)
-    faq_max_pages: int = 100
+    faq_max_pages: int = 2
+    faq_max_questions_per_page: int = 10
     faq_interval_seconds: float = 1.0
     faq_license: str = "educational-sandbox-rewrite"
     faq_attribution: str = "AutoData Lab educational snapshot; official source URL retained"
@@ -201,6 +202,12 @@ class Settings:
         faq_interval_seconds = _positive_float(values, "FAQ_INTERVAL_SECONDS", 1.0)
         if faq_interval_seconds < 1.0:
             raise ValueError("FAQ_INTERVAL_SECONDS must be at least 1 second")
+        faq_max_pages = _positive_int(values, "FAQ_MAX_PAGES", 2)
+        if faq_max_pages > 2:
+            raise ValueError("FAQ_MAX_PAGES must not exceed 2")
+        faq_max_questions_per_page = _positive_int(values, "FAQ_MAX_QUESTIONS_PER_PAGE", 10)
+        if faq_max_questions_per_page > 10:
+            raise ValueError("FAQ_MAX_QUESTIONS_PER_PAGE must not exceed 10")
         registration_quota = _positive_int(values, "REGISTRATION_DAILY_QUOTA", 3000)
         if registration_quota > 3000:
             raise ValueError("REGISTRATION_DAILY_QUOTA must not exceed 3000")
@@ -271,7 +278,8 @@ class Settings:
             time_zone=_env(values, "TIMEZONE", "Asia/Seoul"),
             faq_source_url=faq_source_url,
             faq_allowed_paths=faq_allowed_paths,
-            faq_max_pages=_positive_int(values, "FAQ_MAX_PAGES", 100),
+            faq_max_pages=faq_max_pages,
+            faq_max_questions_per_page=faq_max_questions_per_page,
             faq_interval_seconds=faq_interval_seconds,
             faq_license=_env(values, "FAQ_LICENSE", "educational-sandbox-rewrite"),
             faq_attribution=_env(values, "FAQ_ATTRIBUTION", "AutoData Lab educational snapshot; official source URL retained"),

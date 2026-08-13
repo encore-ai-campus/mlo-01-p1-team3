@@ -159,7 +159,8 @@ GET /api/v1/changes?after_seq=<non-negative checkpoint>&limit=<1..500>
 | 확인일 | `data-reviewed-at` 또는 `data-field="reviewed-at"`의 `YYYY-MM-DD` |
 | next | 동일 host이며 allowlisted path인 `a[rel~="next"]`만 허용 |
 | body 제한 | 페이지당 4 MiB |
-| page 제한 | `FAQ_MAX_PAGES`, 기본 100 |
+| page 제한 | `FAQ_MAX_PAGES`, 기본·최대 2 |
+| page당 질문 제한 | `FAQ_MAX_QUESTIONS_PER_PAGE`, 기본·최대 10 |
 | 요청 간격 | `FAQ_INTERVAL_SECONDS`, 기본 1초 |
 
 ### 4.5 자동차등록현황보고 API
