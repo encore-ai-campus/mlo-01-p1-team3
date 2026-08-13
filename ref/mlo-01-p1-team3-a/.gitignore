@@ -22,6 +22,7 @@ venv/
 env/
 ENV/
 .env
+.env.*
 
 # Jupyter 자동 생성 파일
 .ipynb_checkpoints/
@@ -41,8 +42,3 @@ dist/
 
 # 로그
 *.log
-
-# 통계 수집 실행 결과
-outputs/
-output/
-api_test/

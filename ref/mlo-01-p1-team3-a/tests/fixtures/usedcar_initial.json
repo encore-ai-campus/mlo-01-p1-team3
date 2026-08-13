@@ -1,0 +1,87 @@
+{
+  "pages": [
+    {
+      "data": [
+        {
+          "id": 100053,
+          "listingNumber": "UC-00100053",
+          "title": "2023 현대 그랜저",
+          "description": "수업용 가상 중고차 매물입니다.",
+          "brand": {"id": 1, "name": "현대", "slug": "hyundai", "country": "대한민국"},
+          "model": {"id": 11, "name": "그랜저", "slug": "grandeur", "bodyType": "sedan"},
+          "trim": "익스클루시브",
+          "modelYear": 2023,
+          "firstRegistration": "2023-04-22",
+          "mileageKm": 12000,
+          "price": 32000000,
+          "currency": "KRW",
+          "fuelType": "가솔린",
+          "transmission": "자동",
+          "color": "검정색",
+          "displacementCc": 2497,
+          "accidentCount": 0,
+          "ownerChangeCount": 0,
+          "inspectionStatus": "점검완료",
+          "status": "AVAILABLE",
+          "location": {"id": 1, "province": "서울특별시", "city": "서울", "slug": "seoul"},
+          "dealer": {"code": "D-001", "displayName": "교○○", "department": "품질관리팀", "position": "대리"},
+          "businessArea": {"id": "BIZ_001", "name": "소매", "parent": {"id": "BIZ_000", "name": "영업"}},
+          "createdAt": "2026-08-10T12:00:00+09:00",
+          "updatedAt": "2026-08-11T08:00:00+09:00"
+        },
+        {
+          "id": 100052,
+          "listingNumber": "UC-00100052",
+          "brand": {"id": 2, "name": "기아", "slug": "kia"},
+          "model": {"id": 22, "name": "쏘렌토", "slug": "sorento"},
+          "modelYear": 2022,
+          "mileageKm": 45000,
+          "price": 28000000,
+          "currency": "KRW",
+          "status": "RESERVED",
+          "location": {"id": 2, "province": "경기도", "city": "성남시", "slug": "gyeonggi-1"},
+          "dealer": {"code": "D-002", "name": "마스킹딜러"},
+          "businessArea": {"id": "BIZ_002", "slug": "retail", "name": "소매"},
+          "createdAt": "2026-08-10T11:00:00+09:00",
+          "updatedAt": "2026-08-11T07:00:00+09:00"
+        }
+      ],
+      "meta": {
+        "returned": 2,
+        "has_more": true,
+        "until_id": 100053,
+        "dataset_epoch": "epoch-2026-08-11",
+        "high_water_seq": 2
+      },
+      "links": {"next": "/api/v1/cars/cursor?after_id=100052&limit=500"}
+    },
+    {
+      "data": [
+        {
+          "id": 100051,
+          "listingNumber": "UC-00100051",
+          "brand": {"id": 3, "name": "제네시스", "slug": "genesis"},
+          "model": {"id": 31, "name": "G80", "slug": "g80"},
+          "modelYear": 2021,
+          "mileageKm": 60000,
+          "price": 36000000,
+          "currency": "KRW",
+          "status": "SOLD",
+          "location": {"id": 3, "province": "부산광역시", "city": "해운대구", "slug": "busan-1"},
+          "dealer": {"code": "D-003", "name": "마스킹딜러"},
+          "businessArea": {"id": "BIZ_003", "slug": "retail", "name": "소매"},
+          "createdAt": "2026-08-10T10:00:00+09:00",
+          "updatedAt": "2026-08-11T06:00:00+09:00"
+        }
+      ],
+      "meta": {
+        "returned": 1,
+        "has_more": false,
+        "until_id": 100053,
+        "dataset_epoch": "epoch-2026-08-11",
+        "high_water_seq": 2
+      },
+      "links": {"self": "/api/v1/cars/cursor?after_id=100051&limit=500"}
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+python-dotenv
+pandas
+sql-AIchemy
+requests>=2.31,<3
+beautifulsoup4>=4.12,<5
+PyMySQL>=1.1,<2
+pymongo>=4.6,<5
+pytest>=8,<9
