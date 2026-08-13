@@ -1,0 +1,6 @@
+beautifulsoup4>=4.12,<5
+# Runtime and local verification dependencies for Amazon Linux 2023.
+# Keep the upper bounds so a future major driver change is deliberate.
+PyMySQL>=1.1,<2
+pymongo>=4.6,<5
+pytest>=8,<9

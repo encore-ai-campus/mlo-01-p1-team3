@@ -1,0 +1,20 @@
+# Requirements Change Log
+
+baseline 전 문서 구조 수정은 각 문서 review note와 아래 초기 기록에 남긴다. baseline 이후 요구 의미가 바뀔 때만 새 행을 추가한다.
+
+| CR ID | requested_at | reason | affected BRD/PRD/AC | source/schema/schedule impact | migration needed | decision | owner | version/PR/evidence |
+|---|---|---|---|---|---|---|---|---|
+| CR-MLO-001 | 2026-08-11 | 워크숍 기준의 BRD·PRD·AC·Evidence·WBS·Review 구조 반영 | BRD 전체, PRD 전체, Traceability 전체 | 문서 ID·사용자 필요·owner/due·Evidence·검토 기준 추가 | No | approved | <TODO> | v2-review |
+| CR-MLO-002 | 2026-08-11 | 중고차 1초·500건·초기 1만건·증분 요구 반영 | BR-MVP-02, BR-MVP-16, FR-LIST-*, AC-LIST-* | Worker·Batch·Checkpoint·Source Registry·WBS 영향 | Schema review required | approved | <TODO> | v2-review |
+| CR-MLO-003 | 2026-08-11 | 세 Source의 bounded 수집·전처리와 SQL/MongoDB migration을 구현하고 fixture 검증 추가 | FR-FAQ-*, FR-LIST-*, FR-REG-*, DR-*, NFR-IDEMP-*, NFR-SOURCE-* | FAQ `/faqs`, 중고차 `/api/v1/*`, 등록현황 form 5498/style 2 계약과 fixture·Business Key 반영 | Yes: V001 + Mongo indexes | approved | <TODO> | local-fixture-verified; live-source-pending |
+| CR-MLO-004 | 2026-08-11 | 로컬 MongoDB/MySQL 실제 적재와 env 기반 DB credential/URI 처리 추가 | FR-FAQ-LOAD-001, FR-LIST-LOAD-001, FR-REG-LOAD-001, NFR-SECRET-001 | `MONGODB_URI`/`MONGODB_*`, `SQL_JDBC_URL`/`SQL_*`, 빈 password의 `None` 변환 | No: V001 재사용 | approved | <TODO> | local-db-migration-and-load-verified |
+| CR-MLO-005 | 2026-08-12 | 수집·전처리·적재의 결합도·응집도 개선과 단계별 폴더/계약 분리 | FR-PIPE-STAGE-001, FR-FAQ-*, FR-LIST-*, FR-REG-*, NFR-EXT-001 | `collection/`, `preprocessing/`, `loading/`, `pipelines/`, `common/contracts.py`로 코드 경계 재구성; 저장 계약과 DB schema는 유지 | No | approved | <TODO> | pytest-15; layer-boundary-verified |
+| CR-MLO-006 | 2026-08-12 | Python 소스 경로를 중첩된 `src/data_preprocessing/`에서 `src/*`로 평탄화 | FR-PIPE-STAGE-001, NFR-EXT-001 | `src/collection/`, `src/preprocessing/`, `src/loading/`, `src/pipelines/`, `src/common/`으로 import·실행 경로 갱신; 데이터 계약·DB schema 변경 없음 | No | approved | <TODO> | pytest-15; src-root-fixture-and-db-verified |
+| CR-MLO-007 | 2026-08-12 | 호환 목적의 `src/` 루트 façade 파일 제거 | FR-PIPE-STAGE-001, NFR-EXT-001 | 모든 내부 import를 단계별 package로 직접 연결; `src/` 루트에는 업무 Python 파일을 두지 않음; 데이터 계약·DB schema 변경 없음 | No | approved | <TODO> | pytest-15; root-facade-removed-verified |
+| CR-MLO-008 | 2026-08-12 | 국토교통부 API 예제 응답 확인 결과 등록현황 수집·전처리·SQL 계약을 월별 formList 지표 분해 구조로 수정 | BR-MVP-03, BR-MVP-07, FR-REG-*, DR-KEY-001, AC-REG-* | 실행당 API 1회·일일 quota 초과 방지; `date`, `시도명`, `시군구`, `승용>관용` 등 지표를 정규화; Business Key를 5개 차원으로 변경 | Yes: V002__normalize_registration_reports.sql | approved | <TODO> | fixture-verified; live-source-pending |
+| CR-MLO-009 | 2026-08-12 | 등록현황 정규화 DDL을 별도 V002가 아닌 초기 MVP 기준선인 V001에 통합 | FR-REG-*, DR-SCHEMA-001, NFR-IDEMP-001 | 신규 설치는 V001 하나로 정규화 테이블을 생성; 이미 V002까지 적용된 로컬 DB는 데이터 확인 후 migration metadata를 기준선에 맞춰 정리 | No: V001 baseline consolidation | approved | <TODO> | pytest-15; local-schema-verified |
+| CR-MLO-010 | 2026-08-12 | 브라우저의 중고차 API 조회 결과와 원천 JSON에서 반복 중첩 엔터티를 확인하여 단일 wide table을 관계형 구조로 수정 | BR-MVP-06, FR-LIST-TRANSFORM-001, FR-LIST-LOAD-001, DR-SCHEMA-001, AC-LIST-* | `brand`, `model`, `location`, `dealer`, `businessArea`를 각각 참조 테이블로 분리하고 `vehicle_listings`에 FK 연결; 전처리 준비 aggregate와 dimension 선 Upsert transaction 추가 | No: V001 직접 수정 | approved | <TODO> | browser-ref-json-verified; pytest-15; local-db-verified |
+| CR-MLO-011 | 2026-08-12 | 중고차 관계형 모델의 중복 관계·속성 제거와 joined read view 추가 | FR-LIST-TRANSFORM-001, FR-LIST-LOAD-001, DR-SCHEMA-001, AC-LIST-* | `vehicle_listings.brand_id`를 제거하고 `model → brand`로 조인; `vehicle_business_areas.parent_name`을 self-FK 조인으로 대체; 중복 `normalized_status` 제거; `vehicle_listing_detail` view 추가; V001 직접 수정 | No: V001 직접 수정 | approved | <TODO> | pytest-16; sql-contract-verified; local-db-reconciled; migration-runner-OK |
+| CR-MLO-012 | 2026-08-12 | MVP에 불필요한 중고차 통합 조회 View 제거 | FR-LIST-LOAD-001, DR-SCHEMA-001, AC-LIST-* | `vehicle_listing_detail` View 삭제; 참조 테이블과 `vehicle_listings`의 직접 FK 조인 계약으로 단순화; V001 직접 수정 | No: V001 직접 수정 | approved | <TODO> | sql-view-removed; local-db-reconciled; migration-runner-OK; pytest-16 |
+
+decision은 approved | rejected | deferred 중 하나를 사용한다. 실제 PR·Evidence가 생기면 마지막 열을 갱신한다.

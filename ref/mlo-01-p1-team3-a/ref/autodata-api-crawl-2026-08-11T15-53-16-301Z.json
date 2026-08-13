@@ -1,0 +1,5430 @@
+{
+  "data": [
+    {
+      "id": 107416,
+      "listingNumber": "UC-00107416",
+      "title": "2019 메르세데스-벤츠 E-클래스 E220d",
+      "description": "2019 메르세데스-벤츠 E-클래스 E220d, 주행거리 88,704km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 8,
+        "name": "메르세데스-벤츠",
+        "slug": "mercedes-benz",
+        "country": "독일"
+      },
+      "model": {
+        "id": 39,
+        "name": "E-클래스",
+        "slug": "e-class",
+        "bodyType": "sedan"
+      },
+      "trim": "E220d",
+      "modelYear": 2019,
+      "firstRegistration": "2019-08-10",
+      "mileageKm": 88704,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 30900000,
+      "currency": "KRW",
+      "color": "진주색",
+      "displacementCc": 2497,
+      "accidentCount": 0,
+      "ownerChangeCount": 4,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 40,
+        "province": "전라남도",
+        "city": "여수시",
+        "slug": "jeonnam-2"
+      },
+      "dealer": {
+        "code": "DLR-32c5a92011",
+        "displayName": "교○○",
+        "department": "데이터팀",
+        "position": "과장"
+      },
+      "businessArea": {
+        "id": "BIZ_02923",
+        "name": "수도권영업센터 2923",
+        "parent": {
+          "id": "BIZ_00034",
+          "name": "호남영업 34"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107415,
+      "listingNumber": "UC-00107415",
+      "title": "2013 제네시스 G90 롱휠베이스",
+      "description": "2013 제네시스 G90 롱휠베이스, 주행거리 150,993km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 3,
+        "name": "제네시스",
+        "slug": "genesis",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 20,
+        "name": "G90",
+        "slug": "g90",
+        "bodyType": "sedan"
+      },
+      "trim": "롱휠베이스",
+      "modelYear": 2013,
+      "firstRegistration": "2013-07-09",
+      "mileageKm": 150993,
+      "fuelType": "가솔린",
+      "transmission": "DCT",
+      "price": 15700000,
+      "currency": "KRW",
+      "color": "진주색",
+      "displacementCc": 2497,
+      "accidentCount": 0,
+      "ownerChangeCount": 4,
+      "inspectionStatus": "점검예정",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 36,
+        "province": "전북특별자치도",
+        "city": "전주시",
+        "slug": "jeonbuk-1"
+      },
+      "dealer": {
+        "code": "DLR-b70319655e",
+        "displayName": "교○○",
+        "department": "데이터팀",
+        "position": "과장"
+      },
+      "businessArea": {
+        "id": "BIZ_02327",
+        "name": "제주영업운영 2327",
+        "parent": {
+          "id": "BIZ_00001",
+          "name": "수도권영업 1"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107414,
+      "listingNumber": "UC-00107414",
+      "title": "2010 BMW X5 40i",
+      "description": "2010 BMW X5 40i, 주행거리 193,405km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 7,
+        "name": "BMW",
+        "slug": "bmw",
+        "country": "독일"
+      },
+      "model": {
+        "id": 37,
+        "name": "X5",
+        "slug": "x5",
+        "bodyType": "suv"
+      },
+      "trim": "40i",
+      "modelYear": 2010,
+      "firstRegistration": "2010-03-08",
+      "mileageKm": 193405,
+      "fuelType": "하이브리드",
+      "transmission": "DCT",
+      "price": 10600000,
+      "currency": "KRW",
+      "color": "은색",
+      "displacementCc": 2487,
+      "accidentCount": 0,
+      "ownerChangeCount": 4,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 36,
+        "province": "전북특별자치도",
+        "city": "전주시",
+        "slug": "jeonbuk-1"
+      },
+      "dealer": {
+        "code": "DLR-9b8e5fe943",
+        "displayName": "교○○",
+        "department": "데이터팀",
+        "position": "과장"
+      },
+      "businessArea": {
+        "id": "BIZ_00454",
+        "name": "호남영업플랫폼 454",
+        "parent": {
+          "id": "BIZ_00074",
+          "name": "중부영업 74"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107413,
+      "listingNumber": "UC-00107413",
+      "title": "2012 KG모빌리티 티볼리 V3",
+      "description": "2012 KG모빌리티 티볼리 V3, 주행거리 155,602km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 6,
+        "name": "KG모빌리티",
+        "slug": "kg-mobility",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 30,
+        "name": "티볼리",
+        "slug": "tivoli",
+        "bodyType": "suv"
+      },
+      "trim": "V3",
+      "modelYear": 2012,
+      "firstRegistration": "2012-09-07",
+      "mileageKm": 155602,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 3200000,
+      "currency": "KRW",
+      "color": "빨간색",
+      "displacementCc": 1598,
+      "accidentCount": 0,
+      "ownerChangeCount": 0,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 31,
+        "province": "충청북도",
+        "city": "충주시",
+        "slug": "chungbuk-2"
+      },
+      "dealer": {
+        "code": "DLR-73038f6ec0",
+        "displayName": "교○○",
+        "department": "데이터팀",
+        "position": "과장"
+      },
+      "businessArea": {
+        "id": "BIZ_01438",
+        "name": "호남영업센터 1438",
+        "parent": {
+          "id": "BIZ_00039",
+          "name": "영남영업 39"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107412,
+      "listingNumber": "UC-00107412",
+      "title": "2019 쉐보레 트래버스 하이컨트리",
+      "description": "2019 쉐보레 트래버스 하이컨트리, 주행거리 90,380km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 4,
+        "name": "쉐보레",
+        "slug": "chevrolet",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 26,
+        "name": "트래버스",
+        "slug": "traverse",
+        "bodyType": "suv"
+      },
+      "trim": "하이컨트리",
+      "modelYear": 2019,
+      "firstRegistration": "2019-06-06",
+      "mileageKm": 90380,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 18100000,
+      "currency": "KRW",
+      "color": "갈색",
+      "displacementCc": 2497,
+      "accidentCount": 2,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 20,
+        "province": "울산광역시",
+        "city": "북구",
+        "slug": "ulsan-2"
+      },
+      "dealer": {
+        "code": "DLR-e8025cd4a8",
+        "displayName": "교○○",
+        "department": "차량매입팀",
+        "position": "팀장"
+      },
+      "businessArea": {
+        "id": "BIZ_02704",
+        "name": "호남영업플랫폼 2704",
+        "parent": {
+          "id": "BIZ_00084",
+          "name": "온라인영업 84"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107411,
+      "listingNumber": "UC-00107411",
+      "title": "2025 르노코리아 SM6 RE",
+      "description": "2025 르노코리아 SM6 RE, 주행거리 9,153km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 5,
+        "name": "르노코리아",
+        "slug": "renault-korea",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 27,
+        "name": "SM6",
+        "slug": "sm6",
+        "bodyType": "sedan"
+      },
+      "trim": "RE",
+      "modelYear": 2025,
+      "firstRegistration": "2025-07-05",
+      "mileageKm": 9153,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 29300000,
+      "currency": "KRW",
+      "color": "녹색",
+      "displacementCc": 2998,
+      "accidentCount": 0,
+      "ownerChangeCount": 5,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 39,
+        "province": "전라남도",
+        "city": "목포시",
+        "slug": "jeonnam-1"
+      },
+      "dealer": {
+        "code": "DLR-532af55d4b",
+        "displayName": "교○○",
+        "department": "고객서비스팀",
+        "position": "차장"
+      },
+      "businessArea": {
+        "id": "BIZ_01816",
+        "name": "호남영업팀 1816",
+        "parent": {
+          "id": "BIZ_00041",
+          "name": "제주영업 41"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107410,
+      "listingNumber": "UC-00107410",
+      "title": "2019 KG모빌리티 토레스 T7",
+      "description": "2019 KG모빌리티 토레스 T7, 주행거리 96,715km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 6,
+        "name": "KG모빌리티",
+        "slug": "kg-mobility",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 32,
+        "name": "토레스",
+        "slug": "torres",
+        "bodyType": "suv"
+      },
+      "trim": "T7",
+      "modelYear": 2019,
+      "firstRegistration": "2019-05-04",
+      "mileageKm": 96715,
+      "fuelType": "전기",
+      "transmission": "자동",
+      "price": 13100000,
+      "currency": "KRW",
+      "color": "녹색",
+      "displacementCc": 0,
+      "accidentCount": 0,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 49,
+        "province": "제주특별자치도",
+        "city": "서귀포시",
+        "slug": "jeju-2"
+      },
+      "dealer": {
+        "code": "DLR-faccb5230f",
+        "displayName": "교○○",
+        "department": "고객서비스팀",
+        "position": "차장"
+      },
+      "businessArea": {
+        "id": "BIZ_02917",
+        "name": "수도권영업운영 2917",
+        "parent": {
+          "id": "BIZ_00037",
+          "name": "수도권영업 37"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107409,
+      "listingNumber": "UC-00107409",
+      "title": "2021 현대 아반떼 모던",
+      "description": "2021 현대 아반떼 모던, 주행거리 75,247km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 1,
+        "name": "현대",
+        "slug": "hyundai",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 1,
+        "name": "아반떼",
+        "slug": "avante",
+        "bodyType": "sedan"
+      },
+      "trim": "모던",
+      "modelYear": 2021,
+      "firstRegistration": "2021-02-03",
+      "mileageKm": 75247,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 10200000,
+      "currency": "KRW",
+      "color": "회색",
+      "displacementCc": 999,
+      "accidentCount": 2,
+      "ownerChangeCount": 3,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 44,
+        "province": "경상북도",
+        "city": "경산시",
+        "slug": "gyeongbuk-3"
+      },
+      "dealer": {
+        "code": "DLR-09b3915dc6",
+        "displayName": "교○○",
+        "department": "상품화팀",
+        "position": "부장"
+      },
+      "businessArea": {
+        "id": "BIZ_01942",
+        "name": "호남영업운영 1942",
+        "parent": {
+          "id": "BIZ_00093",
+          "name": "영남영업 93"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107408,
+      "listingNumber": "UC-00107408",
+      "title": "2018 기아 레이 시그니처",
+      "description": "2018 기아 레이 시그니처, 주행거리 108,126km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 2,
+        "name": "기아",
+        "slug": "kia",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 10,
+        "name": "레이",
+        "slug": "ray",
+        "bodyType": "compact"
+      },
+      "trim": "시그니처",
+      "modelYear": 2018,
+      "firstRegistration": "2018-01-02",
+      "mileageKm": 108126,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 5500000,
+      "currency": "KRW",
+      "color": "녹색",
+      "displacementCc": 999,
+      "accidentCount": 0,
+      "ownerChangeCount": 0,
+      "inspectionStatus": "점검예정",
+      "status": "SOLD",
+      "location": {
+        "id": 5,
+        "province": "부산광역시",
+        "city": "부산진구",
+        "slug": "busan-2"
+      },
+      "dealer": {
+        "code": "DLR-1e61cb876e",
+        "displayName": "교○○",
+        "department": "상품화팀",
+        "position": "부장"
+      },
+      "businessArea": {
+        "id": "BIZ_01693",
+        "name": "수도권영업센터 1693",
+        "parent": {
+          "id": "BIZ_00087",
+          "name": "영남영업 87"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107407,
+      "listingNumber": "UC-00107407",
+      "title": "2018 메르세데스-벤츠 E-클래스 E350",
+      "description": "2018 메르세데스-벤츠 E-클래스 E350, 주행거리 92,942km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 8,
+        "name": "메르세데스-벤츠",
+        "slug": "mercedes-benz",
+        "country": "독일"
+      },
+      "model": {
+        "id": 39,
+        "name": "E-클래스",
+        "slug": "e-class",
+        "bodyType": "sedan"
+      },
+      "trim": "E350",
+      "modelYear": 2018,
+      "firstRegistration": "2018-01-01",
+      "mileageKm": 92942,
+      "fuelType": "디젤",
+      "transmission": "자동",
+      "price": 25300000,
+      "currency": "KRW",
+      "color": "회색",
+      "displacementCc": 2151,
+      "accidentCount": 1,
+      "ownerChangeCount": 2,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 30,
+        "province": "충청북도",
+        "city": "청주시",
+        "slug": "chungbuk-1"
+      },
+      "dealer": {
+        "code": "DLR-55becf2083",
+        "displayName": "교○○",
+        "department": "상품화팀",
+        "position": "부장"
+      },
+      "businessArea": {
+        "id": "BIZ_00990",
+        "name": "온라인영업지점 990",
+        "parent": {
+          "id": "BIZ_00100",
+          "name": "호남영업 100"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107406,
+      "listingNumber": "UC-00107406",
+      "title": "2025 현대 캐스퍼 인스퍼레이션",
+      "description": "2025 현대 캐스퍼 인스퍼레이션, 주행거리 19,226km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 1,
+        "name": "현대",
+        "slug": "hyundai",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 7,
+        "name": "캐스퍼",
+        "slug": "casper",
+        "bodyType": "compact"
+      },
+      "trim": "인스퍼레이션",
+      "modelYear": 2025,
+      "firstRegistration": "2025-05-27",
+      "mileageKm": 19226,
+      "fuelType": "가솔린",
+      "transmission": "CVT",
+      "price": 17000000,
+      "currency": "KRW",
+      "color": "진주색",
+      "displacementCc": 999,
+      "accidentCount": 0,
+      "ownerChangeCount": 4,
+      "inspectionStatus": "점검완료",
+      "status": "RESERVED",
+      "location": {
+        "id": 44,
+        "province": "경상북도",
+        "city": "경산시",
+        "slug": "gyeongbuk-3"
+      },
+      "dealer": {
+        "code": "DLR-c9c330740e",
+        "displayName": "교○○",
+        "department": "상품화팀",
+        "position": "부장"
+      },
+      "businessArea": {
+        "id": "BIZ_00560",
+        "name": "중부영업지점 560",
+        "parent": {
+          "id": "BIZ_00067",
+          "name": "수도권영업 67"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107405,
+      "listingNumber": "UC-00107405",
+      "title": "2019 KG모빌리티 토레스 T7",
+      "description": "2019 KG모빌리티 토레스 T7, 주행거리 93,870km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 6,
+        "name": "KG모빌리티",
+        "slug": "kg-mobility",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 32,
+        "name": "토레스",
+        "slug": "torres",
+        "bodyType": "suv"
+      },
+      "trim": "T7",
+      "modelYear": 2019,
+      "firstRegistration": "2019-05-26",
+      "mileageKm": 93870,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 13200000,
+      "currency": "KRW",
+      "color": "흰색",
+      "displacementCc": 3470,
+      "accidentCount": 0,
+      "ownerChangeCount": 5,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 4,
+        "province": "부산광역시",
+        "city": "해운대구",
+        "slug": "busan-1"
+      },
+      "dealer": {
+        "code": "DLR-c6a08c60e8",
+        "displayName": "교○○",
+        "department": "고객서비스팀",
+        "position": "차장"
+      },
+      "businessArea": {
+        "id": "BIZ_01420",
+        "name": "호남영업지점 1420",
+        "parent": {
+          "id": "BIZ_00030",
+          "name": "온라인영업 30"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107404,
+      "listingNumber": "UC-00107404",
+      "title": "2026 메르세데스-벤츠 E-클래스 E350",
+      "description": "2026 메르세데스-벤츠 E-클래스 E350, 주행거리 300km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 8,
+        "name": "메르세데스-벤츠",
+        "slug": "mercedes-benz",
+        "country": "독일"
+      },
+      "model": {
+        "id": 39,
+        "name": "E-클래스",
+        "slug": "e-class",
+        "bodyType": "sedan"
+      },
+      "trim": "E350",
+      "modelYear": 2026,
+      "firstRegistration": "2026-01-25",
+      "mileageKm": 300,
+      "fuelType": "디젤",
+      "transmission": "DCT",
+      "price": 91000000,
+      "currency": "KRW",
+      "color": "갈색",
+      "displacementCc": 1998,
+      "accidentCount": 0,
+      "ownerChangeCount": 3,
+      "inspectionStatus": "점검완료",
+      "status": "SOLD",
+      "location": {
+        "id": 14,
+        "province": "광주광역시",
+        "city": "북구",
+        "slug": "gwangju-2"
+      },
+      "dealer": {
+        "code": "DLR-8779125832",
+        "displayName": "교○○",
+        "department": "고객서비스팀",
+        "position": "차장"
+      },
+      "businessArea": {
+        "id": "BIZ_01829",
+        "name": "제주영업플랫폼 1829",
+        "parent": {
+          "id": "BIZ_00060",
+          "name": "온라인영업 60"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107403,
+      "listingNumber": "UC-00107403",
+      "title": "2017 기아 레이 시그니처",
+      "description": "2017 기아 레이 시그니처, 주행거리 109,105km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 2,
+        "name": "기아",
+        "slug": "kia",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 10,
+        "name": "레이",
+        "slug": "ray",
+        "bodyType": "compact"
+      },
+      "trim": "시그니처",
+      "modelYear": 2017,
+      "firstRegistration": "2017-07-24",
+      "mileageKm": 109105,
+      "fuelType": "전기",
+      "transmission": "자동",
+      "price": 4800000,
+      "currency": "KRW",
+      "color": "흰색",
+      "displacementCc": 0,
+      "accidentCount": 0,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 16,
+        "province": "대전광역시",
+        "city": "유성구",
+        "slug": "daejeon-1"
+      },
+      "dealer": {
+        "code": "DLR-9905de1d3b",
+        "displayName": "교○○",
+        "department": "차량매입팀",
+        "position": "팀장"
+      },
+      "businessArea": {
+        "id": "BIZ_01019",
+        "name": "제주영업플랫폼 1019",
+        "parent": {
+          "id": "BIZ_00071",
+          "name": "제주영업 71"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107402,
+      "listingNumber": "UC-00107402",
+      "title": "2009 KG모빌리티 렉스턴 노블레스",
+      "description": "2009 KG모빌리티 렉스턴 노블레스, 주행거리 212,173km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 6,
+        "name": "KG모빌리티",
+        "slug": "kg-mobility",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 33,
+        "name": "렉스턴",
+        "slug": "rexton",
+        "bodyType": "suv"
+      },
+      "trim": "노블레스",
+      "modelYear": 2009,
+      "firstRegistration": "2009-02-23",
+      "mileageKm": 212173,
+      "fuelType": "디젤",
+      "transmission": "수동",
+      "price": 3700000,
+      "currency": "KRW",
+      "color": "검정색",
+      "displacementCc": 2993,
+      "accidentCount": 0,
+      "ownerChangeCount": 0,
+      "inspectionStatus": "재점검필요",
+      "status": "SOLD",
+      "location": {
+        "id": 6,
+        "province": "부산광역시",
+        "city": "사하구",
+        "slug": "busan-3"
+      },
+      "dealer": {
+        "code": "DLR-ea0d46e82a",
+        "displayName": "교○○",
+        "department": "품질관리팀",
+        "position": "대리"
+      },
+      "businessArea": {
+        "id": "BIZ_00813",
+        "name": "영남영업센터 813",
+        "parent": {
+          "id": "BIZ_00016",
+          "name": "호남영업 16"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107401,
+      "listingNumber": "UC-00107401",
+      "title": "2022 메르세데스-벤츠 GLC GLC 220d",
+      "description": "2022 메르세데스-벤츠 GLC GLC 220d, 주행거리 59,715km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 8,
+        "name": "메르세데스-벤츠",
+        "slug": "mercedes-benz",
+        "country": "독일"
+      },
+      "model": {
+        "id": 40,
+        "name": "GLC",
+        "slug": "glc",
+        "bodyType": "suv"
+      },
+      "trim": "GLC 220d",
+      "modelYear": 2022,
+      "firstRegistration": "2022-02-22",
+      "mileageKm": 59715,
+      "fuelType": "디젤",
+      "transmission": "수동",
+      "price": 47100000,
+      "currency": "KRW",
+      "color": "흰색",
+      "displacementCc": 1598,
+      "accidentCount": 0,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 36,
+        "province": "전북특별자치도",
+        "city": "전주시",
+        "slug": "jeonbuk-1"
+      },
+      "dealer": {
+        "code": "DLR-659ee8043a",
+        "displayName": "교○○",
+        "department": "상품화팀",
+        "position": "부장"
+      },
+      "businessArea": {
+        "id": "BIZ_02008",
+        "name": "호남영업센터 2008",
+        "parent": {
+          "id": "BIZ_00035",
+          "name": "제주영업 35"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107400,
+      "listingNumber": "UC-00107400",
+      "title": "2019 기아 모닝 시그니처",
+      "description": "2019 기아 모닝 시그니처, 주행거리 90,181km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 2,
+        "name": "기아",
+        "slug": "kia",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 9,
+        "name": "모닝",
+        "slug": "morning",
+        "bodyType": "compact"
+      },
+      "trim": "시그니처",
+      "modelYear": 2019,
+      "firstRegistration": "2019-10-21",
+      "mileageKm": 90181,
+      "fuelType": "가솔린",
+      "transmission": "DCT",
+      "price": 5800000,
+      "currency": "KRW",
+      "color": "검정색",
+      "displacementCc": 1197,
+      "accidentCount": 0,
+      "ownerChangeCount": 4,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 35,
+        "province": "충청남도",
+        "city": "서산시",
+        "slug": "chungnam-3"
+      },
+      "dealer": {
+        "code": "DLR-ea0a1e04b6",
+        "displayName": "교○○",
+        "department": "품질관리팀",
+        "position": "대리"
+      },
+      "businessArea": {
+        "id": "BIZ_00160",
+        "name": "호남영업지점 160",
+        "parent": {
+          "id": "BIZ_00081",
+          "name": "영남영업 81"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107399,
+      "listingNumber": "UC-00107399",
+      "title": "2011 메르세데스-벤츠 E-클래스 E200",
+      "description": "2011 메르세데스-벤츠 E-클래스 E200, 주행거리 180,625km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 8,
+        "name": "메르세데스-벤츠",
+        "slug": "mercedes-benz",
+        "country": "독일"
+      },
+      "model": {
+        "id": 39,
+        "name": "E-클래스",
+        "slug": "e-class",
+        "bodyType": "sedan"
+      },
+      "trim": "E200",
+      "modelYear": 2011,
+      "firstRegistration": "2011-02-20",
+      "mileageKm": 180625,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 9000000,
+      "currency": "KRW",
+      "color": "흰색",
+      "displacementCc": 999,
+      "accidentCount": 0,
+      "ownerChangeCount": 0,
+      "inspectionStatus": "재점검필요",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 33,
+        "province": "충청남도",
+        "city": "천안시",
+        "slug": "chungnam-1"
+      },
+      "dealer": {
+        "code": "DLR-3c0c615135",
+        "displayName": "교○○",
+        "department": "영업팀",
+        "position": "사원"
+      },
+      "businessArea": {
+        "id": "BIZ_00706",
+        "name": "호남영업팀 706",
+        "parent": {
+          "id": "BIZ_00091",
+          "name": "수도권영업 91"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107398,
+      "listingNumber": "UC-00107398",
+      "title": "2008 기아 K5 시그니처",
+      "description": "2008 기아 K5 시그니처, 주행거리 203,417km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 2,
+        "name": "기아",
+        "slug": "kia",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 12,
+        "name": "K5",
+        "slug": "k5",
+        "bodyType": "sedan"
+      },
+      "trim": "시그니처",
+      "modelYear": 2008,
+      "firstRegistration": "2008-10-19",
+      "mileageKm": 203417,
+      "fuelType": "하이브리드",
+      "transmission": "CVT",
+      "price": 2200000,
+      "currency": "KRW",
+      "color": "은색",
+      "displacementCc": 1580,
+      "accidentCount": 0,
+      "ownerChangeCount": 0,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 17,
+        "province": "대전광역시",
+        "city": "서구",
+        "slug": "daejeon-2"
+      },
+      "dealer": {
+        "code": "DLR-7655251f1d",
+        "displayName": "교○○",
+        "department": "차량매입팀",
+        "position": "팀장"
+      },
+      "businessArea": {
+        "id": "BIZ_00218",
+        "name": "중부영업센터 218",
+        "parent": {
+          "id": "BIZ_00021",
+          "name": "영남영업 21"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107397,
+      "listingNumber": "UC-00107397",
+      "title": "2017 기아 K3 트렌디",
+      "description": "2017 기아 K3 트렌디, 주행거리 103,574km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 2,
+        "name": "기아",
+        "slug": "kia",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 11,
+        "name": "K3",
+        "slug": "k3",
+        "bodyType": "sedan"
+      },
+      "trim": "트렌디",
+      "modelYear": 2017,
+      "firstRegistration": "2017-05-18",
+      "mileageKm": 103574,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 6100000,
+      "currency": "KRW",
+      "color": "진주색",
+      "displacementCc": 2497,
+      "accidentCount": 0,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 42,
+        "province": "경상북도",
+        "city": "포항시",
+        "slug": "gyeongbuk-1"
+      },
+      "dealer": {
+        "code": "DLR-92f5bbc5c6",
+        "displayName": "교○○",
+        "department": "상품화팀",
+        "position": "부장"
+      },
+      "businessArea": {
+        "id": "BIZ_01667",
+        "name": "제주영업운영 1667",
+        "parent": {
+          "id": "BIZ_00071",
+          "name": "제주영업 71"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107396,
+      "listingNumber": "UC-00107396",
+      "title": "2018 토요타 RAV4 어드벤처",
+      "description": "2018 토요타 RAV4 어드벤처, 주행거리 98,226km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 11,
+        "name": "토요타",
+        "slug": "toyota",
+        "country": "일본"
+      },
+      "model": {
+        "id": 48,
+        "name": "RAV4",
+        "slug": "rav4",
+        "bodyType": "suv"
+      },
+      "trim": "어드벤처",
+      "modelYear": 2018,
+      "firstRegistration": "2018-03-17",
+      "mileageKm": 98226,
+      "fuelType": "하이브리드",
+      "transmission": "자동",
+      "price": 16700000,
+      "currency": "KRW",
+      "color": "진주색",
+      "displacementCc": 3456,
+      "accidentCount": 0,
+      "ownerChangeCount": 3,
+      "inspectionStatus": "점검완료",
+      "status": "RESERVED",
+      "location": {
+        "id": 3,
+        "province": "서울특별시",
+        "city": "마포구",
+        "slug": "seoul-3"
+      },
+      "dealer": {
+        "code": "DLR-3f68aa4475",
+        "displayName": "교○○",
+        "department": "상품화팀",
+        "position": "부장"
+      },
+      "businessArea": {
+        "id": "BIZ_02621",
+        "name": "제주영업팀 2621",
+        "parent": {
+          "id": "BIZ_00061",
+          "name": "수도권영업 61"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107395,
+      "listingNumber": "UC-00107395",
+      "title": "2025 BMW X5 50e",
+      "description": "2025 BMW X5 50e, 주행거리 16,656km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 7,
+        "name": "BMW",
+        "slug": "bmw",
+        "country": "독일"
+      },
+      "model": {
+        "id": 37,
+        "name": "X5",
+        "slug": "x5",
+        "bodyType": "suv"
+      },
+      "trim": "50e",
+      "modelYear": 2025,
+      "firstRegistration": "2025-05-16",
+      "mileageKm": 16656,
+      "fuelType": "디젤",
+      "transmission": "자동",
+      "price": 106700000,
+      "currency": "KRW",
+      "color": "갈색",
+      "displacementCc": 1598,
+      "accidentCount": 0,
+      "ownerChangeCount": 4,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 44,
+        "province": "경상북도",
+        "city": "경산시",
+        "slug": "gyeongbuk-3"
+      },
+      "dealer": {
+        "code": "DLR-e6a1690cfc",
+        "displayName": "교○○",
+        "department": "데이터팀",
+        "position": "과장"
+      },
+      "businessArea": {
+        "id": "BIZ_02694",
+        "name": "온라인영업플랫폼 2694",
+        "parent": {
+          "id": "BIZ_00030",
+          "name": "온라인영업 30"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107394,
+      "listingNumber": "UC-00107394",
+      "title": "2013 제네시스 G90 블랙",
+      "description": "2013 제네시스 G90 블랙, 주행거리 153,867km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 3,
+        "name": "제네시스",
+        "slug": "genesis",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 20,
+        "name": "G90",
+        "slug": "g90",
+        "bodyType": "sedan"
+      },
+      "trim": "블랙",
+      "modelYear": 2013,
+      "firstRegistration": "2013-06-15",
+      "mileageKm": 153867,
+      "fuelType": "가솔린",
+      "transmission": "CVT",
+      "price": 14700000,
+      "currency": "KRW",
+      "color": "진주색",
+      "displacementCc": 2998,
+      "accidentCount": 1,
+      "ownerChangeCount": 2,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 39,
+        "province": "전라남도",
+        "city": "목포시",
+        "slug": "jeonnam-1"
+      },
+      "dealer": {
+        "code": "DLR-916c00c101",
+        "displayName": "교○○",
+        "department": "상품화팀",
+        "position": "부장"
+      },
+      "businessArea": {
+        "id": "BIZ_00217",
+        "name": "수도권영업운영 217",
+        "parent": {
+          "id": "BIZ_00069",
+          "name": "영남영업 69"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107393,
+      "listingNumber": "UC-00107393",
+      "title": "2022 현대 아반떼 스마트",
+      "description": "2022 현대 아반떼 스마트, 주행거리 48,062km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 1,
+        "name": "현대",
+        "slug": "hyundai",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 1,
+        "name": "아반떼",
+        "slug": "avante",
+        "bodyType": "sedan"
+      },
+      "trim": "스마트",
+      "modelYear": 2022,
+      "firstRegistration": "2022-11-14",
+      "mileageKm": 48062,
+      "fuelType": "LPG",
+      "transmission": "자동",
+      "price": 13600000,
+      "currency": "KRW",
+      "color": "흰색",
+      "displacementCc": 2359,
+      "accidentCount": 0,
+      "ownerChangeCount": 2,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 37,
+        "province": "전북특별자치도",
+        "city": "익산시",
+        "slug": "jeonbuk-2"
+      },
+      "dealer": {
+        "code": "DLR-2f83e3d676",
+        "displayName": "교○○",
+        "department": "차량매입팀",
+        "position": "팀장"
+      },
+      "businessArea": {
+        "id": "BIZ_02231",
+        "name": "제주영업팀 2231",
+        "parent": {
+          "id": "BIZ_00068",
+          "name": "중부영업 68"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107392,
+      "listingNumber": "UC-00107392",
+      "title": "2013 쉐보레 트래버스 하이컨트리",
+      "description": "2013 쉐보레 트래버스 하이컨트리, 주행거리 167,010km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 4,
+        "name": "쉐보레",
+        "slug": "chevrolet",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 26,
+        "name": "트래버스",
+        "slug": "traverse",
+        "bodyType": "suv"
+      },
+      "trim": "하이컨트리",
+      "modelYear": 2013,
+      "firstRegistration": "2013-10-13",
+      "mileageKm": 167010,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 7600000,
+      "currency": "KRW",
+      "color": "갈색",
+      "displacementCc": 2497,
+      "accidentCount": 1,
+      "ownerChangeCount": 0,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 31,
+        "province": "충청북도",
+        "city": "충주시",
+        "slug": "chungbuk-2"
+      },
+      "dealer": {
+        "code": "DLR-8306d4d562",
+        "displayName": "교○○",
+        "department": "고객서비스팀",
+        "position": "차장"
+      },
+      "businessArea": {
+        "id": "BIZ_00872",
+        "name": "중부영업운영 872",
+        "parent": {
+          "id": "BIZ_00094",
+          "name": "호남영업 94"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107391,
+      "listingNumber": "UC-00107391",
+      "title": "2013 기아 레이 트렌디",
+      "description": "2013 기아 레이 트렌디, 주행거리 155,592km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 2,
+        "name": "기아",
+        "slug": "kia",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 10,
+        "name": "레이",
+        "slug": "ray",
+        "bodyType": "compact"
+      },
+      "trim": "트렌디",
+      "modelYear": 2013,
+      "firstRegistration": "2013-11-12",
+      "mileageKm": 155592,
+      "fuelType": "전기",
+      "transmission": "자동",
+      "price": 2600000,
+      "currency": "KRW",
+      "color": "회색",
+      "displacementCc": 0,
+      "accidentCount": 0,
+      "ownerChangeCount": 2,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 4,
+        "province": "부산광역시",
+        "city": "해운대구",
+        "slug": "busan-1"
+      },
+      "dealer": {
+        "code": "DLR-bc02be7696",
+        "displayName": "교○○",
+        "department": "고객서비스팀",
+        "position": "차장"
+      },
+      "businessArea": {
+        "id": "BIZ_02543",
+        "name": "제주영업센터 2543",
+        "parent": {
+          "id": "BIZ_00093",
+          "name": "영남영업 93"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107390,
+      "listingNumber": "UC-00107390",
+      "title": "2017 KG모빌리티 렉스턴 더 블랙",
+      "description": "2017 KG모빌리티 렉스턴 더 블랙, 주행거리 107,620km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 6,
+        "name": "KG모빌리티",
+        "slug": "kg-mobility",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 33,
+        "name": "렉스턴",
+        "slug": "rexton",
+        "bodyType": "suv"
+      },
+      "trim": "더 블랙",
+      "modelYear": 2017,
+      "firstRegistration": "2017-11-11",
+      "mileageKm": 107620,
+      "fuelType": "디젤",
+      "transmission": "자동",
+      "price": 13100000,
+      "currency": "KRW",
+      "color": "진주색",
+      "displacementCc": 1598,
+      "accidentCount": 0,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "점검완료",
+      "status": "SOLD",
+      "location": {
+        "id": 27,
+        "province": "강원특별자치도",
+        "city": "춘천시",
+        "slug": "gangwon-1"
+      },
+      "dealer": {
+        "code": "DLR-f6fc267085",
+        "displayName": "교○○",
+        "department": "데이터팀",
+        "position": "과장"
+      },
+      "businessArea": {
+        "id": "BIZ_01244",
+        "name": "중부영업플랫폼 1244",
+        "parent": {
+          "id": "BIZ_00048",
+          "name": "온라인영업 48"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107389,
+      "listingNumber": "UC-00107389",
+      "title": "2017 쉐보레 트레일블레이저 LT",
+      "description": "2017 쉐보레 트레일블레이저 LT, 주행거리 97,970km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 4,
+        "name": "쉐보레",
+        "slug": "chevrolet",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 25,
+        "name": "트레일블레이저",
+        "slug": "trailblazer",
+        "bodyType": "suv"
+      },
+      "trim": "LT",
+      "modelYear": 2017,
+      "firstRegistration": "2017-02-10",
+      "mileageKm": 97970,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 8100000,
+      "currency": "KRW",
+      "color": "진주색",
+      "displacementCc": 1998,
+      "accidentCount": 0,
+      "ownerChangeCount": 0,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 32,
+        "province": "충청북도",
+        "city": "제천시",
+        "slug": "chungbuk-3"
+      },
+      "dealer": {
+        "code": "DLR-92083d7ce6",
+        "displayName": "교○○",
+        "department": "차량매입팀",
+        "position": "팀장"
+      },
+      "businessArea": {
+        "id": "BIZ_02222",
+        "name": "중부영업운영 2222",
+        "parent": {
+          "id": "BIZ_00079",
+          "name": "수도권영업 79"
+        }
+      },
+      "createdAt": "2026-08-11T12:20:00.001Z",
+      "updatedAt": "2026-08-11T12:20:00.001Z"
+    },
+    {
+      "id": 107388,
+      "listingNumber": "UC-00107388",
+      "title": "2010 폭스바겐 골프 R-Line",
+      "description": "2010 폭스바겐 골프 R-Line, 주행거리 199,090km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 10,
+        "name": "폭스바겐",
+        "slug": "volkswagen",
+        "country": "독일"
+      },
+      "model": {
+        "id": 45,
+        "name": "골프",
+        "slug": "golf",
+        "bodyType": "hatchback"
+      },
+      "trim": "R-Line",
+      "modelYear": 2010,
+      "firstRegistration": "2010-11-09",
+      "mileageKm": 199090,
+      "fuelType": "디젤",
+      "transmission": "자동",
+      "price": 3600000,
+      "currency": "KRW",
+      "color": "은색",
+      "displacementCc": 2151,
+      "accidentCount": 0,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 38,
+        "province": "전북특별자치도",
+        "city": "군산시",
+        "slug": "jeonbuk-3"
+      },
+      "dealer": {
+        "code": "DLR-0d604194e6",
+        "displayName": "교○○",
+        "department": "영업팀",
+        "position": "사원"
+      },
+      "businessArea": {
+        "id": "BIZ_00580",
+        "name": "호남영업지점 580",
+        "parent": {
+          "id": "BIZ_00063",
+          "name": "영남영업 63"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107387,
+      "listingNumber": "UC-00107387",
+      "title": "2022 토요타 캠리 XLE",
+      "description": "2022 토요타 캠리 XLE, 주행거리 49,634km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 11,
+        "name": "토요타",
+        "slug": "toyota",
+        "country": "일본"
+      },
+      "model": {
+        "id": 47,
+        "name": "캠리",
+        "slug": "camry",
+        "bodyType": "sedan"
+      },
+      "trim": "XLE",
+      "modelYear": 2022,
+      "firstRegistration": "2022-10-08",
+      "mileageKm": 49634,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 23600000,
+      "currency": "KRW",
+      "color": "은색",
+      "displacementCc": 1598,
+      "accidentCount": 2,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "재점검필요",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 48,
+        "province": "제주특별자치도",
+        "city": "제주시",
+        "slug": "jeju-1"
+      },
+      "dealer": {
+        "code": "DLR-15f0093f0f",
+        "displayName": "교○○",
+        "department": "영업팀",
+        "position": "사원"
+      },
+      "businessArea": {
+        "id": "BIZ_01230",
+        "name": "온라인영업지점 1230",
+        "parent": {
+          "id": "BIZ_00043",
+          "name": "수도권영업 43"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107386,
+      "listingNumber": "UC-00107386",
+      "title": "2017 BMW 3시리즈 M340i",
+      "description": "2017 BMW 3시리즈 M340i, 주행거리 113,953km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 7,
+        "name": "BMW",
+        "slug": "bmw",
+        "country": "독일"
+      },
+      "model": {
+        "id": 34,
+        "name": "3시리즈",
+        "slug": "3-series",
+        "bodyType": "sedan"
+      },
+      "trim": "M340i",
+      "modelYear": 2017,
+      "firstRegistration": "2017-08-07",
+      "mileageKm": 113953,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 16700000,
+      "currency": "KRW",
+      "color": "갈색",
+      "displacementCc": 1598,
+      "accidentCount": 0,
+      "ownerChangeCount": 0,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 28,
+        "province": "강원특별자치도",
+        "city": "원주시",
+        "slug": "gangwon-2"
+      },
+      "dealer": {
+        "code": "DLR-6d98036f28",
+        "displayName": "교○○",
+        "department": "데이터팀",
+        "position": "과장"
+      },
+      "businessArea": {
+        "id": "BIZ_01977",
+        "name": "영남영업운영 1977",
+        "parent": {
+          "id": "BIZ_00080",
+          "name": "중부영업 80"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107385,
+      "listingNumber": "UC-00107385",
+      "title": "2013 쉐보레 말리부 프리미어",
+      "description": "2013 쉐보레 말리부 프리미어, 주행거리 156,483km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 4,
+        "name": "쉐보레",
+        "slug": "chevrolet",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 24,
+        "name": "말리부",
+        "slug": "malibu",
+        "bodyType": "sedan"
+      },
+      "trim": "프리미어",
+      "modelYear": 2013,
+      "firstRegistration": "2013-03-06",
+      "mileageKm": 156483,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 4300000,
+      "currency": "KRW",
+      "color": "녹색",
+      "displacementCc": 999,
+      "accidentCount": 0,
+      "ownerChangeCount": 0,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 3,
+        "province": "서울특별시",
+        "city": "마포구",
+        "slug": "seoul-3"
+      },
+      "dealer": {
+        "code": "DLR-140f073b31",
+        "displayName": "교○○",
+        "department": "차량매입팀",
+        "position": "팀장"
+      },
+      "businessArea": {
+        "id": "BIZ_02670",
+        "name": "온라인영업지점 2670",
+        "parent": {
+          "id": "BIZ_00027",
+          "name": "영남영업 27"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107384,
+      "listingNumber": "UC-00107384",
+      "title": "2014 BMW 3시리즈 320d",
+      "description": "2014 BMW 3시리즈 320d, 주행거리 155,002km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 7,
+        "name": "BMW",
+        "slug": "bmw",
+        "country": "독일"
+      },
+      "model": {
+        "id": 34,
+        "name": "3시리즈",
+        "slug": "3-series",
+        "bodyType": "sedan"
+      },
+      "trim": "320d",
+      "modelYear": 2014,
+      "firstRegistration": "2014-12-05",
+      "mileageKm": 155002,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 10400000,
+      "currency": "KRW",
+      "color": "회색",
+      "displacementCc": 1598,
+      "accidentCount": 0,
+      "ownerChangeCount": 5,
+      "inspectionStatus": "점검완료",
+      "status": "SOLD",
+      "location": {
+        "id": 37,
+        "province": "전북특별자치도",
+        "city": "익산시",
+        "slug": "jeonbuk-2"
+      },
+      "dealer": {
+        "code": "DLR-d52556ec5a",
+        "displayName": "교○○",
+        "department": "품질관리팀",
+        "position": "대리"
+      },
+      "businessArea": {
+        "id": "BIZ_02657",
+        "name": "제주영업운영 2657",
+        "parent": {
+          "id": "BIZ_00018",
+          "name": "온라인영업 18"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107383,
+      "listingNumber": "UC-00107383",
+      "title": "2021 제네시스 G70 스포츠 패키지",
+      "description": "2021 제네시스 G70 스포츠 패키지, 주행거리 57,035km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 3,
+        "name": "제네시스",
+        "slug": "genesis",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 18,
+        "name": "G70",
+        "slug": "g70",
+        "bodyType": "sedan"
+      },
+      "trim": "스포츠 패키지",
+      "modelYear": 2021,
+      "firstRegistration": "2021-10-04",
+      "mileageKm": 57035,
+      "fuelType": "가솔린",
+      "transmission": "수동",
+      "price": 23400000,
+      "currency": "KRW",
+      "color": "회색",
+      "displacementCc": 1998,
+      "accidentCount": 1,
+      "ownerChangeCount": 3,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 29,
+        "province": "강원특별자치도",
+        "city": "강릉시",
+        "slug": "gangwon-3"
+      },
+      "dealer": {
+        "code": "DLR-875c0d432e",
+        "displayName": "교○○",
+        "department": "품질관리팀",
+        "position": "대리"
+      },
+      "businessArea": {
+        "id": "BIZ_02133",
+        "name": "영남영업센터 2133",
+        "parent": {
+          "id": "BIZ_00086",
+          "name": "중부영업 86"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107382,
+      "listingNumber": "UC-00107382",
+      "title": "2018 KG모빌리티 렉스턴 노블레스",
+      "description": "2018 KG모빌리티 렉스턴 노블레스, 주행거리 105,895km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 6,
+        "name": "KG모빌리티",
+        "slug": "kg-mobility",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 33,
+        "name": "렉스턴",
+        "slug": "rexton",
+        "bodyType": "suv"
+      },
+      "trim": "노블레스",
+      "modelYear": 2018,
+      "firstRegistration": "2018-05-03",
+      "mileageKm": 105895,
+      "fuelType": "디젤",
+      "transmission": "자동",
+      "price": 15100000,
+      "currency": "KRW",
+      "color": "은색",
+      "displacementCc": 2151,
+      "accidentCount": 0,
+      "ownerChangeCount": 3,
+      "inspectionStatus": "재점검필요",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 36,
+        "province": "전북특별자치도",
+        "city": "전주시",
+        "slug": "jeonbuk-1"
+      },
+      "dealer": {
+        "code": "DLR-e2fb31e4e3",
+        "displayName": "교○○",
+        "department": "품질관리팀",
+        "position": "대리"
+      },
+      "businessArea": {
+        "id": "BIZ_00432",
+        "name": "온라인영업운영 432",
+        "parent": {
+          "id": "BIZ_00088",
+          "name": "호남영업 88"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107381,
+      "listingNumber": "UC-00107381",
+      "title": "2023 아우디 Q5 스포트백",
+      "description": "2023 아우디 Q5 스포트백, 주행거리 32,280km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 9,
+        "name": "아우디",
+        "slug": "audi",
+        "country": "독일"
+      },
+      "model": {
+        "id": 44,
+        "name": "Q5",
+        "slug": "q5",
+        "bodyType": "suv"
+      },
+      "trim": "스포트백",
+      "modelYear": 2023,
+      "firstRegistration": "2023-02-02",
+      "mileageKm": 32280,
+      "fuelType": "디젤",
+      "transmission": "자동",
+      "price": 52700000,
+      "currency": "KRW",
+      "color": "회색",
+      "displacementCc": 1598,
+      "accidentCount": 0,
+      "ownerChangeCount": 3,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 7,
+        "province": "대구광역시",
+        "city": "수성구",
+        "slug": "daegu-1"
+      },
+      "dealer": {
+        "code": "DLR-d3d8a327b0",
+        "displayName": "교○○",
+        "department": "데이터팀",
+        "position": "과장"
+      },
+      "businessArea": {
+        "id": "BIZ_00753",
+        "name": "영남영업센터 753",
+        "parent": {
+          "id": "BIZ_00005",
+          "name": "제주영업 5"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107380,
+      "listingNumber": "UC-00107380",
+      "title": "2015 KG모빌리티 티볼리 V7",
+      "description": "2015 KG모빌리티 티볼리 V7, 주행거리 130,402km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 6,
+        "name": "KG모빌리티",
+        "slug": "kg-mobility",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 30,
+        "name": "티볼리",
+        "slug": "tivoli",
+        "bodyType": "suv"
+      },
+      "trim": "V7",
+      "modelYear": 2015,
+      "firstRegistration": "2015-12-01",
+      "mileageKm": 130402,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 4700000,
+      "currency": "KRW",
+      "color": "은색",
+      "displacementCc": 999,
+      "accidentCount": 1,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 38,
+        "province": "전북특별자치도",
+        "city": "군산시",
+        "slug": "jeonbuk-3"
+      },
+      "dealer": {
+        "code": "DLR-06f9616a24",
+        "displayName": "교○○",
+        "department": "영업팀",
+        "position": "사원"
+      },
+      "businessArea": {
+        "id": "BIZ_00289",
+        "name": "수도권영업플랫폼 289",
+        "parent": {
+          "id": "BIZ_00067",
+          "name": "수도권영업 67"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107379,
+      "listingNumber": "UC-00107379",
+      "title": "2019 쉐보레 트래버스 레드라인",
+      "description": "2019 쉐보레 트래버스 레드라인, 주행거리 75,234km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 4,
+        "name": "쉐보레",
+        "slug": "chevrolet",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 26,
+        "name": "트래버스",
+        "slug": "traverse",
+        "bodyType": "suv"
+      },
+      "trim": "레드라인",
+      "modelYear": 2019,
+      "firstRegistration": "2019-01-27",
+      "mileageKm": 75234,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 20700000,
+      "currency": "KRW",
+      "color": "갈색",
+      "displacementCc": 1998,
+      "accidentCount": 0,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "점검완료",
+      "status": "RESERVED",
+      "location": {
+        "id": 9,
+        "province": "대구광역시",
+        "city": "북구",
+        "slug": "daegu-3"
+      },
+      "dealer": {
+        "code": "DLR-77f1a8cdd2",
+        "displayName": "교○○",
+        "department": "고객서비스팀",
+        "position": "차장"
+      },
+      "businessArea": {
+        "id": "BIZ_00565",
+        "name": "수도권영업지점 565",
+        "parent": {
+          "id": "BIZ_00085",
+          "name": "수도권영업 85"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107378,
+      "listingNumber": "UC-00107378",
+      "title": "2015 쉐보레 트래버스 하이컨트리",
+      "description": "2015 쉐보레 트래버스 하이컨트리, 주행거리 143,608km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 4,
+        "name": "쉐보레",
+        "slug": "chevrolet",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 26,
+        "name": "트래버스",
+        "slug": "traverse",
+        "bodyType": "suv"
+      },
+      "trim": "하이컨트리",
+      "modelYear": 2015,
+      "firstRegistration": "2015-10-26",
+      "mileageKm": 143608,
+      "fuelType": "가솔린",
+      "transmission": "수동",
+      "price": 10300000,
+      "currency": "KRW",
+      "color": "청색",
+      "displacementCc": 1998,
+      "accidentCount": 1,
+      "ownerChangeCount": 0,
+      "inspectionStatus": "점검예정",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 20,
+        "province": "울산광역시",
+        "city": "북구",
+        "slug": "ulsan-2"
+      },
+      "dealer": {
+        "code": "DLR-3660521c7c",
+        "displayName": "교○○",
+        "department": "품질관리팀",
+        "position": "대리"
+      },
+      "businessArea": {
+        "id": "BIZ_02706",
+        "name": "온라인영업팀 2706",
+        "parent": {
+          "id": "BIZ_00011",
+          "name": "제주영업 11"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107377,
+      "listingNumber": "UC-00107377",
+      "title": "2008 현대 팰리세이드 프레스티지",
+      "description": "2008 현대 팰리세이드 프레스티지, 주행거리 216,273km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 1,
+        "name": "현대",
+        "slug": "hyundai",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 6,
+        "name": "팰리세이드",
+        "slug": "palisade",
+        "bodyType": "suv"
+      },
+      "trim": "프레스티지",
+      "modelYear": 2008,
+      "firstRegistration": "2008-07-25",
+      "mileageKm": 216273,
+      "fuelType": "디젤",
+      "transmission": "자동",
+      "price": 3200000,
+      "currency": "KRW",
+      "color": "진주색",
+      "displacementCc": 2993,
+      "accidentCount": 0,
+      "ownerChangeCount": 3,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 47,
+        "province": "경상남도",
+        "city": "진주시",
+        "slug": "gyeongnam-3"
+      },
+      "dealer": {
+        "code": "DLR-1614f61ca5",
+        "displayName": "교○○",
+        "department": "차량매입팀",
+        "position": "팀장"
+      },
+      "businessArea": {
+        "id": "BIZ_01086",
+        "name": "온라인영업팀 1086",
+        "parent": {
+          "id": "BIZ_00043",
+          "name": "수도권영업 43"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107376,
+      "listingNumber": "UC-00107376",
+      "title": "2010 BMW 3시리즈 320i",
+      "description": "2010 BMW 3시리즈 320i, 주행거리 197,912km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 7,
+        "name": "BMW",
+        "slug": "bmw",
+        "country": "독일"
+      },
+      "model": {
+        "id": 34,
+        "name": "3시리즈",
+        "slug": "3-series",
+        "bodyType": "sedan"
+      },
+      "trim": "320i",
+      "modelYear": 2010,
+      "firstRegistration": "2010-12-24",
+      "mileageKm": 197912,
+      "fuelType": "가솔린",
+      "transmission": "CVT",
+      "price": 5600000,
+      "currency": "KRW",
+      "color": "갈색",
+      "displacementCc": 1598,
+      "accidentCount": 0,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 28,
+        "province": "강원특별자치도",
+        "city": "원주시",
+        "slug": "gangwon-2"
+      },
+      "dealer": {
+        "code": "DLR-0d131d8730",
+        "displayName": "교○○",
+        "department": "영업팀",
+        "position": "사원"
+      },
+      "businessArea": {
+        "id": "BIZ_00886",
+        "name": "호남영업팀 886",
+        "parent": {
+          "id": "BIZ_00061",
+          "name": "수도권영업 61"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107375,
+      "listingNumber": "UC-00107375",
+      "title": "2020 기아 K8 시그니처",
+      "description": "2020 기아 K8 시그니처, 주행거리 76,489km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 2,
+        "name": "기아",
+        "slug": "kia",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 13,
+        "name": "K8",
+        "slug": "k8",
+        "bodyType": "sedan"
+      },
+      "trim": "시그니처",
+      "modelYear": 2020,
+      "firstRegistration": "2020-11-23",
+      "mileageKm": 76489,
+      "fuelType": "하이브리드",
+      "transmission": "자동",
+      "price": 18600000,
+      "currency": "KRW",
+      "color": "검정색",
+      "displacementCc": 1580,
+      "accidentCount": 0,
+      "ownerChangeCount": 3,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 6,
+        "province": "부산광역시",
+        "city": "사하구",
+        "slug": "busan-3"
+      },
+      "dealer": {
+        "code": "DLR-801713941a",
+        "displayName": "교○○",
+        "department": "고객서비스팀",
+        "position": "차장"
+      },
+      "businessArea": {
+        "id": "BIZ_02274",
+        "name": "온라인영업플랫폼 2274",
+        "parent": {
+          "id": "BIZ_00064",
+          "name": "호남영업 64"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107374,
+      "listingNumber": "UC-00107374",
+      "title": "2015 메르세데스-벤츠 E-클래스 E350",
+      "description": "2015 메르세데스-벤츠 E-클래스 E350, 주행거리 138,296km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 8,
+        "name": "메르세데스-벤츠",
+        "slug": "mercedes-benz",
+        "country": "독일"
+      },
+      "model": {
+        "id": 39,
+        "name": "E-클래스",
+        "slug": "e-class",
+        "bodyType": "sedan"
+      },
+      "trim": "E350",
+      "modelYear": 2015,
+      "firstRegistration": "2015-12-22",
+      "mileageKm": 138296,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 16600000,
+      "currency": "KRW",
+      "color": "검정색",
+      "displacementCc": 1598,
+      "accidentCount": 0,
+      "ownerChangeCount": 4,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 11,
+        "province": "인천광역시",
+        "city": "서구",
+        "slug": "incheon-2"
+      },
+      "dealer": {
+        "code": "DLR-f7c29c551a",
+        "displayName": "교○○",
+        "department": "데이터팀",
+        "position": "과장"
+      },
+      "businessArea": {
+        "id": "BIZ_00599",
+        "name": "제주영업플랫폼 599",
+        "parent": {
+          "id": "BIZ_00010",
+          "name": "호남영업 10"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107373,
+      "listingNumber": "UC-00107373",
+      "title": "2021 제네시스 GV70 전동화 모델",
+      "description": "2021 제네시스 GV70 전동화 모델, 주행거리 52,621km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 3,
+        "name": "제네시스",
+        "slug": "genesis",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 21,
+        "name": "GV70",
+        "slug": "gv70",
+        "bodyType": "suv"
+      },
+      "trim": "전동화 모델",
+      "modelYear": 2021,
+      "firstRegistration": "2021-09-21",
+      "mileageKm": 52621,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 31900000,
+      "currency": "KRW",
+      "color": "녹색",
+      "displacementCc": 1598,
+      "accidentCount": 0,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 15,
+        "province": "광주광역시",
+        "city": "서구",
+        "slug": "gwangju-3"
+      },
+      "dealer": {
+        "code": "DLR-6cccb29f4b",
+        "displayName": "교○○",
+        "department": "상품화팀",
+        "position": "부장"
+      },
+      "businessArea": {
+        "id": "BIZ_01126",
+        "name": "호남영업팀 1126",
+        "parent": {
+          "id": "BIZ_00057",
+          "name": "영남영업 57"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107372,
+      "listingNumber": "UC-00107372",
+      "title": "2012 메르세데스-벤츠 GLE GLE 300d",
+      "description": "2012 메르세데스-벤츠 GLE GLE 300d, 주행거리 159,625km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 8,
+        "name": "메르세데스-벤츠",
+        "slug": "mercedes-benz",
+        "country": "독일"
+      },
+      "model": {
+        "id": 41,
+        "name": "GLE",
+        "slug": "gle",
+        "bodyType": "suv"
+      },
+      "trim": "GLE 300d",
+      "modelYear": 2012,
+      "firstRegistration": "2012-04-20",
+      "mileageKm": 159625,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 15500000,
+      "currency": "KRW",
+      "color": "갈색",
+      "displacementCc": 999,
+      "accidentCount": 0,
+      "ownerChangeCount": 5,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 47,
+        "province": "경상남도",
+        "city": "진주시",
+        "slug": "gyeongnam-3"
+      },
+      "dealer": {
+        "code": "DLR-4fbfd8229f",
+        "displayName": "교○○",
+        "department": "차량매입팀",
+        "position": "팀장"
+      },
+      "businessArea": {
+        "id": "BIZ_02679",
+        "name": "영남영업플랫폼 2679",
+        "parent": {
+          "id": "BIZ_00021",
+          "name": "영남영업 21"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107371,
+      "listingNumber": "UC-00107371",
+      "title": "2012 기아 카니발 하이리무진",
+      "description": "2012 기아 카니발 하이리무진, 주행거리 167,402km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 2,
+        "name": "기아",
+        "slug": "kia",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 16,
+        "name": "카니발",
+        "slug": "carnival",
+        "bodyType": "minivan"
+      },
+      "trim": "하이리무진",
+      "modelYear": 2012,
+      "firstRegistration": "2012-04-19",
+      "mileageKm": 167402,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 5400000,
+      "currency": "KRW",
+      "color": "회색",
+      "displacementCc": 2497,
+      "accidentCount": 1,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 3,
+        "province": "서울특별시",
+        "city": "마포구",
+        "slug": "seoul-3"
+      },
+      "dealer": {
+        "code": "DLR-a30b178b9f",
+        "displayName": "교○○",
+        "department": "고객서비스팀",
+        "position": "차장"
+      },
+      "businessArea": {
+        "id": "BIZ_00412",
+        "name": "호남영업운영 412",
+        "parent": {
+          "id": "BIZ_00029",
+          "name": "제주영업 29"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107370,
+      "listingNumber": "UC-00107370",
+      "title": "2016 KG모빌리티 티볼리 V7",
+      "description": "2016 KG모빌리티 티볼리 V7, 주행거리 118,381km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 6,
+        "name": "KG모빌리티",
+        "slug": "kg-mobility",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 30,
+        "name": "티볼리",
+        "slug": "tivoli",
+        "bodyType": "suv"
+      },
+      "trim": "V7",
+      "modelYear": 2016,
+      "firstRegistration": "2016-02-18",
+      "mileageKm": 118381,
+      "fuelType": "가솔린",
+      "transmission": "CVT",
+      "price": 5800000,
+      "currency": "KRW",
+      "color": "녹색",
+      "displacementCc": 2497,
+      "accidentCount": 0,
+      "ownerChangeCount": 2,
+      "inspectionStatus": "점검완료",
+      "status": "SOLD",
+      "location": {
+        "id": 11,
+        "province": "인천광역시",
+        "city": "서구",
+        "slug": "incheon-2"
+      },
+      "dealer": {
+        "code": "DLR-2db93da6e7",
+        "displayName": "교○○",
+        "department": "데이터팀",
+        "position": "과장"
+      },
+      "businessArea": {
+        "id": "BIZ_01621",
+        "name": "수도권영업팀 1621",
+        "parent": {
+          "id": "BIZ_00024",
+          "name": "온라인영업 24"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107369,
+      "listingNumber": "UC-00107369",
+      "title": "2021 제네시스 GV70 기본형",
+      "description": "2021 제네시스 GV70 기본형, 주행거리 63,791km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 3,
+        "name": "제네시스",
+        "slug": "genesis",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 21,
+        "name": "GV70",
+        "slug": "gv70",
+        "bodyType": "suv"
+      },
+      "trim": "기본형",
+      "modelYear": 2021,
+      "firstRegistration": "2021-10-17",
+      "mileageKm": 63791,
+      "fuelType": "디젤",
+      "transmission": "자동",
+      "price": 31500000,
+      "currency": "KRW",
+      "color": "진주색",
+      "displacementCc": 2151,
+      "accidentCount": 0,
+      "ownerChangeCount": 0,
+      "inspectionStatus": "점검완료",
+      "status": "SOLD",
+      "location": {
+        "id": 2,
+        "province": "서울특별시",
+        "city": "송파구",
+        "slug": "seoul-2"
+      },
+      "dealer": {
+        "code": "DLR-297a8ddb2d",
+        "displayName": "교○○",
+        "department": "영업팀",
+        "position": "사원"
+      },
+      "businessArea": {
+        "id": "BIZ_01252",
+        "name": "호남영업운영 1252",
+        "parent": {
+          "id": "BIZ_00062",
+          "name": "중부영업 62"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107368,
+      "listingNumber": "UC-00107368",
+      "title": "2023 폭스바겐 골프 프레스티지",
+      "description": "2023 폭스바겐 골프 프레스티지, 주행거리 40,483km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 10,
+        "name": "폭스바겐",
+        "slug": "volkswagen",
+        "country": "독일"
+      },
+      "model": {
+        "id": 45,
+        "name": "골프",
+        "slug": "golf",
+        "bodyType": "hatchback"
+      },
+      "trim": "프레스티지",
+      "modelYear": 2023,
+      "firstRegistration": "2023-07-16",
+      "mileageKm": 40483,
+      "fuelType": "디젤",
+      "transmission": "자동",
+      "price": 27000000,
+      "currency": "KRW",
+      "color": "검정색",
+      "displacementCc": 1598,
+      "accidentCount": 0,
+      "ownerChangeCount": 0,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 36,
+        "province": "전북특별자치도",
+        "city": "전주시",
+        "slug": "jeonbuk-1"
+      },
+      "dealer": {
+        "code": "DLR-ade632436f",
+        "displayName": "교○○",
+        "department": "영업팀",
+        "position": "사원"
+      },
+      "businessArea": {
+        "id": "BIZ_01371",
+        "name": "영남영업팀 1371",
+        "parent": {
+          "id": "BIZ_00085",
+          "name": "수도권영업 85"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107367,
+      "listingNumber": "UC-00107367",
+      "title": "2011 쉐보레 말리부 LT",
+      "description": "2011 쉐보레 말리부 LT, 주행거리 184,548km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 4,
+        "name": "쉐보레",
+        "slug": "chevrolet",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 24,
+        "name": "말리부",
+        "slug": "malibu",
+        "bodyType": "sedan"
+      },
+      "trim": "LT",
+      "modelYear": 2011,
+      "firstRegistration": "2011-02-15",
+      "mileageKm": 184548,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 3000000,
+      "currency": "KRW",
+      "color": "검정색",
+      "displacementCc": 1598,
+      "accidentCount": 1,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "점검완료",
+      "status": "RESERVED",
+      "location": {
+        "id": 9,
+        "province": "대구광역시",
+        "city": "북구",
+        "slug": "daegu-3"
+      },
+      "dealer": {
+        "code": "DLR-80a0fe0f9a",
+        "displayName": "교○○",
+        "department": "품질관리팀",
+        "position": "대리"
+      },
+      "businessArea": {
+        "id": "BIZ_02739",
+        "name": "영남영업플랫폼 2739",
+        "parent": {
+          "id": "BIZ_00045",
+          "name": "영남영업 45"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107366,
+      "listingNumber": "UC-00107366",
+      "title": "2010 르노코리아 XM3 LE",
+      "description": "2010 르노코리아 XM3 LE, 주행거리 179,508km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 5,
+        "name": "르노코리아",
+        "slug": "renault-korea",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 29,
+        "name": "XM3",
+        "slug": "xm3",
+        "bodyType": "suv"
+      },
+      "trim": "LE",
+      "modelYear": 2010,
+      "firstRegistration": "2010-03-14",
+      "mileageKm": 179508,
+      "fuelType": "가솔린",
+      "transmission": "수동",
+      "price": 2800000,
+      "currency": "KRW",
+      "color": "청색",
+      "displacementCc": 1998,
+      "accidentCount": 0,
+      "ownerChangeCount": 2,
+      "inspectionStatus": "점검완료",
+      "status": "SOLD",
+      "location": {
+        "id": 32,
+        "province": "충청북도",
+        "city": "제천시",
+        "slug": "chungbuk-3"
+      },
+      "dealer": {
+        "code": "DLR-297a8ddb2d",
+        "displayName": "교○○",
+        "department": "영업팀",
+        "position": "사원"
+      },
+      "businessArea": {
+        "id": "BIZ_00147",
+        "name": "영남영업운영 147",
+        "parent": {
+          "id": "BIZ_00018",
+          "name": "온라인영업 18"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107365,
+      "listingNumber": "UC-00107365",
+      "title": "2026 BMW X5 50e",
+      "description": "2026 BMW X5 50e, 주행거리 10,483km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 7,
+        "name": "BMW",
+        "slug": "bmw",
+        "country": "독일"
+      },
+      "model": {
+        "id": 37,
+        "name": "X5",
+        "slug": "x5",
+        "bodyType": "suv"
+      },
+      "trim": "50e",
+      "modelYear": 2026,
+      "firstRegistration": "2026-05-13",
+      "mileageKm": 10483,
+      "fuelType": "하이브리드",
+      "transmission": "자동",
+      "price": 116700000,
+      "currency": "KRW",
+      "color": "은색",
+      "displacementCc": 2487,
+      "accidentCount": 1,
+      "ownerChangeCount": 2,
+      "inspectionStatus": "점검완료",
+      "status": "SOLD",
+      "location": {
+        "id": 18,
+        "province": "대전광역시",
+        "city": "중구",
+        "slug": "daejeon-3"
+      },
+      "dealer": {
+        "code": "DLR-67ba6fbbb0",
+        "displayName": "교○○",
+        "department": "품질관리팀",
+        "position": "대리"
+      },
+      "businessArea": {
+        "id": "BIZ_00731",
+        "name": "제주영업팀 731",
+        "parent": {
+          "id": "BIZ_00052",
+          "name": "호남영업 52"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107364,
+      "listingNumber": "UC-00107364",
+      "title": "2024 메르세데스-벤츠 GLC AMG GLC 43",
+      "description": "2024 메르세데스-벤츠 GLC AMG GLC 43, 주행거리 39,978km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 8,
+        "name": "메르세데스-벤츠",
+        "slug": "mercedes-benz",
+        "country": "독일"
+      },
+      "model": {
+        "id": 40,
+        "name": "GLC",
+        "slug": "glc",
+        "bodyType": "suv"
+      },
+      "trim": "AMG GLC 43",
+      "modelYear": 2024,
+      "firstRegistration": "2024-12-12",
+      "mileageKm": 39978,
+      "fuelType": "디젤",
+      "transmission": "자동",
+      "price": 63600000,
+      "currency": "KRW",
+      "color": "회색",
+      "displacementCc": 2151,
+      "accidentCount": 0,
+      "ownerChangeCount": 3,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 43,
+        "province": "경상북도",
+        "city": "구미시",
+        "slug": "gyeongbuk-2"
+      },
+      "dealer": {
+        "code": "DLR-e926d8ade7",
+        "displayName": "교○○",
+        "department": "데이터팀",
+        "position": "과장"
+      },
+      "businessArea": {
+        "id": "BIZ_01189",
+        "name": "수도권영업플랫폼 1189",
+        "parent": {
+          "id": "BIZ_00049",
+          "name": "수도권영업 49"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107363,
+      "listingNumber": "UC-00107363",
+      "title": "2018 현대 아이오닉 5 스탠다드",
+      "description": "2018 현대 아이오닉 5 스탠다드, 주행거리 90,818km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 1,
+        "name": "현대",
+        "slug": "hyundai",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 8,
+        "name": "아이오닉 5",
+        "slug": "ioniq-5",
+        "bodyType": "suv"
+      },
+      "trim": "스탠다드",
+      "modelYear": 2018,
+      "firstRegistration": "2018-08-11",
+      "mileageKm": 90818,
+      "fuelType": "전기",
+      "transmission": "자동",
+      "price": 17400000,
+      "currency": "KRW",
+      "color": "청색",
+      "displacementCc": 0,
+      "accidentCount": 0,
+      "ownerChangeCount": 5,
+      "inspectionStatus": "점검예정",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 46,
+        "province": "경상남도",
+        "city": "김해시",
+        "slug": "gyeongnam-2"
+      },
+      "dealer": {
+        "code": "DLR-b68ff1f3f7",
+        "displayName": "교○○",
+        "department": "상품화팀",
+        "position": "부장"
+      },
+      "businessArea": {
+        "id": "BIZ_01922",
+        "name": "중부영업운영 1922",
+        "parent": {
+          "id": "BIZ_00041",
+          "name": "제주영업 41"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107362,
+      "listingNumber": "UC-00107362",
+      "title": "2009 메르세데스-벤츠 C-클래스 C200",
+      "description": "2009 메르세데스-벤츠 C-클래스 C200, 주행거리 198,139km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 8,
+        "name": "메르세데스-벤츠",
+        "slug": "mercedes-benz",
+        "country": "독일"
+      },
+      "model": {
+        "id": 38,
+        "name": "C-클래스",
+        "slug": "c-class",
+        "bodyType": "sedan"
+      },
+      "trim": "C200",
+      "modelYear": 2009,
+      "firstRegistration": "2009-07-10",
+      "mileageKm": 198139,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 4500000,
+      "currency": "KRW",
+      "color": "진주색",
+      "displacementCc": 2497,
+      "accidentCount": 3,
+      "ownerChangeCount": 0,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 26,
+        "province": "경기도",
+        "city": "용인시",
+        "slug": "gyeonggi-4"
+      },
+      "dealer": {
+        "code": "DLR-a1f6643b1a",
+        "displayName": "교○○",
+        "department": "고객서비스팀",
+        "position": "차장"
+      },
+      "businessArea": {
+        "id": "BIZ_02876",
+        "name": "중부영업팀 2876",
+        "parent": {
+          "id": "BIZ_00037",
+          "name": "수도권영업 37"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107361,
+      "listingNumber": "UC-00107361",
+      "title": "2010 쉐보레 스파크 LT",
+      "description": "2010 쉐보레 스파크 LT, 주행거리 181,483km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 4,
+        "name": "쉐보레",
+        "slug": "chevrolet",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 23,
+        "name": "스파크",
+        "slug": "spark",
+        "bodyType": "compact"
+      },
+      "trim": "LT",
+      "modelYear": 2010,
+      "firstRegistration": "2010-08-09",
+      "mileageKm": 181483,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 1500000,
+      "currency": "KRW",
+      "color": "흰색",
+      "displacementCc": 1197,
+      "accidentCount": 1,
+      "ownerChangeCount": 2,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 29,
+        "province": "강원특별자치도",
+        "city": "강릉시",
+        "slug": "gangwon-3"
+      },
+      "dealer": {
+        "code": "DLR-5e884ff528",
+        "displayName": "교○○",
+        "department": "고객서비스팀",
+        "position": "차장"
+      },
+      "businessArea": {
+        "id": "BIZ_00931",
+        "name": "수도권영업팀 931",
+        "parent": {
+          "id": "BIZ_00013",
+          "name": "수도권영업 13"
+        }
+      },
+      "createdAt": "2026-08-11T12:16:00.013Z",
+      "updatedAt": "2026-08-11T12:16:00.013Z"
+    },
+    {
+      "id": 107360,
+      "listingNumber": "UC-00107360",
+      "title": "2025 제네시스 GV80 기본형",
+      "description": "2025 제네시스 GV80 기본형, 주행거리 17,001km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 3,
+        "name": "제네시스",
+        "slug": "genesis",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 22,
+        "name": "GV80",
+        "slug": "gv80",
+        "bodyType": "suv"
+      },
+      "trim": "기본형",
+      "modelYear": 2025,
+      "firstRegistration": "2025-10-08",
+      "mileageKm": 17001,
+      "fuelType": "디젤",
+      "transmission": "CVT",
+      "price": 69400000,
+      "currency": "KRW",
+      "color": "녹색",
+      "displacementCc": 1998,
+      "accidentCount": 1,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 16,
+        "province": "대전광역시",
+        "city": "유성구",
+        "slug": "daejeon-1"
+      },
+      "dealer": {
+        "code": "DLR-f0065e8bde",
+        "displayName": "교○○",
+        "department": "차량매입팀",
+        "position": "팀장"
+      },
+      "businessArea": {
+        "id": "BIZ_01412",
+        "name": "중부영업운영 1412",
+        "parent": {
+          "id": "BIZ_00049",
+          "name": "수도권영업 49"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107359,
+      "listingNumber": "UC-00107359",
+      "title": "2020 토요타 RAV4 XLE",
+      "description": "2020 토요타 RAV4 XLE, 주행거리 85,736km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 11,
+        "name": "토요타",
+        "slug": "toyota",
+        "country": "일본"
+      },
+      "model": {
+        "id": 48,
+        "name": "RAV4",
+        "slug": "rav4",
+        "bodyType": "suv"
+      },
+      "trim": "XLE",
+      "modelYear": 2020,
+      "firstRegistration": "2020-12-07",
+      "mileageKm": 85736,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 22400000,
+      "currency": "KRW",
+      "color": "녹색",
+      "displacementCc": 999,
+      "accidentCount": 0,
+      "ownerChangeCount": 3,
+      "inspectionStatus": "점검예정",
+      "status": "RESERVED",
+      "location": {
+        "id": 34,
+        "province": "충청남도",
+        "city": "아산시",
+        "slug": "chungnam-2"
+      },
+      "dealer": {
+        "code": "DLR-078ee985d2",
+        "displayName": "교○○",
+        "department": "데이터팀",
+        "position": "과장"
+      },
+      "businessArea": {
+        "id": "BIZ_00296",
+        "name": "중부영업팀 296",
+        "parent": {
+          "id": "BIZ_00026",
+          "name": "중부영업 26"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107358,
+      "listingNumber": "UC-00107358",
+      "title": "2016 아우디 A6 45 TFSI",
+      "description": "2016 아우디 A6 45 TFSI, 주행거리 114,357km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 9,
+        "name": "아우디",
+        "slug": "audi",
+        "country": "독일"
+      },
+      "model": {
+        "id": 43,
+        "name": "A6",
+        "slug": "a6",
+        "bodyType": "sedan"
+      },
+      "trim": "45 TFSI",
+      "modelYear": 2016,
+      "firstRegistration": "2016-05-06",
+      "mileageKm": 114357,
+      "fuelType": "디젤",
+      "transmission": "자동",
+      "price": 16200000,
+      "currency": "KRW",
+      "color": "흰색",
+      "displacementCc": 2151,
+      "accidentCount": 1,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "점검완료",
+      "status": "RESERVED",
+      "location": {
+        "id": 22,
+        "province": "세종특별자치시",
+        "city": "세종시",
+        "slug": "sejong-1"
+      },
+      "dealer": {
+        "code": "DLR-0195d2f4ce",
+        "displayName": "교○○",
+        "department": "차량매입팀",
+        "position": "팀장"
+      },
+      "businessArea": {
+        "id": "BIZ_00388",
+        "name": "호남영업센터 388",
+        "parent": {
+          "id": "BIZ_00077",
+          "name": "제주영업 77"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107357,
+      "listingNumber": "UC-00107357",
+      "title": "2023 르노코리아 SM6 RE",
+      "description": "2023 르노코리아 SM6 RE, 주행거리 32,859km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 5,
+        "name": "르노코리아",
+        "slug": "renault-korea",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 27,
+        "name": "SM6",
+        "slug": "sm6",
+        "bodyType": "sedan"
+      },
+      "trim": "RE",
+      "modelYear": 2023,
+      "firstRegistration": "2023-12-05",
+      "mileageKm": 32859,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 21600000,
+      "currency": "KRW",
+      "color": "녹색",
+      "displacementCc": 2497,
+      "accidentCount": 0,
+      "ownerChangeCount": 0,
+      "inspectionStatus": "점검완료",
+      "status": "RESERVED",
+      "location": {
+        "id": 33,
+        "province": "충청남도",
+        "city": "천안시",
+        "slug": "chungnam-1"
+      },
+      "dealer": {
+        "code": "DLR-ad7ac158b9",
+        "displayName": "교○○",
+        "department": "고객서비스팀",
+        "position": "차장"
+      },
+      "businessArea": {
+        "id": "BIZ_01013",
+        "name": "제주영업센터 1013",
+        "parent": {
+          "id": "BIZ_00037",
+          "name": "수도권영업 37"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107356,
+      "listingNumber": "UC-00107356",
+      "title": "2018 메르세데스-벤츠 GLC GLC 220d",
+      "description": "2018 메르세데스-벤츠 GLC GLC 220d, 주행거리 105,565km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 8,
+        "name": "메르세데스-벤츠",
+        "slug": "mercedes-benz",
+        "country": "독일"
+      },
+      "model": {
+        "id": 40,
+        "name": "GLC",
+        "slug": "glc",
+        "bodyType": "suv"
+      },
+      "trim": "GLC 220d",
+      "modelYear": 2018,
+      "firstRegistration": "2018-09-04",
+      "mileageKm": 105565,
+      "fuelType": "디젤",
+      "transmission": "DCT",
+      "price": 24100000,
+      "currency": "KRW",
+      "color": "검정색",
+      "displacementCc": 1998,
+      "accidentCount": 1,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 40,
+        "province": "전라남도",
+        "city": "여수시",
+        "slug": "jeonnam-2"
+      },
+      "dealer": {
+        "code": "DLR-11d2e8fe3d",
+        "displayName": "교○○",
+        "department": "고객서비스팀",
+        "position": "차장"
+      },
+      "businessArea": {
+        "id": "BIZ_01627",
+        "name": "수도권영업운영 1627",
+        "parent": {
+          "id": "BIZ_00097",
+          "name": "수도권영업 97"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107355,
+      "listingNumber": "UC-00107355",
+      "title": "2009 아우디 A4 프리미엄",
+      "description": "2009 아우디 A4 프리미엄, 주행거리 193,777km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 9,
+        "name": "아우디",
+        "slug": "audi",
+        "country": "독일"
+      },
+      "model": {
+        "id": 42,
+        "name": "A4",
+        "slug": "a4",
+        "bodyType": "sedan"
+      },
+      "trim": "프리미엄",
+      "modelYear": 2009,
+      "firstRegistration": "2009-11-03",
+      "mileageKm": 193777,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 4200000,
+      "currency": "KRW",
+      "color": "은색",
+      "displacementCc": 2998,
+      "accidentCount": 1,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "재점검필요",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 20,
+        "province": "울산광역시",
+        "city": "북구",
+        "slug": "ulsan-2"
+      },
+      "dealer": {
+        "code": "DLR-f67d4a82be",
+        "displayName": "교○○",
+        "department": "상품화팀",
+        "position": "부장"
+      },
+      "businessArea": {
+        "id": "BIZ_00617",
+        "name": "제주영업운영 617",
+        "parent": {
+          "id": "BIZ_00045",
+          "name": "영남영업 45"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107354,
+      "listingNumber": "UC-00107354",
+      "title": "2009 메르세데스-벤츠 GLC GLC 220d",
+      "description": "2009 메르세데스-벤츠 GLC GLC 220d, 주행거리 208,255km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 8,
+        "name": "메르세데스-벤츠",
+        "slug": "mercedes-benz",
+        "country": "독일"
+      },
+      "model": {
+        "id": 40,
+        "name": "GLC",
+        "slug": "glc",
+        "bodyType": "suv"
+      },
+      "trim": "GLC 220d",
+      "modelYear": 2009,
+      "firstRegistration": "2009-01-02",
+      "mileageKm": 208255,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 6300000,
+      "currency": "KRW",
+      "color": "검정색",
+      "displacementCc": 999,
+      "accidentCount": 0,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 26,
+        "province": "경기도",
+        "city": "용인시",
+        "slug": "gyeonggi-4"
+      },
+      "dealer": {
+        "code": "DLR-bb6850571b",
+        "displayName": "교○○",
+        "department": "품질관리팀",
+        "position": "대리"
+      },
+      "businessArea": {
+        "id": "BIZ_00921",
+        "name": "영남영업팀 921",
+        "parent": {
+          "id": "BIZ_00012",
+          "name": "온라인영업 12"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107353,
+      "listingNumber": "UC-00107353",
+      "title": "2013 폭스바겐 티구안 프레스티지",
+      "description": "2013 폭스바겐 티구안 프레스티지, 주행거리 149,160km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 10,
+        "name": "폭스바겐",
+        "slug": "volkswagen",
+        "country": "독일"
+      },
+      "model": {
+        "id": 46,
+        "name": "티구안",
+        "slug": "tiguan",
+        "bodyType": "suv"
+      },
+      "trim": "프레스티지",
+      "modelYear": 2013,
+      "firstRegistration": "2013-07-01",
+      "mileageKm": 149160,
+      "fuelType": "디젤",
+      "transmission": "자동",
+      "price": 7000000,
+      "currency": "KRW",
+      "color": "녹색",
+      "displacementCc": 1598,
+      "accidentCount": 0,
+      "ownerChangeCount": 3,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 31,
+        "province": "충청북도",
+        "city": "충주시",
+        "slug": "chungbuk-2"
+      },
+      "dealer": {
+        "code": "DLR-eb08405f50",
+        "displayName": "교○○",
+        "department": "품질관리팀",
+        "position": "대리"
+      },
+      "businessArea": {
+        "id": "BIZ_01683",
+        "name": "영남영업센터 1683",
+        "parent": {
+          "id": "BIZ_00005",
+          "name": "제주영업 5"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107352,
+      "listingNumber": "UC-00107352",
+      "title": "2018 기아 쏘렌토 노블레스",
+      "description": "2018 기아 쏘렌토 노블레스, 주행거리 101,589km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 2,
+        "name": "기아",
+        "slug": "kia",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 15,
+        "name": "쏘렌토",
+        "slug": "sorento",
+        "bodyType": "suv"
+      },
+      "trim": "노블레스",
+      "modelYear": 2018,
+      "firstRegistration": "2018-01-27",
+      "mileageKm": 101589,
+      "fuelType": "디젤",
+      "transmission": "자동",
+      "price": 13400000,
+      "currency": "KRW",
+      "color": "청색",
+      "displacementCc": 1598,
+      "accidentCount": 0,
+      "ownerChangeCount": 2,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 18,
+        "province": "대전광역시",
+        "city": "중구",
+        "slug": "daejeon-3"
+      },
+      "dealer": {
+        "code": "DLR-31a85aaa93",
+        "displayName": "교○○",
+        "department": "상품화팀",
+        "position": "부장"
+      },
+      "businessArea": {
+        "id": "BIZ_01876",
+        "name": "호남영업팀 1876",
+        "parent": {
+          "id": "BIZ_00010",
+          "name": "호남영업 10"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107351,
+      "listingNumber": "UC-00107351",
+      "title": "2025 렉서스 NX 프리미엄",
+      "description": "2025 렉서스 NX 프리미엄, 주행거리 29,221km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 12,
+        "name": "렉서스",
+        "slug": "lexus",
+        "country": "일본"
+      },
+      "model": {
+        "id": 50,
+        "name": "NX",
+        "slug": "nx",
+        "bodyType": "suv"
+      },
+      "trim": "프리미엄",
+      "modelYear": 2025,
+      "firstRegistration": "2025-11-26",
+      "mileageKm": 29221,
+      "fuelType": "하이브리드",
+      "transmission": "자동",
+      "price": 64800000,
+      "currency": "KRW",
+      "color": "녹색",
+      "displacementCc": 1580,
+      "accidentCount": 0,
+      "ownerChangeCount": 0,
+      "inspectionStatus": "점검예정",
+      "status": "RESERVED",
+      "location": {
+        "id": 7,
+        "province": "대구광역시",
+        "city": "수성구",
+        "slug": "daegu-1"
+      },
+      "dealer": {
+        "code": "DLR-1e2590d0ff",
+        "displayName": "교○○",
+        "department": "차량매입팀",
+        "position": "팀장"
+      },
+      "businessArea": {
+        "id": "BIZ_00630",
+        "name": "온라인영업지점 630",
+        "parent": {
+          "id": "BIZ_00016",
+          "name": "호남영업 16"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107350,
+      "listingNumber": "UC-00107350",
+      "title": "2023 현대 쏘나타 프리미엄",
+      "description": "2023 현대 쏘나타 프리미엄, 주행거리 51,506km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 1,
+        "name": "현대",
+        "slug": "hyundai",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 2,
+        "name": "쏘나타",
+        "slug": "sonata",
+        "bodyType": "sedan"
+      },
+      "trim": "프리미엄",
+      "modelYear": 2023,
+      "firstRegistration": "2023-11-25",
+      "mileageKm": 51506,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 21100000,
+      "currency": "KRW",
+      "color": "녹색",
+      "displacementCc": 1598,
+      "accidentCount": 0,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "재점검필요",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 25,
+        "province": "경기도",
+        "city": "고양시",
+        "slug": "gyeonggi-3"
+      },
+      "dealer": {
+        "code": "DLR-13ca92e23e",
+        "displayName": "교○○",
+        "department": "데이터팀",
+        "position": "과장"
+      },
+      "businessArea": {
+        "id": "BIZ_01277",
+        "name": "제주영업운영 1277",
+        "parent": {
+          "id": "BIZ_00027",
+          "name": "영남영업 27"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107349,
+      "listingNumber": "UC-00107349",
+      "title": "2013 토요타 캠리 하이브리드",
+      "description": "2013 토요타 캠리 하이브리드, 주행거리 159,631km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 11,
+        "name": "토요타",
+        "slug": "toyota",
+        "country": "일본"
+      },
+      "model": {
+        "id": 47,
+        "name": "캠리",
+        "slug": "camry",
+        "bodyType": "sedan"
+      },
+      "trim": "하이브리드",
+      "modelYear": 2013,
+      "firstRegistration": "2013-03-24",
+      "mileageKm": 159631,
+      "fuelType": "하이브리드",
+      "transmission": "DCT",
+      "price": 6600000,
+      "currency": "KRW",
+      "color": "회색",
+      "displacementCc": 3456,
+      "accidentCount": 0,
+      "ownerChangeCount": 5,
+      "inspectionStatus": "재점검필요",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 46,
+        "province": "경상남도",
+        "city": "김해시",
+        "slug": "gyeongnam-2"
+      },
+      "dealer": {
+        "code": "DLR-f1256222ed",
+        "displayName": "교○○",
+        "department": "데이터팀",
+        "position": "과장"
+      },
+      "businessArea": {
+        "id": "BIZ_02875",
+        "name": "수도권영업지점 2875",
+        "parent": {
+          "id": "BIZ_00012",
+          "name": "온라인영업 12"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107348,
+      "listingNumber": "UC-00107348",
+      "title": "2025 기아 카니발 노블레스",
+      "description": "2025 기아 카니발 노블레스, 주행거리 5,926km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 2,
+        "name": "기아",
+        "slug": "kia",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 16,
+        "name": "카니발",
+        "slug": "carnival",
+        "bodyType": "minivan"
+      },
+      "trim": "노블레스",
+      "modelYear": 2025,
+      "firstRegistration": "2025-10-23",
+      "mileageKm": 5926,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 42300000,
+      "currency": "KRW",
+      "color": "검정색",
+      "displacementCc": 2497,
+      "accidentCount": 0,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 38,
+        "province": "전북특별자치도",
+        "city": "군산시",
+        "slug": "jeonbuk-3"
+      },
+      "dealer": {
+        "code": "DLR-7655251f1d",
+        "displayName": "교○○",
+        "department": "차량매입팀",
+        "position": "팀장"
+      },
+      "businessArea": {
+        "id": "BIZ_00218",
+        "name": "중부영업센터 218",
+        "parent": {
+          "id": "BIZ_00021",
+          "name": "영남영업 21"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107347,
+      "listingNumber": "UC-00107347",
+      "title": "2009 토요타 RAV4 어드벤처",
+      "description": "2009 토요타 RAV4 어드벤처, 주행거리 195,661km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 11,
+        "name": "토요타",
+        "slug": "toyota",
+        "country": "일본"
+      },
+      "model": {
+        "id": 48,
+        "name": "RAV4",
+        "slug": "rav4",
+        "bodyType": "suv"
+      },
+      "trim": "어드벤처",
+      "modelYear": 2009,
+      "firstRegistration": "2009-04-22",
+      "mileageKm": 195661,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 4200000,
+      "currency": "KRW",
+      "color": "녹색",
+      "displacementCc": 1998,
+      "accidentCount": 0,
+      "ownerChangeCount": 4,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 11,
+        "province": "인천광역시",
+        "city": "서구",
+        "slug": "incheon-2"
+      },
+      "dealer": {
+        "code": "DLR-78a8fff0de",
+        "displayName": "교○○",
+        "department": "품질관리팀",
+        "position": "대리"
+      },
+      "businessArea": {
+        "id": "BIZ_01021",
+        "name": "수도권영업팀 1021",
+        "parent": {
+          "id": "BIZ_00081",
+          "name": "영남영업 81"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107346,
+      "listingNumber": "UC-00107346",
+      "title": "2016 기아 K8 시그니처",
+      "description": "2016 기아 K8 시그니처, 주행거리 123,204km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 2,
+        "name": "기아",
+        "slug": "kia",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 13,
+        "name": "K8",
+        "slug": "k8",
+        "bodyType": "sedan"
+      },
+      "trim": "시그니처",
+      "modelYear": 2016,
+      "firstRegistration": "2016-05-21",
+      "mileageKm": 123204,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 10100000,
+      "currency": "KRW",
+      "color": "검정색",
+      "displacementCc": 2497,
+      "accidentCount": 0,
+      "ownerChangeCount": 0,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 3,
+        "province": "서울특별시",
+        "city": "마포구",
+        "slug": "seoul-3"
+      },
+      "dealer": {
+        "code": "DLR-a4ba48535a",
+        "displayName": "교○○",
+        "department": "차량매입팀",
+        "position": "팀장"
+      },
+      "businessArea": {
+        "id": "BIZ_01140",
+        "name": "온라인영업지점 1140",
+        "parent": {
+          "id": "BIZ_00044",
+          "name": "중부영업 44"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107345,
+      "listingNumber": "UC-00107345",
+      "title": "2015 렉서스 NX 프리미엄",
+      "description": "2015 렉서스 NX 프리미엄, 주행거리 126,011km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 12,
+        "name": "렉서스",
+        "slug": "lexus",
+        "country": "일본"
+      },
+      "model": {
+        "id": 50,
+        "name": "NX",
+        "slug": "nx",
+        "bodyType": "suv"
+      },
+      "trim": "프리미엄",
+      "modelYear": 2015,
+      "firstRegistration": "2015-06-20",
+      "mileageKm": 126011,
+      "fuelType": "하이브리드",
+      "transmission": "자동",
+      "price": 14300000,
+      "currency": "KRW",
+      "color": "흰색",
+      "displacementCc": 3456,
+      "accidentCount": 0,
+      "ownerChangeCount": 4,
+      "inspectionStatus": "점검예정",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 28,
+        "province": "강원특별자치도",
+        "city": "원주시",
+        "slug": "gangwon-2"
+      },
+      "dealer": {
+        "code": "DLR-1d66524959",
+        "displayName": "교○○",
+        "department": "차량매입팀",
+        "position": "팀장"
+      },
+      "businessArea": {
+        "id": "BIZ_01097",
+        "name": "제주영업운영 1097",
+        "parent": {
+          "id": "BIZ_00034",
+          "name": "호남영업 34"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107344,
+      "listingNumber": "UC-00107344",
+      "title": "2026 기아 쏘렌토 노블레스",
+      "description": "2026 기아 쏘렌토 노블레스, 주행거리 300km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 2,
+        "name": "기아",
+        "slug": "kia",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 15,
+        "name": "쏘렌토",
+        "slug": "sorento",
+        "bodyType": "suv"
+      },
+      "trim": "노블레스",
+      "modelYear": 2026,
+      "firstRegistration": "2026-05-19",
+      "mileageKm": 300,
+      "fuelType": "하이브리드",
+      "transmission": "자동",
+      "price": 40900000,
+      "currency": "KRW",
+      "color": "진주색",
+      "displacementCc": 1999,
+      "accidentCount": 2,
+      "ownerChangeCount": 3,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 19,
+        "province": "울산광역시",
+        "city": "남구",
+        "slug": "ulsan-1"
+      },
+      "dealer": {
+        "code": "DLR-3bd179d7cf",
+        "displayName": "교○○",
+        "department": "품질관리팀",
+        "position": "대리"
+      },
+      "businessArea": {
+        "id": "BIZ_00307",
+        "name": "수도권영업운영 307",
+        "parent": {
+          "id": "BIZ_00004",
+          "name": "호남영업 4"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107343,
+      "listingNumber": "UC-00107343",
+      "title": "2008 아우디 A6 프리미엄",
+      "description": "2008 아우디 A6 프리미엄, 주행거리 216,264km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 9,
+        "name": "아우디",
+        "slug": "audi",
+        "country": "독일"
+      },
+      "model": {
+        "id": 43,
+        "name": "A6",
+        "slug": "a6",
+        "bodyType": "sedan"
+      },
+      "trim": "프리미엄",
+      "modelYear": 2008,
+      "firstRegistration": "2008-07-18",
+      "mileageKm": 216264,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 4900000,
+      "currency": "KRW",
+      "color": "은색",
+      "displacementCc": 1598,
+      "accidentCount": 0,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "재점검필요",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 23,
+        "province": "경기도",
+        "city": "수원시",
+        "slug": "gyeonggi-1"
+      },
+      "dealer": {
+        "code": "DLR-255926f7b3",
+        "displayName": "교○○",
+        "department": "차량매입팀",
+        "position": "팀장"
+      },
+      "businessArea": {
+        "id": "BIZ_00682",
+        "name": "호남영업운영 682",
+        "parent": {
+          "id": "BIZ_00054",
+          "name": "온라인영업 54"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107342,
+      "listingNumber": "UC-00107342",
+      "title": "2016 KG모빌리티 토레스 T7",
+      "description": "2016 KG모빌리티 토레스 T7, 주행거리 126,641km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 6,
+        "name": "KG모빌리티",
+        "slug": "kg-mobility",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 32,
+        "name": "토레스",
+        "slug": "torres",
+        "bodyType": "suv"
+      },
+      "trim": "T7",
+      "modelYear": 2016,
+      "firstRegistration": "2016-11-17",
+      "mileageKm": 126641,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 8300000,
+      "currency": "KRW",
+      "color": "은색",
+      "displacementCc": 3470,
+      "accidentCount": 0,
+      "ownerChangeCount": 3,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 15,
+        "province": "광주광역시",
+        "city": "서구",
+        "slug": "gwangju-3"
+      },
+      "dealer": {
+        "code": "DLR-39ae5cd175",
+        "displayName": "교○○",
+        "department": "데이터팀",
+        "position": "과장"
+      },
+      "businessArea": {
+        "id": "BIZ_00811",
+        "name": "수도권영업팀 811",
+        "parent": {
+          "id": "BIZ_00004",
+          "name": "호남영업 4"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107341,
+      "listingNumber": "UC-00107341",
+      "title": "2016 제네시스 G90 블랙",
+      "description": "2016 제네시스 G90 블랙, 주행거리 127,258km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 3,
+        "name": "제네시스",
+        "slug": "genesis",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 20,
+        "name": "G90",
+        "slug": "g90",
+        "bodyType": "sedan"
+      },
+      "trim": "블랙",
+      "modelYear": 2016,
+      "firstRegistration": "2016-12-16",
+      "mileageKm": 127258,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 24500000,
+      "currency": "KRW",
+      "color": "회색",
+      "displacementCc": 999,
+      "accidentCount": 0,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "점검예정",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 20,
+        "province": "울산광역시",
+        "city": "북구",
+        "slug": "ulsan-2"
+      },
+      "dealer": {
+        "code": "DLR-99e0feda72",
+        "displayName": "교○○",
+        "department": "고객서비스팀",
+        "position": "차장"
+      },
+      "businessArea": {
+        "id": "BIZ_01273",
+        "name": "수도권영업센터 1273",
+        "parent": {
+          "id": "BIZ_00042",
+          "name": "온라인영업 42"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107340,
+      "listingNumber": "UC-00107340",
+      "title": "2017 기아 K8 노블레스",
+      "description": "2017 기아 K8 노블레스, 주행거리 104,302km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 2,
+        "name": "기아",
+        "slug": "kia",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 13,
+        "name": "K8",
+        "slug": "k8",
+        "bodyType": "sedan"
+      },
+      "trim": "노블레스",
+      "modelYear": 2017,
+      "firstRegistration": "2017-11-15",
+      "mileageKm": 104302,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 11200000,
+      "currency": "KRW",
+      "color": "은색",
+      "displacementCc": 2998,
+      "accidentCount": 1,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 32,
+        "province": "충청북도",
+        "city": "제천시",
+        "slug": "chungbuk-3"
+      },
+      "dealer": {
+        "code": "DLR-87e948f5ed",
+        "displayName": "교○○",
+        "department": "데이터팀",
+        "position": "과장"
+      },
+      "businessArea": {
+        "id": "BIZ_00817",
+        "name": "수도권영업운영 817",
+        "parent": {
+          "id": "BIZ_00092",
+          "name": "중부영업 92"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107339,
+      "listingNumber": "UC-00107339",
+      "title": "2011 제네시스 G90 기본형",
+      "description": "2011 제네시스 G90 기본형, 주행거리 174,513km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 3,
+        "name": "제네시스",
+        "slug": "genesis",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 20,
+        "name": "G90",
+        "slug": "g90",
+        "bodyType": "sedan"
+      },
+      "trim": "기본형",
+      "modelYear": 2011,
+      "firstRegistration": "2011-03-14",
+      "mileageKm": 174513,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 11500000,
+      "currency": "KRW",
+      "color": "빨간색",
+      "displacementCc": 999,
+      "accidentCount": 0,
+      "ownerChangeCount": 0,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 31,
+        "province": "충청북도",
+        "city": "충주시",
+        "slug": "chungbuk-2"
+      },
+      "dealer": {
+        "code": "DLR-98cf52b973",
+        "displayName": "교○○",
+        "department": "데이터팀",
+        "position": "과장"
+      },
+      "businessArea": {
+        "id": "BIZ_00785",
+        "name": "제주영업지점 785",
+        "parent": {
+          "id": "BIZ_00033",
+          "name": "영남영업 33"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107338,
+      "listingNumber": "UC-00107338",
+      "title": "2008 제네시스 G70 슈팅 브레이크",
+      "description": "2008 제네시스 G70 슈팅 브레이크, 주행거리 221,772km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 3,
+        "name": "제네시스",
+        "slug": "genesis",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 18,
+        "name": "G70",
+        "slug": "g70",
+        "bodyType": "sedan"
+      },
+      "trim": "슈팅 브레이크",
+      "modelYear": 2008,
+      "firstRegistration": "2008-01-13",
+      "mileageKm": 221772,
+      "fuelType": "가솔린",
+      "transmission": "수동",
+      "price": 3300000,
+      "currency": "KRW",
+      "color": "은색",
+      "displacementCc": 1598,
+      "accidentCount": 0,
+      "ownerChangeCount": 0,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 34,
+        "province": "충청남도",
+        "city": "아산시",
+        "slug": "chungnam-2"
+      },
+      "dealer": {
+        "code": "DLR-f7d157edd0",
+        "displayName": "교○○",
+        "department": "데이터팀",
+        "position": "과장"
+      },
+      "businessArea": {
+        "id": "BIZ_02017",
+        "name": "수도권영업운영 2017",
+        "parent": {
+          "id": "BIZ_00072",
+          "name": "온라인영업 72"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107337,
+      "listingNumber": "UC-00107337",
+      "title": "2008 쉐보레 트래버스 LT",
+      "description": "2008 쉐보레 트래버스 LT, 주행거리 211,631km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 4,
+        "name": "쉐보레",
+        "slug": "chevrolet",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 26,
+        "name": "트래버스",
+        "slug": "traverse",
+        "bodyType": "suv"
+      },
+      "trim": "LT",
+      "modelYear": 2008,
+      "firstRegistration": "2008-05-12",
+      "mileageKm": 211631,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 3700000,
+      "currency": "KRW",
+      "color": "은색",
+      "displacementCc": 1998,
+      "accidentCount": 0,
+      "ownerChangeCount": 0,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 5,
+        "province": "부산광역시",
+        "city": "부산진구",
+        "slug": "busan-2"
+      },
+      "dealer": {
+        "code": "DLR-7a6b8a4115",
+        "displayName": "교○○",
+        "department": "데이터팀",
+        "position": "과장"
+      },
+      "businessArea": {
+        "id": "BIZ_02296",
+        "name": "호남영업팀 2296",
+        "parent": {
+          "id": "BIZ_00081",
+          "name": "영남영업 81"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107336,
+      "listingNumber": "UC-00107336",
+      "title": "2012 BMW X5 50e",
+      "description": "2012 BMW X5 50e, 주행거리 163,860km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 7,
+        "name": "BMW",
+        "slug": "bmw",
+        "country": "독일"
+      },
+      "model": {
+        "id": 37,
+        "name": "X5",
+        "slug": "x5",
+        "bodyType": "suv"
+      },
+      "trim": "50e",
+      "modelYear": 2012,
+      "firstRegistration": "2012-11-11",
+      "mileageKm": 163860,
+      "fuelType": "하이브리드",
+      "transmission": "자동",
+      "price": 14600000,
+      "currency": "KRW",
+      "color": "빨간색",
+      "displacementCc": 1580,
+      "accidentCount": 0,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 10,
+        "province": "인천광역시",
+        "city": "남동구",
+        "slug": "incheon-1"
+      },
+      "dealer": {
+        "code": "DLR-33e49112de",
+        "displayName": "교○○",
+        "department": "데이터팀",
+        "position": "과장"
+      },
+      "businessArea": {
+        "id": "BIZ_00585",
+        "name": "영남영업지점 585",
+        "parent": {
+          "id": "BIZ_00020",
+          "name": "중부영업 20"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107335,
+      "listingNumber": "UC-00107335",
+      "title": "2017 BMW 5시리즈 520i",
+      "description": "2017 BMW 5시리즈 520i, 주행거리 102,473km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 7,
+        "name": "BMW",
+        "slug": "bmw",
+        "country": "독일"
+      },
+      "model": {
+        "id": 35,
+        "name": "5시리즈",
+        "slug": "5-series",
+        "bodyType": "sedan"
+      },
+      "trim": "520i",
+      "modelYear": 2017,
+      "firstRegistration": "2017-08-10",
+      "mileageKm": 102473,
+      "fuelType": "디젤",
+      "transmission": "자동",
+      "price": 21300000,
+      "currency": "KRW",
+      "color": "진주색",
+      "displacementCc": 1998,
+      "accidentCount": 0,
+      "ownerChangeCount": 4,
+      "inspectionStatus": "재점검필요",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 11,
+        "province": "인천광역시",
+        "city": "서구",
+        "slug": "incheon-2"
+      },
+      "dealer": {
+        "code": "DLR-b8c9b828a4",
+        "displayName": "교○○",
+        "department": "차량매입팀",
+        "position": "팀장"
+      },
+      "businessArea": {
+        "id": "BIZ_00298",
+        "name": "호남영업센터 298",
+        "parent": {
+          "id": "BIZ_00020",
+          "name": "중부영업 20"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107334,
+      "listingNumber": "UC-00107334",
+      "title": "2021 기아 카니발 하이리무진",
+      "description": "2021 기아 카니발 하이리무진, 주행거리 68,390km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 2,
+        "name": "기아",
+        "slug": "kia",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 16,
+        "name": "카니발",
+        "slug": "carnival",
+        "bodyType": "minivan"
+      },
+      "trim": "하이리무진",
+      "modelYear": 2021,
+      "firstRegistration": "2021-05-09",
+      "mileageKm": 68390,
+      "fuelType": "디젤",
+      "transmission": "자동",
+      "price": 21300000,
+      "currency": "KRW",
+      "color": "빨간색",
+      "displacementCc": 2151,
+      "accidentCount": 1,
+      "ownerChangeCount": 4,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 4,
+        "province": "부산광역시",
+        "city": "해운대구",
+        "slug": "busan-1"
+      },
+      "dealer": {
+        "code": "DLR-02439482ea",
+        "displayName": "교○○",
+        "department": "품질관리팀",
+        "position": "대리"
+      },
+      "businessArea": {
+        "id": "BIZ_00845",
+        "name": "제주영업지점 845",
+        "parent": {
+          "id": "BIZ_00030",
+          "name": "온라인영업 30"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107333,
+      "listingNumber": "UC-00107333",
+      "title": "2013 KG모빌리티 렉스턴 프리미엄",
+      "description": "2013 KG모빌리티 렉스턴 프리미엄, 주행거리 152,400km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 6,
+        "name": "KG모빌리티",
+        "slug": "kg-mobility",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 33,
+        "name": "렉스턴",
+        "slug": "rexton",
+        "bodyType": "suv"
+      },
+      "trim": "프리미엄",
+      "modelYear": 2013,
+      "firstRegistration": "2013-02-08",
+      "mileageKm": 152400,
+      "fuelType": "디젤",
+      "transmission": "수동",
+      "price": 7100000,
+      "currency": "KRW",
+      "color": "회색",
+      "displacementCc": 2993,
+      "accidentCount": 0,
+      "ownerChangeCount": 3,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 16,
+        "province": "대전광역시",
+        "city": "유성구",
+        "slug": "daejeon-1"
+      },
+      "dealer": {
+        "code": "DLR-20b393800d",
+        "displayName": "교○○",
+        "department": "품질관리팀",
+        "position": "대리"
+      },
+      "businessArea": {
+        "id": "BIZ_00889",
+        "name": "수도권영업플랫폼 889",
+        "parent": {
+          "id": "BIZ_00072",
+          "name": "온라인영업 72"
+        }
+      },
+      "createdAt": "2026-08-11T12:12:00.007Z",
+      "updatedAt": "2026-08-11T12:12:00.007Z"
+    },
+    {
+      "id": 107332,
+      "listingNumber": "UC-00107332",
+      "title": "2016 폭스바겐 골프 GTI",
+      "description": "2016 폭스바겐 골프 GTI, 주행거리 114,891km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 10,
+        "name": "폭스바겐",
+        "slug": "volkswagen",
+        "country": "독일"
+      },
+      "model": {
+        "id": 45,
+        "name": "골프",
+        "slug": "golf",
+        "bodyType": "hatchback"
+      },
+      "trim": "GTI",
+      "modelYear": 2016,
+      "firstRegistration": "2016-02-07",
+      "mileageKm": 114891,
+      "fuelType": "디젤",
+      "transmission": "자동",
+      "price": 9300000,
+      "currency": "KRW",
+      "color": "빨간색",
+      "displacementCc": 2993,
+      "accidentCount": 0,
+      "ownerChangeCount": 2,
+      "inspectionStatus": "재점검필요",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 20,
+        "province": "울산광역시",
+        "city": "북구",
+        "slug": "ulsan-2"
+      },
+      "dealer": {
+        "code": "DLR-4c60aa8779",
+        "displayName": "교○○",
+        "department": "고객서비스팀",
+        "position": "차장"
+      },
+      "businessArea": {
+        "id": "BIZ_02918",
+        "name": "중부영업센터 2918",
+        "parent": {
+          "id": "BIZ_00034",
+          "name": "호남영업 34"
+        }
+      },
+      "createdAt": "2026-08-11T12:08:00.009Z",
+      "updatedAt": "2026-08-11T12:08:00.009Z"
+    },
+    {
+      "id": 107331,
+      "listingNumber": "UC-00107331",
+      "title": "2022 BMW 3시리즈 320i",
+      "description": "2022 BMW 3시리즈 320i, 주행거리 57,339km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 7,
+        "name": "BMW",
+        "slug": "bmw",
+        "country": "독일"
+      },
+      "model": {
+        "id": 34,
+        "name": "3시리즈",
+        "slug": "3-series",
+        "bodyType": "sedan"
+      },
+      "trim": "320i",
+      "modelYear": 2022,
+      "firstRegistration": "2022-01-06",
+      "mileageKm": 57339,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 35900000,
+      "currency": "KRW",
+      "color": "검정색",
+      "displacementCc": 2497,
+      "accidentCount": 0,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 13,
+        "province": "광주광역시",
+        "city": "광산구",
+        "slug": "gwangju-1"
+      },
+      "dealer": {
+        "code": "DLR-b1282d3303",
+        "displayName": "교○○",
+        "department": "영업팀",
+        "position": "사원"
+      },
+      "businessArea": {
+        "id": "BIZ_02991",
+        "name": "영남영업팀 2991",
+        "parent": {
+          "id": "BIZ_00037",
+          "name": "수도권영업 37"
+        }
+      },
+      "createdAt": "2026-08-11T12:08:00.009Z",
+      "updatedAt": "2026-08-11T12:08:00.009Z"
+    },
+    {
+      "id": 107330,
+      "listingNumber": "UC-00107330",
+      "title": "2021 르노코리아 XM3 RE",
+      "description": "2021 르노코리아 XM3 RE, 주행거리 51,663km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 5,
+        "name": "르노코리아",
+        "slug": "renault-korea",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 29,
+        "name": "XM3",
+        "slug": "xm3",
+        "bodyType": "suv"
+      },
+      "trim": "RE",
+      "modelYear": 2021,
+      "firstRegistration": "2021-10-05",
+      "mileageKm": 51663,
+      "fuelType": "하이브리드",
+      "transmission": "자동",
+      "price": 13800000,
+      "currency": "KRW",
+      "color": "녹색",
+      "displacementCc": 2487,
+      "accidentCount": 2,
+      "ownerChangeCount": 3,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 42,
+        "province": "경상북도",
+        "city": "포항시",
+        "slug": "gyeongbuk-1"
+      },
+      "dealer": {
+        "code": "DLR-ebd131f08d",
+        "displayName": "교○○",
+        "department": "품질관리팀",
+        "position": "대리"
+      },
+      "businessArea": {
+        "id": "BIZ_00936",
+        "name": "온라인영업팀 936",
+        "parent": {
+          "id": "BIZ_00054",
+          "name": "온라인영업 54"
+        }
+      },
+      "createdAt": "2026-08-11T12:08:00.009Z",
+      "updatedAt": "2026-08-11T12:08:00.009Z"
+    },
+    {
+      "id": 107329,
+      "listingNumber": "UC-00107329",
+      "title": "2017 토요타 캠리 하이브리드",
+      "description": "2017 토요타 캠리 하이브리드, 주행거리 109,522km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 11,
+        "name": "토요타",
+        "slug": "toyota",
+        "country": "일본"
+      },
+      "model": {
+        "id": 47,
+        "name": "캠리",
+        "slug": "camry",
+        "bodyType": "sedan"
+      },
+      "trim": "하이브리드",
+      "modelYear": 2017,
+      "firstRegistration": "2017-12-04",
+      "mileageKm": 109522,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 12300000,
+      "currency": "KRW",
+      "color": "회색",
+      "displacementCc": 999,
+      "accidentCount": 0,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 25,
+        "province": "경기도",
+        "city": "고양시",
+        "slug": "gyeonggi-3"
+      },
+      "dealer": {
+        "code": "DLR-b448abf5a1",
+        "displayName": "교○○",
+        "department": "차량매입팀",
+        "position": "팀장"
+      },
+      "businessArea": {
+        "id": "BIZ_01084",
+        "name": "호남영업플랫폼 1084",
+        "parent": {
+          "id": "BIZ_00043",
+          "name": "수도권영업 43"
+        }
+      },
+      "createdAt": "2026-08-11T12:08:00.009Z",
+      "updatedAt": "2026-08-11T12:08:00.009Z"
+    },
+    {
+      "id": 107328,
+      "listingNumber": "UC-00107328",
+      "title": "2022 BMW 5시리즈 520i",
+      "description": "2022 BMW 5시리즈 520i, 주행거리 59,101km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 7,
+        "name": "BMW",
+        "slug": "bmw",
+        "country": "독일"
+      },
+      "model": {
+        "id": 35,
+        "name": "5시리즈",
+        "slug": "5-series",
+        "bodyType": "sedan"
+      },
+      "trim": "520i",
+      "modelYear": 2022,
+      "firstRegistration": "2022-09-03",
+      "mileageKm": 59101,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 45000000,
+      "currency": "KRW",
+      "color": "진주색",
+      "displacementCc": 3470,
+      "accidentCount": 0,
+      "ownerChangeCount": 4,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 35,
+        "province": "충청남도",
+        "city": "서산시",
+        "slug": "chungnam-3"
+      },
+      "dealer": {
+        "code": "DLR-f2fa9eb1a1",
+        "displayName": "교○○",
+        "department": "영업팀",
+        "position": "사원"
+      },
+      "businessArea": {
+        "id": "BIZ_00504",
+        "name": "온라인영업플랫폼 504",
+        "parent": {
+          "id": "BIZ_00098",
+          "name": "중부영업 98"
+        }
+      },
+      "createdAt": "2026-08-11T12:08:00.009Z",
+      "updatedAt": "2026-08-11T12:08:00.009Z"
+    },
+    {
+      "id": 107327,
+      "listingNumber": "UC-00107327",
+      "title": "2010 현대 아반떼 인스퍼레이션",
+      "description": "2010 현대 아반떼 인스퍼레이션, 주행거리 188,784km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 1,
+        "name": "현대",
+        "slug": "hyundai",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 1,
+        "name": "아반떼",
+        "slug": "avante",
+        "bodyType": "sedan"
+      },
+      "trim": "인스퍼레이션",
+      "modelYear": 2010,
+      "firstRegistration": "2010-11-02",
+      "mileageKm": 188784,
+      "fuelType": "LPG",
+      "transmission": "DCT",
+      "price": 2000000,
+      "currency": "KRW",
+      "color": "흰색",
+      "displacementCc": 1999,
+      "accidentCount": 1,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 45,
+        "province": "경상남도",
+        "city": "창원시",
+        "slug": "gyeongnam-1"
+      },
+      "dealer": {
+        "code": "DLR-ac45ae07ac",
+        "displayName": "교○○",
+        "department": "품질관리팀",
+        "position": "대리"
+      },
+      "businessArea": {
+        "id": "BIZ_01556",
+        "name": "중부영업팀 1556",
+        "parent": {
+          "id": "BIZ_00078",
+          "name": "온라인영업 78"
+        }
+      },
+      "createdAt": "2026-08-11T12:08:00.009Z",
+      "updatedAt": "2026-08-11T12:08:00.009Z"
+    },
+    {
+      "id": 107326,
+      "listingNumber": "UC-00107326",
+      "title": "2022 제네시스 G90 기본형",
+      "description": "2022 제네시스 G90 기본형, 주행거리 61,866km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 3,
+        "name": "제네시스",
+        "slug": "genesis",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 20,
+        "name": "G90",
+        "slug": "g90",
+        "bodyType": "sedan"
+      },
+      "trim": "기본형",
+      "modelYear": 2022,
+      "firstRegistration": "2022-05-01",
+      "mileageKm": 61866,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 61400000,
+      "currency": "KRW",
+      "color": "빨간색",
+      "displacementCc": 1998,
+      "accidentCount": 0,
+      "ownerChangeCount": 3,
+      "inspectionStatus": "재점검필요",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 24,
+        "province": "경기도",
+        "city": "성남시",
+        "slug": "gyeonggi-2"
+      },
+      "dealer": {
+        "code": "DLR-11a718e277",
+        "displayName": "교○○",
+        "department": "차량매입팀",
+        "position": "팀장"
+      },
+      "businessArea": {
+        "id": "BIZ_02471",
+        "name": "제주영업팀 2471",
+        "parent": {
+          "id": "BIZ_00012",
+          "name": "온라인영업 12"
+        }
+      },
+      "createdAt": "2026-08-11T12:08:00.009Z",
+      "updatedAt": "2026-08-11T12:08:00.009Z"
+    },
+    {
+      "id": 107325,
+      "listingNumber": "UC-00107325",
+      "title": "2015 기아 EV6 GT",
+      "description": "2015 기아 EV6 GT, 주행거리 128,256km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 2,
+        "name": "기아",
+        "slug": "kia",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 17,
+        "name": "EV6",
+        "slug": "ev6",
+        "bodyType": "suv"
+      },
+      "trim": "GT",
+      "modelYear": 2015,
+      "firstRegistration": "2015-11-27",
+      "mileageKm": 128256,
+      "fuelType": "전기",
+      "transmission": "자동",
+      "price": 11500000,
+      "currency": "KRW",
+      "color": "갈색",
+      "displacementCc": 0,
+      "accidentCount": 0,
+      "ownerChangeCount": 1,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 30,
+        "province": "충청북도",
+        "city": "청주시",
+        "slug": "chungbuk-1"
+      },
+      "dealer": {
+        "code": "DLR-b67b7b3058",
+        "displayName": "교○○",
+        "department": "상품화팀",
+        "position": "부장"
+      },
+      "businessArea": {
+        "id": "BIZ_02880",
+        "name": "온라인영업지점 2880",
+        "parent": {
+          "id": "BIZ_00082",
+          "name": "호남영업 82"
+        }
+      },
+      "createdAt": "2026-08-11T12:08:00.009Z",
+      "updatedAt": "2026-08-11T12:08:00.009Z"
+    },
+    {
+      "id": 107324,
+      "listingNumber": "UC-00107324",
+      "title": "2018 르노코리아 SM6 필",
+      "description": "2018 르노코리아 SM6 필, 주행거리 106,810km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 5,
+        "name": "르노코리아",
+        "slug": "renault-korea",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 27,
+        "name": "SM6",
+        "slug": "sm6",
+        "bodyType": "sedan"
+      },
+      "trim": "필",
+      "modelYear": 2018,
+      "firstRegistration": "2018-01-26",
+      "mileageKm": 106810,
+      "fuelType": "가솔린",
+      "transmission": "DCT",
+      "price": 9300000,
+      "currency": "KRW",
+      "color": "갈색",
+      "displacementCc": 3470,
+      "accidentCount": 1,
+      "ownerChangeCount": 0,
+      "inspectionStatus": "점검예정",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 42,
+        "province": "경상북도",
+        "city": "포항시",
+        "slug": "gyeongbuk-1"
+      },
+      "dealer": {
+        "code": "DLR-e3c20ac820",
+        "displayName": "교○○",
+        "department": "품질관리팀",
+        "position": "대리"
+      },
+      "businessArea": {
+        "id": "BIZ_02162",
+        "name": "중부영업운영 2162",
+        "parent": {
+          "id": "BIZ_00002",
+          "name": "중부영업 2"
+        }
+      },
+      "createdAt": "2026-08-11T12:08:00.009Z",
+      "updatedAt": "2026-08-11T12:08:00.009Z"
+    },
+    {
+      "id": 107323,
+      "listingNumber": "UC-00107323",
+      "title": "2015 BMW X5 50e",
+      "description": "2015 BMW X5 50e, 주행거리 132,712km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 7,
+        "name": "BMW",
+        "slug": "bmw",
+        "country": "독일"
+      },
+      "model": {
+        "id": 37,
+        "name": "X5",
+        "slug": "x5",
+        "bodyType": "suv"
+      },
+      "trim": "50e",
+      "modelYear": 2015,
+      "firstRegistration": "2015-08-25",
+      "mileageKm": 132712,
+      "fuelType": "하이브리드",
+      "transmission": "수동",
+      "price": 20500000,
+      "currency": "KRW",
+      "color": "회색",
+      "displacementCc": 1999,
+      "accidentCount": 2,
+      "ownerChangeCount": 3,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 42,
+        "province": "경상북도",
+        "city": "포항시",
+        "slug": "gyeongbuk-1"
+      },
+      "dealer": {
+        "code": "DLR-e3c32455f8",
+        "displayName": "교○○",
+        "department": "품질관리팀",
+        "position": "대리"
+      },
+      "businessArea": {
+        "id": "BIZ_00673",
+        "name": "수도권영업센터 673",
+        "parent": {
+          "id": "BIZ_00004",
+          "name": "호남영업 4"
+        }
+      },
+      "createdAt": "2026-08-11T12:08:00.009Z",
+      "updatedAt": "2026-08-11T12:08:00.009Z"
+    },
+    {
+      "id": 107322,
+      "listingNumber": "UC-00107322",
+      "title": "2020 기아 K3 프레스티지",
+      "description": "2020 기아 K3 프레스티지, 주행거리 64,255km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 2,
+        "name": "기아",
+        "slug": "kia",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 11,
+        "name": "K3",
+        "slug": "k3",
+        "bodyType": "sedan"
+      },
+      "trim": "프레스티지",
+      "modelYear": 2020,
+      "firstRegistration": "2020-08-24",
+      "mileageKm": 64255,
+      "fuelType": "가솔린",
+      "transmission": "수동",
+      "price": 9700000,
+      "currency": "KRW",
+      "color": "녹색",
+      "displacementCc": 1998,
+      "accidentCount": 0,
+      "ownerChangeCount": 2,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 7,
+        "province": "대구광역시",
+        "city": "수성구",
+        "slug": "daegu-1"
+      },
+      "dealer": {
+        "code": "DLR-4972b6bf02",
+        "displayName": "교○○",
+        "department": "품질관리팀",
+        "position": "대리"
+      },
+      "businessArea": {
+        "id": "BIZ_00455",
+        "name": "제주영업지점 455",
+        "parent": {
+          "id": "BIZ_00082",
+          "name": "호남영업 82"
+        }
+      },
+      "createdAt": "2026-08-11T12:08:00.009Z",
+      "updatedAt": "2026-08-11T12:08:00.009Z"
+    },
+    {
+      "id": 107321,
+      "listingNumber": "UC-00107321",
+      "title": "2021 제네시스 GV80 쿠페",
+      "description": "2021 제네시스 GV80 쿠페, 주행거리 62,457km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 3,
+        "name": "제네시스",
+        "slug": "genesis",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 22,
+        "name": "GV80",
+        "slug": "gv80",
+        "bodyType": "suv"
+      },
+      "trim": "쿠페",
+      "modelYear": 2021,
+      "firstRegistration": "2021-07-23",
+      "mileageKm": 62457,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 39900000,
+      "currency": "KRW",
+      "color": "녹색",
+      "displacementCc": 999,
+      "accidentCount": 0,
+      "ownerChangeCount": 4,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 46,
+        "province": "경상남도",
+        "city": "김해시",
+        "slug": "gyeongnam-2"
+      },
+      "dealer": {
+        "code": "DLR-c91f75f58a",
+        "displayName": "교○○",
+        "department": "영업팀",
+        "position": "사원"
+      },
+      "businessArea": {
+        "id": "BIZ_01155",
+        "name": "영남영업지점 1155",
+        "parent": {
+          "id": "BIZ_00005",
+          "name": "제주영업 5"
+        }
+      },
+      "createdAt": "2026-08-11T12:08:00.009Z",
+      "updatedAt": "2026-08-11T12:08:00.009Z"
+    },
+    {
+      "id": 107320,
+      "listingNumber": "UC-00107320",
+      "title": "2024 기아 모닝 시그니처",
+      "description": "2024 기아 모닝 시그니처, 주행거리 30,636km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 2,
+        "name": "기아",
+        "slug": "kia",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 9,
+        "name": "모닝",
+        "slug": "morning",
+        "bodyType": "compact"
+      },
+      "trim": "시그니처",
+      "modelYear": 2024,
+      "firstRegistration": "2024-04-22",
+      "mileageKm": 30636,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 12400000,
+      "currency": "KRW",
+      "color": "검정색",
+      "displacementCc": 999,
+      "accidentCount": 0,
+      "ownerChangeCount": 0,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 37,
+        "province": "전북특별자치도",
+        "city": "익산시",
+        "slug": "jeonbuk-2"
+      },
+      "dealer": {
+        "code": "DLR-627f340aa3",
+        "displayName": "교○○",
+        "department": "품질관리팀",
+        "position": "대리"
+      },
+      "businessArea": {
+        "id": "BIZ_01812",
+        "name": "온라인영업운영 1812",
+        "parent": {
+          "id": "BIZ_00037",
+          "name": "수도권영업 37"
+        }
+      },
+      "createdAt": "2026-08-11T12:08:00.009Z",
+      "updatedAt": "2026-08-11T12:08:00.009Z"
+    },
+    {
+      "id": 107319,
+      "listingNumber": "UC-00107319",
+      "title": "2026 쉐보레 트레일블레이저 RS",
+      "description": "2026 쉐보레 트레일블레이저 RS, 주행거리 9,424km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 4,
+        "name": "쉐보레",
+        "slug": "chevrolet",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 25,
+        "name": "트레일블레이저",
+        "slug": "trailblazer",
+        "bodyType": "suv"
+      },
+      "trim": "RS",
+      "modelYear": 2026,
+      "firstRegistration": "2026-03-21",
+      "mileageKm": 9424,
+      "fuelType": "가솔린",
+      "transmission": "수동",
+      "price": 26400000,
+      "currency": "KRW",
+      "color": "회색",
+      "displacementCc": 1998,
+      "accidentCount": 3,
+      "ownerChangeCount": 0,
+      "inspectionStatus": "점검완료",
+      "status": "SOLD",
+      "location": {
+        "id": 42,
+        "province": "경상북도",
+        "city": "포항시",
+        "slug": "gyeongbuk-1"
+      },
+      "dealer": {
+        "code": "DLR-d4631c15aa",
+        "displayName": "교○○",
+        "department": "차량매입팀",
+        "position": "팀장"
+      },
+      "businessArea": {
+        "id": "BIZ_01884",
+        "name": "온라인영업플랫폼 1884",
+        "parent": {
+          "id": "BIZ_00038",
+          "name": "중부영업 38"
+        }
+      },
+      "createdAt": "2026-08-11T12:08:00.009Z",
+      "updatedAt": "2026-08-11T12:08:00.009Z"
+    },
+    {
+      "id": 107318,
+      "listingNumber": "UC-00107318",
+      "title": "2026 르노코리아 QM6 RE",
+      "description": "2026 르노코리아 QM6 RE, 주행거리 10,094km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 5,
+        "name": "르노코리아",
+        "slug": "renault-korea",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 28,
+        "name": "QM6",
+        "slug": "qm6",
+        "bodyType": "suv"
+      },
+      "trim": "RE",
+      "modelYear": 2026,
+      "firstRegistration": "2026-03-20",
+      "mileageKm": 10094,
+      "fuelType": "가솔린",
+      "transmission": "자동",
+      "price": 34600000,
+      "currency": "KRW",
+      "color": "빨간색",
+      "displacementCc": 1598,
+      "accidentCount": 0,
+      "ownerChangeCount": 2,
+      "inspectionStatus": "점검완료",
+      "status": "SOLD",
+      "location": {
+        "id": 39,
+        "province": "전라남도",
+        "city": "목포시",
+        "slug": "jeonnam-1"
+      },
+      "dealer": {
+        "code": "DLR-d52ad39fdc",
+        "displayName": "교○○",
+        "department": "영업팀",
+        "position": "사원"
+      },
+      "businessArea": {
+        "id": "BIZ_02065",
+        "name": "수도권영업지점 2065",
+        "parent": {
+          "id": "BIZ_00088",
+          "name": "호남영업 88"
+        }
+      },
+      "createdAt": "2026-08-11T12:08:00.009Z",
+      "updatedAt": "2026-08-11T12:08:00.009Z"
+    },
+    {
+      "id": 107317,
+      "listingNumber": "UC-00107317",
+      "title": "2014 제네시스 G70 스포츠 패키지",
+      "description": "2014 제네시스 G70 스포츠 패키지, 주행거리 143,806km의 수업용 가상 중고차 매물입니다. 실제 차량번호나 연락처를 포함하지 않습니다.",
+      "brand": {
+        "id": 3,
+        "name": "제네시스",
+        "slug": "genesis",
+        "country": "대한민국"
+      },
+      "model": {
+        "id": 18,
+        "name": "G70",
+        "slug": "g70",
+        "bodyType": "sedan"
+      },
+      "trim": "스포츠 패키지",
+      "modelYear": 2014,
+      "firstRegistration": "2014-01-19",
+      "mileageKm": 143806,
+      "fuelType": "가솔린",
+      "transmission": "CVT",
+      "price": 8400000,
+      "currency": "KRW",
+      "color": "흰색",
+      "displacementCc": 2497,
+      "accidentCount": 0,
+      "ownerChangeCount": 0,
+      "inspectionStatus": "점검완료",
+      "status": "AVAILABLE",
+      "location": {
+        "id": 44,
+        "province": "경상북도",
+        "city": "경산시",
+        "slug": "gyeongbuk-3"
+      },
+      "dealer": {
+        "code": "DLR-8718bda618",
+        "displayName": "교○○",
+        "department": "차량매입팀",
+        "position": "팀장"
+      },
+      "businessArea": {
+        "id": "BIZ_00136",
+        "name": "호남영업팀 136",
+        "parent": {
+          "id": "BIZ_00045",
+          "name": "영남영업 45"
+        }
+      },
+      "createdAt": "2026-08-11T12:08:00.009Z",
+      "updatedAt": "2026-08-11T12:08:00.009Z"
+    }
+  ],
+  "meta": {
+    "page": 1,
+    "page_size": 100,
+    "total": 107416,
+    "total_pages": 1075,
+    "returned": 100,
+    "sort": "newest",
+    "filters": {
+      "q": null,
+      "brand": null,
+      "fuel": null,
+      "status": null,
+      "location": null,
+      "min_price": null,
+      "max_price": null,
+      "min_year": null,
+      "max_year": null,
+      "max_mileage": null,
+      "accident_free": null
+    }
+  },
+  "links": {
+    "self": "/api/v1/cars?sort=newest&page_size=100",
+    "next": "/api/v1/cars?sort=newest&page_size=100&page=2",
+    "previous": null
+  }
+}

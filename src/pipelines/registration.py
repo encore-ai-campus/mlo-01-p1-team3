@@ -1,0 +1,460 @@
+"""Registration business pipeline: one-period collection -> loading.
+
+This module owns the registration-report business rules as well as composing
+the stage packages: one logical request per run, ``form_id=5498``,
+``style_num=2``, ``start_dt=end_dt=YYYYMM``, wide-to-long normalization,
+non-negative measures, and a five-field business key. The source contract and
+the Day 22 workshop require sanitized errors, source provenance, and fixture
+reproducibility.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import sys
+import uuid
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Dict, Optional, Sequence
+
+if __package__ in {None, ""}:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from collection.registration import (
+    FixtureRegistrationClient,
+    RegistrationApiClient,
+    RegistrationError,
+    current_period,
+    extract_record_list,
+    find_value,
+    month_label,
+    normalize_period,
+)
+from common.config import Settings, settings_from_env
+from common.contracts import CollectionEnvelope, PreparedBatch, RejectedRecord
+from common.logging_utils import JsonlLogger
+from loading.registration import (
+    JsonQuotaLedger,
+    JsonlRegistrationUpsertSink,
+    QuotaExceeded,
+    RegistrationStateStore,
+    SqlQuotaLedger,
+    SqlRegistrationUpsertSink,
+)
+from preprocessing.registration import (
+    RegistrationPreprocessError,
+    transform_registration_records,
+)
+
+
+class _DryRunQuota:
+    """In-memory quota preview that never opens or updates a persistence sink."""
+
+    def __init__(self, limit: int) -> None:
+        self.limit = limit
+        self._used_count = 0
+
+    def reserve(self) -> None:
+        if self._used_count >= self.limit:
+            raise QuotaExceeded()
+        self._used_count += 1
+
+    @property
+    def used_count(self) -> int:
+        return self._used_count
+
+    @property
+    def remaining(self) -> int:
+        return max(0, self.limit - self._used_count)
+
+    def close(self) -> None:
+        return None
+
+
+def run_once(
+    *,
+    settings: Settings,
+    fixture: Optional[Path] = None,
+    sink_name: str = "json",
+    dry_run: bool = False,
+    period: Optional[str] = None,
+    start_period: Optional[str] = None,
+    max_calls: Optional[int] = None,
+    run_id: Optional[str] = None,
+) -> Dict[str, Any]:
+    """Run exactly one registration API request for the selected month.
+
+    ``max_calls`` and ``start_period`` remain accepted as narrow migration
+    shims for callers of the previous bounded entrypoint, but a daily run may
+    never perform more than one upstream request.
+    """
+
+    if sink_name not in {"json", "sql"}:
+        raise ValueError(f"unsupported registration sink: {sink_name}")
+    if max_calls not in (None, 1):
+        raise ValueError("registration pipeline performs exactly one API call per run")
+    if (
+        period
+        and start_period
+        and normalize_period(period) != normalize_period(start_period)
+    ):
+        raise ValueError("period and start_period must identify the same month")
+    if getattr(settings, "registration_form_id", 5498) != 5498:
+        raise ValueError("registration_form_id must remain 5498")
+    if getattr(settings, "registration_style_num", 2) != 2:
+        raise ValueError("registration_style_num must remain 2")
+
+    run_id = run_id or str(uuid.uuid4())
+    logger = JsonlLogger(
+        settings.log_path,
+        {
+            "service": "pipeline",
+            "pipeline_name": "vehicle_registration",
+            "run_id": run_id,
+        },
+    )
+    state = RegistrationStateStore(settings.registration_state_path)
+    requested_period = normalize_period(
+        period
+        or start_period
+        or settings.registration_start_period
+        or current_period(settings.time_zone)
+    )
+    sink: Any = None
+    quota: Any = None
+    stored_state: Dict[str, Any] = {}
+    cleanup_attempted = False
+    cleanup_failed = False
+
+    total_collected = total_preprocessed = total_valid = total_rejected = 0
+    total_inserted = total_updated = total_unchanged = 0
+    request_count = 0
+    collected = False
+    current_stage = "Collect"
+    current_logic = "vehicle_registration.collect"
+
+    def reserve_call() -> None:
+        nonlocal request_count
+        assert quota is not None
+        request_count += 1
+        quota.reserve()
+
+    def close_resources() -> None:
+        """Attempt both closes and surface the first cleanup failure."""
+
+        nonlocal cleanup_attempted, cleanup_failed
+        if cleanup_attempted:
+            return
+        cleanup_attempted = True
+        first_error: Exception | None = None
+        for resource in (sink, quota):
+            close = getattr(resource, "close", None)
+            if not close:
+                continue
+            try:
+                close()
+            except Exception as exc:
+                if first_error is None:
+                    first_error = exc
+        if first_error is not None:
+            cleanup_failed = True
+            raise first_error
+
+    try:
+        quota = (
+            _DryRunQuota(settings.registration_daily_quota)
+            if dry_run
+            else (
+                SqlQuotaLedger(settings)
+                if sink_name == "sql"
+                else JsonQuotaLedger(
+                    state,
+                    limit=settings.registration_daily_quota,
+                    time_zone=settings.time_zone,
+                )
+            )
+        )
+        stored_state = state.load()
+        logger.event(
+            "INFO",
+            "run_started",
+            "daily registration run started",
+            stage_name="Collect",
+            logic_name="vehicle_registration.collect",
+            period=month_label(requested_period),
+            quota_remaining=quota.remaining,
+        )
+        client: Any = (
+            FixtureRegistrationClient(fixture)
+            if fixture
+            else RegistrationApiClient(settings)
+        )
+        if not dry_run:
+            if sink_name == "json":
+                sink = JsonlRegistrationUpsertSink(
+                    settings.output_dir / "vehicle_registration_reports.jsonl"
+                )
+            else:
+                sink = SqlRegistrationUpsertSink(settings)
+
+        if quota.remaining <= 0:
+            raise QuotaExceeded()
+
+        if quota.remaining > 0:
+            payload, body = client.fetch_period(
+                requested_period, reserve_call=reserve_call
+            )
+            records = extract_record_list(payload)
+            status = (
+                find_value(payload, {"status_code", "statuscode"})
+                if isinstance(payload, dict)
+                else None
+            )
+            if (
+                not records
+                and status not in {"INFO-200", 200, "200"}
+                and not isinstance(payload, dict)
+            ):
+                raise RegistrationError(
+                    "registration response has no record envelope",
+                    code="response_schema",
+                )
+            collected = True
+            envelope = CollectionEnvelope(
+                source_name="vehicle_registration",
+                collected_at=datetime.now(timezone.utc),
+                records=tuple(records),
+                metadata={
+                    "period": requested_period,
+                    "response_sha256": hashlib.sha256(body).hexdigest(),
+                },
+            )
+            total_collected = len(envelope.records)
+            logger.event(
+                "INFO",
+                "period_collected",
+                "registration response collected",
+                stage_name="Collect",
+                logic_name="vehicle_registration.collect",
+                period=month_label(requested_period),
+                collected_count=len(envelope.records),
+                response_sha256=hashlib.sha256(body).hexdigest(),
+            )
+
+            current_stage = "Preprocess"
+            current_logic = "vehicle_registration.preprocess"
+            valid, rejected = transform_registration_records(
+                envelope.records,
+                period=requested_period,
+                settings=settings,
+                run_id=run_id,
+                collected_at=envelope.collected_at.isoformat(),
+            )
+            prepared = PreparedBatch(
+                records=tuple(valid),
+                rejected=tuple(
+                    RejectedRecord(
+                        index=item.index,
+                        error_code=item.error_code,
+                        stable_key="|".join(
+                            filter(
+                                None,
+                                (
+                                    item.sido_name,
+                                    item.sigungu_name,
+                                    item.vehicle_type,
+                                    item.usage_type,
+                                ),
+                            )
+                        ),
+                    )
+                    for item in rejected
+                ),
+            )
+            total_preprocessed = len(prepared.records)
+            total_valid = len(prepared.records)
+            total_rejected = len(prepared.rejected)
+            logger.event(
+                "INFO",
+                "period_preprocessed",
+                "registration response flattened into normalized measures",
+                stage_name="Preprocess",
+                logic_name="vehicle_registration.preprocess",
+                period=month_label(requested_period),
+                collected_count=len(envelope.records),
+                preprocessed_count=len(prepared.records),
+                valid_count=len(prepared.records),
+                rejected_count=len(prepared.rejected),
+                response_sha256=hashlib.sha256(body).hexdigest(),
+            )
+            current_stage = "Validate"
+            current_logic = "vehicle_registration.validate"
+            logger.event(
+                "INFO",
+                "validation_completed",
+                "registration row validation completed",
+                stage_name="Validate",
+                logic_name="vehicle_registration.validate",
+                input_count=len(envelope.records),
+                valid_count=len(prepared.records),
+                rejected_count=len(prepared.rejected),
+            )
+            if prepared.rejected:
+                logger.event(
+                    "ERROR",
+                    "records_rejected",
+                    "registration source rows failed validation and were discarded",
+                    stage_name="Validate",
+                    logic_name="vehicle_registration.validate",
+                    error_code="records_rejected",
+                    rejected_count=len(prepared.rejected),
+                    discarded_count=len(prepared.rejected),
+                    discard_policy="log_only",
+                    reject_codes=sorted(
+                        {item.error_code for item in prepared.rejected}
+                    ),
+                )
+            if envelope.records and not prepared.records and prepared.rejected:
+                raise RegistrationPreprocessError(
+                    "all collected registration records were rejected; checkpoint was not advanced",
+                    code="all_records_rejected",
+                )
+            current_stage = "Load"
+            current_logic = "vehicle_registration.load"
+            if sink is not None:
+                stats = sink.save(prepared.records)
+                total_inserted = stats.inserted_count
+                total_updated = stats.updated_count
+                total_unchanged = stats.unchanged_count
+
+            stored_state = state.load()
+            stored_state.update(
+                {
+                    "last_success_period": requested_period,
+                    "last_run_id": run_id,
+                    "last_collected_count": total_collected,
+                    "last_preprocessed_count": total_preprocessed,
+                    "updated_at": datetime.now(timezone.utc).isoformat(),
+                }
+            )
+            if not dry_run:
+                state.save(stored_state)
+
+        result = {
+            "status": "OK",
+            "run_id": run_id,
+            "mode": "daily",
+            "period": month_label(requested_period) if collected else None,
+            "periods": 1 if collected else 0,
+            "collected_count": total_collected,
+            "preprocessed_count": total_preprocessed,
+            "valid_count": total_valid,
+            "rejected_count": total_rejected,
+            "inserted_count": total_inserted,
+            "updated_count": total_updated,
+            "unchanged_count": total_unchanged,
+            "api_calls": request_count,
+            "quota_used": quota.used_count,
+            "quota_remaining": quota.remaining,
+            "dry_run": dry_run,
+            "checkpoint_path": str(settings.registration_state_path),
+        }
+        close_resources()
+        logger.event(
+            "INFO",
+            "run_succeeded",
+            "daily registration run completed",
+            stage_name="Load",
+            logic_name="vehicle_registration.load",
+            **result,
+        )
+        return result
+    except Exception as exc:
+        quota_used: Any = None
+        if quota is not None:
+            try:
+                quota_used = quota.used_count
+            except Exception:
+                quota_used = None
+        logger.event(
+            "ERROR",
+            "run_failed",
+            "registration run failed",
+            stage_name=current_stage,
+            logic_name=current_logic,
+            error_code=(
+                "resource_close_failed"
+                if cleanup_failed
+                else getattr(exc, "code", "registration_error")
+            ),
+            quota_used=quota_used,
+        )
+        raise
+    finally:
+        if not cleanup_attempted:
+            try:
+                close_resources()
+            except Exception:
+                try:
+                    logger.event(
+                        "ERROR",
+                        "resource_close_failed",
+                        "registration resources could not be closed cleanly",
+                        stage_name=current_stage,
+                        logic_name=current_logic,
+                        error_code="resource_close_failed",
+                    )
+                except Exception:
+                    pass
+
+
+def main(argv: Optional[Sequence[str]] = None) -> int:
+    parser = argparse.ArgumentParser(
+        description="Run one daily registration-report collection"
+    )
+    parser.add_argument("--fixture", type=Path)
+    parser.add_argument("--sink", choices=("json", "sql"), default="json")
+    parser.add_argument("--output-dir", type=Path)
+    parser.add_argument("--period", "--start-period", dest="period")
+    parser.add_argument("--max-calls", type=int, help=argparse.SUPPRESS)
+    parser.add_argument("--dry-run", action="store_true")
+    args = parser.parse_args(argv)
+    try:
+        settings = settings_from_env()
+        if args.output_dir:
+            settings = Settings(
+                **{
+                    **settings.__dict__,
+                    "output_dir": args.output_dir,
+                    "log_path": args.output_dir / "jsonl",
+                    "registration_state_path": args.output_dir
+                    / "registration_state.json",
+                }
+            )
+        result = run_once(
+            settings=settings,
+            fixture=args.fixture,
+            sink_name=args.sink,
+            dry_run=args.dry_run,
+            period=args.period,
+            max_calls=args.max_calls,
+        )
+        print(json.dumps(result, ensure_ascii=False))
+        return 0
+    except Exception as exc:
+        print(
+            json.dumps(
+                {
+                    "status": "FAILED",
+                    "error_code": getattr(exc, "code", "registration_error"),
+                }
+            ),
+            file=sys.stderr,
+        )
+        return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
