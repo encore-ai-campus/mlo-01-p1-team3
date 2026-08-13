@@ -1,6 +1,6 @@
 python-dotenv
 pandas
-sql-archemy
+sql-AIchemy
 requests>=2.31,<3
 beautifulsoup4>=4.12,<5
 PyMySQL>=1.1,<2
