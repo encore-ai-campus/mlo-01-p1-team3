@@ -9,7 +9,7 @@ from urllib.parse import urlsplit
 
 from common.config import Settings
 from common.contracts import LoadStats
-from common.time_utils import format_utc_datetime, utc_now_iso
+from common.time_utils import format_utc_datetime, to_utc_datetime, utc_now_iso
 
 from .common import atomic_write
 
@@ -28,6 +28,7 @@ _FAQ_REQUIRED_TEXT_FIELDS = (
     "content_hash",
     "run_id",
 )
+_MONGO_DATE_FIELDS = ("source_updated_at", "collected_at", "created_at", "updated_at")
 
 
 def _validate_faq_document(document: Mapping[str, Any]) -> None:
@@ -70,6 +71,21 @@ def _with_load_timestamps(
     else:
         value["created_at"] = load_now
     value["updated_at"] = load_now
+    return value
+
+
+def _as_mongo_document(
+    document: Mapping[str, Any],
+    previous: Mapping[str, Any] | None,
+    load_now: str,
+) -> Dict[str, Any]:
+    """Convert the prepared FAQ and load timestamps to MongoDB date values."""
+
+    value = _with_load_timestamps(document, previous, load_now)
+    for name in _MONGO_DATE_FIELDS:
+        normalized = to_utc_datetime(value.get(name), required=True)
+        assert normalized is not None
+        value[name] = normalized
     return value
 
 
@@ -157,8 +173,17 @@ class MongoFaqUpsertSink:
         definitions = self._database.list_collections(filter={"name": collection_name})
         definition = next(iter(definitions), None)
         options = definition.get("options", {}) if isinstance(definition, Mapping) else {}
-        if not isinstance(options, Mapping) or not options.get("validator"):
-            raise RuntimeError("MongoDB FAQ collection validator is not configured")
+        validator = options.get("validator") if isinstance(options, Mapping) else None
+        schema = validator.get("$jsonSchema") if isinstance(validator, Mapping) else None
+        properties = schema.get("properties") if isinstance(schema, Mapping) else None
+        if not isinstance(properties, Mapping) or any(
+            not isinstance(properties.get(name), Mapping)
+            or properties[name].get("bsonType") != "date"
+            for name in _MONGO_DATE_FIELDS
+        ):
+            raise RuntimeError(
+                "MongoDB FAQ collection validator must define BSON Date timestamps"
+            )
 
     def save(self, documents: Sequence[Mapping[str, Any]]) -> FaqLoadStats:
         inserted = updated = unchanged = 0
@@ -177,7 +202,7 @@ class MongoFaqUpsertSink:
                 continue
             else:
                 updated += 1
-            mutable = _with_load_timestamps(document, previous, load_now)
+            mutable = _as_mongo_document(document, previous, load_now)
             created_at = mutable.pop("created_at", None)
             self._collection.update_one(
                 {"faq_id": key},

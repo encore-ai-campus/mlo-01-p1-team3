@@ -44,6 +44,7 @@ flowchart TD
 - 로그에는 API key, DB password, MongoDB URI, Discord/Webhook URL을 남기지 않는다.
 - SQL 날짜·시간은 UTC 기준으로 변환하며, timezone 정보가 없는 입력은 UTC로 해석한다.
 - 공통 시간 포맷은 `common.time_utils`가 소유하며 datetime은 `YYYY-MM-DDTHH:MM:SS+00:00`, date는 `YYYY-MM-DD`로 정규화한다.
+- `format_utc_datetime()`은 단계·JSONL·SQL 경계용 ISO 문자열을 반환하고, `to_utc_datetime()`은 MongoDB 같은 repository 경계에서 사용할 timezone-aware UTC `datetime`을 반환한다.
 - `created_at`·`updated_at`처럼 적재 시각이 필요한 모듈도 같은 포맷터를 사용하되, 시각을 생성하는 책임은 해당 모듈에 둔다.
 
 ## 외부 계약
@@ -57,7 +58,7 @@ flowchart TD
 ### 출력
 
 - 설정: immutable `Settings` 객체
-- 시간: `format_utc_datetime()`의 canonical UTC ISO 문자열 또는 timezone-aware `datetime`; date 의미의 값은 `format_utc_date()`의 `YYYY-MM-DD`
+- 시간: `format_utc_datetime()`의 canonical UTC ISO 문자열 또는 `to_utc_datetime()`의 timezone-aware UTC `datetime`; date 의미의 값은 `format_utc_date()`의 `YYYY-MM-DD`
 - 로그: UTF-8 JSONL 한 줄 한 이벤트
 - 공통 적재 통계: `inserted_count`, `updated_count`, `unchanged_count`
 

@@ -99,7 +99,8 @@ flowchart LR
 - `updated_at`: 실제 business/source 값이 변경되어 write하는 시각.
 - `collected_at`: source 수집 시각이며, unchanged 재실행만으로 갱신하지 않는다.
 - SQL datetime은 UTC 기준 MySQL `DATETIME`으로 변환한다.
-- JSONL·MongoDB timestamp text는 canonical UTC ISO 8601 형식을 사용한다.
+- JSONL timestamp는 canonical UTC ISO 8601 문자열을 사용한다.
+- MongoDB repository 경계에서는 `source_updated_at`, `collected_at`, `created_at`, `updated_at` 네 값을 `common.time_utils.to_utc_datetime()`으로 timezone-aware UTC `datetime`으로 변환한 뒤 BSON Date로 저장한다. 준비 계약과 JSONL의 문자열 표현은 이 경계 전까지 유지한다.
 
 ### 4.4 SQL idempotent Upsert 로직
 
@@ -131,9 +132,9 @@ MongoDB FAQ sink는 validator 없는 collection을 자동 생성하여 정상 �
 
 1. `migrations/mongo/ensure_indexes.py`를 먼저 실행한다.
 2. migration은 FAQ collection이 없으면 validator와 함께 생성한다.
-3. 기존 collection에 validator가 없으면 `collMod`로 validator를 적용한다.
+3. 기존 collection의 validator가 없거나 날짜 타입 계약과 다르면 `collMod`로 validator를 갱신한다.
 4. sink는 validator가 준비된 collection만 받아 세 개의 index를 보장한다.
-5. validator가 없으면 sink 초기화에서 실패한다.
+5. validator의 네 timestamp field는 `bsonType: date`여야 하며, 이 조건이 맞지 않으면 sink 초기화에서 실패한다.
 
 필수 index는 `uq_faq_id`, `ix_faq_brand_category`, `ix_faq_updated_at`이다.
 
@@ -168,7 +169,7 @@ Mongo schema 기준은 [`migrations/mongo/ensure_indexes.py`](../../migrations/m
 
 - database: `support_db`
 - collection: `faq`
-- validator: FAQ prepared document 필수 필드와 타입
+- validator: FAQ prepared document 필수 필드와 타입. `source_updated_at`, `collected_at`, `created_at`, `updated_at`은 BSON `date`다.
 - index: FAQ business key·조회·변경시각 index
 
 ### 5.4 의존성
@@ -244,6 +245,7 @@ sequenceDiagram
         Pipeline->>Sink: save(prepared documents)
         Sink->>Mongo: find_one by faq_id
         alt new or content changed
+            Sink->>Sink: convert four timestamps to UTC-aware datetime
             Sink->>Mongo: update_one(upsert=true)
         else content unchanged
             Sink-->>Pipeline: unchanged_count and no write

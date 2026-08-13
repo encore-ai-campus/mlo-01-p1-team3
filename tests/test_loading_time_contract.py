@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -12,7 +13,7 @@ from common import logging_utils as logging_module
 from loading import faq as faq_module
 from loading import registration as registration_module
 from loading import usedcar as usedcar_module
-from loading.faq import JsonlFaqUpsertSink
+from loading.faq import JsonlFaqUpsertSink, MongoFaqUpsertSink
 from loading.registration import (
     JsonQuotaLedger,
     JsonlRegistrationUpsertSink,
@@ -134,6 +135,17 @@ class _FakeConnection:
         return None
 
 
+class _FakeMongoCollection:
+    def __init__(self) -> None:
+        self.updates: list[tuple[Any, Any, bool]] = []
+
+    def find_one(self, *_args: Any, **_kwargs: Any) -> None:
+        return None
+
+    def update_one(self, query: Any, update: Any, *, upsert: bool) -> None:
+        self.updates.append((query, update, upsert))
+
+
 def _usedcar_row(content_hash: str) -> dict[str, Any]:
     return {
         "listing": {
@@ -190,6 +202,28 @@ def test_faq_jsonl_owns_load_timestamps_and_preserves_idempotent_rows(
     monkeypatch.setattr(faq_module, "utc_now_iso", lambda: THIRD_LOAD)
     assert sink.save([changed]).unchanged_count == 1
     assert _read_one(path)["updated_at"] == SECOND_LOAD
+
+
+def test_faq_mongo_sink_converts_all_timestamps_to_bson_date_inputs(
+    monkeypatch: Any,
+) -> None:
+    collection = _FakeMongoCollection()
+    sink = MongoFaqUpsertSink.__new__(MongoFaqUpsertSink)
+    sink._collection = collection
+    monkeypatch.setattr(faq_module, "utc_now_iso", lambda: FIRST_LOAD)
+
+    stats = sink.save([_faq_document()])
+
+    assert stats.inserted_count == 1
+    _, update, upsert = collection.updates[0]
+    assert upsert is True
+    assert all(
+        isinstance(update["$set"][name], datetime)
+        and update["$set"][name].tzinfo == timezone.utc
+        for name in ("source_updated_at", "collected_at", "updated_at")
+    )
+    assert isinstance(update["$setOnInsert"]["created_at"], datetime)
+    assert update["$setOnInsert"]["created_at"].tzinfo == timezone.utc
 
 
 def test_usedcar_jsonl_updates_nested_listing_and_dimension_load_timestamps(
@@ -374,6 +408,11 @@ def test_faq_and_registration_sinks_reject_incomplete_prepared_contracts(tmp_pat
 def test_mongo_validator_and_incremental_contract_are_explicit() -> None:
     required = set(FAQ_VALIDATOR["$jsonSchema"]["required"])
     assert {"faq_id", "content_hash", "run_id", "updated_at"}.issubset(required)
+    properties = FAQ_VALIDATOR["$jsonSchema"]["properties"]
+    assert all(
+        properties[name]["bsonType"] == "date"
+        for name in ("source_updated_at", "collected_at", "created_at", "updated_at")
+    )
 
     with pytest.raises(Exception) as exc_info:
         _require_incremental_contract({"high_water_seq": None})

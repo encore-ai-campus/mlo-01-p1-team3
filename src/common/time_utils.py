@@ -1,4 +1,4 @@
-"""Shared UTC time formatting for stage-boundary and operational timestamps."""
+"""Shared UTC time formatting and conversion for operational timestamps."""
 
 from __future__ import annotations
 
@@ -51,6 +51,22 @@ def format_utc_datetime(value: Any, *, required: bool = False) -> Optional[str]:
     return parsed.astimezone(UTC).replace(microsecond=0).isoformat()
 
 
+def to_utc_datetime(value: Any, *, required: bool = False) -> Optional[datetime]:
+    """Normalize a datetime-like value to a timezone-aware UTC ``datetime``.
+
+    ``format_utc_datetime`` remains the string formatter for stage, JSONL,
+    and SQL boundaries.  Repository adapters that need a native datetime
+    value, such as MongoDB BSON Date writes, should use this helper instead.
+    """
+
+    normalized = format_utc_datetime(value, required=required)
+    if normalized is None:
+        return None
+    parsed = datetime.fromisoformat(normalized)
+    assert parsed.tzinfo is not None
+    return parsed
+
+
 def format_utc_date(value: Any, *, required: bool = False) -> Optional[str]:
     """Normalize a date-like value to canonical ``YYYY-MM-DD`` text.
 
@@ -96,4 +112,11 @@ def utc_now_iso() -> str:
     return result
 
 
-__all__ = ["UTC", "format_utc_date", "format_utc_datetime", "utc_now", "utc_now_iso"]
+__all__ = [
+    "UTC",
+    "format_utc_date",
+    "format_utc_datetime",
+    "to_utc_datetime",
+    "utc_now",
+    "utc_now_iso",
+]

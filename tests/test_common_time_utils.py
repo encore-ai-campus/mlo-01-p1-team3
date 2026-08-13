@@ -4,7 +4,14 @@ from datetime import date, datetime, timedelta, timezone
 
 import pytest
 
-from common import UTC, format_utc_date, format_utc_datetime, utc_now, utc_now_iso
+from common import (
+    UTC,
+    format_utc_date,
+    format_utc_datetime,
+    to_utc_datetime,
+    utc_now,
+    utc_now_iso,
+)
 
 
 def test_format_utc_datetime_normalizes_timezone_and_removes_microseconds() -> None:
@@ -29,6 +36,22 @@ def test_format_utc_datetime_rejects_invalid_required_values() -> None:
         format_utc_datetime(None, required=True)
     with pytest.raises(TypeError, match="date, datetime"):
         format_utc_datetime(20260201)
+
+
+def test_to_utc_datetime_returns_timezone_aware_datetime_for_repository_adapters() -> None:
+    result = to_utc_datetime("2026-02-01T09:00:00.987654+09:00", required=True)
+
+    assert result == datetime(2026, 2, 1, tzinfo=UTC)
+    assert result is not None
+    assert result.tzinfo == UTC
+    assert result.microsecond == 0
+
+
+def test_to_utc_datetime_preserves_optional_empty_value_and_rejects_invalid_value() -> None:
+    assert to_utc_datetime(None) is None
+
+    with pytest.raises(ValueError, match="ISO 8601"):
+        to_utc_datetime("2026/02/01", required=True)
 
 
 def test_format_utc_date_returns_date_without_time() -> None:
