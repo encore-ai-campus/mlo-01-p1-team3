@@ -1,11 +1,15 @@
-# MLO 1기 1차 프로젝트
+# 중고 자동차 영업·고객지원 데이터 통합 솔루션
 
-## 1. 팀 소개
+> 구현 기준일: 2026-08-13
+>
+> 실행 진입점: `python -m src.main`
 
-### 팀명
+전국 판매망을 운영하는 중고 자동차 판매사를 가상의 고객사로 두고, 자동차 등록현황·중고차 매물·FAQ를 수집하고 검증한 뒤 MySQL과 MongoDB에 멱등하게 적재하는 Python 데이터 파이프라인이다. 현재 저장소의 제품 범위는 **수집 → 전처리 → 검증 → Upsert → 체크포인트/운영 로그**까지이며, 사용자용 조회 API와 대시보드는 아직 구현하지 않았다.
+
+## 1. 팀
+
 - 팀명: `MLO-01-03`
 
-### 멤버
 | 이름 | 역할 | GitHub |
 |---|---|---|
 | 김남동 | 팀장 | [@rlaskaehd](https://github.com/rlaskaehd) |
@@ -13,70 +17,228 @@
 | 이인건 | 팀원 | [@2eelogan](https://github.com/2eelogan) |
 | 이재원 | 팀원 | [@vvjeffvv3](https://github.com/vvjeffvv3) |
 
-## 2. 프로젝트 개요
+## 2. 현재 구현 범위
 
-### 프로젝트 명
-- `중고 자동차 영업·고객지원 데이터 통합 솔루션`
+| 파이프라인 | 원천 | 전처리·식별 기준 | 운영 저장소 | 상태 관리 |
+|---|---|---|---|---|
+| 자동차 등록현황 | 국토교통부 통계 Open API | 월별 wide 지표를 세부 지표로 정규화, `총계>*`와 `*>계` 제외, 월·지역·차종·용도 복합 키 | MySQL `vehicle_registration_reports` | 로컬 period state, SQL sink의 MySQL `api_quota_usage` |
+| 중고차 | 프로젝트 통합 API의 snapshot/changes | `listing_id` 기준 canonical aggregate와 `content_hash`, sparse 증분 병합 | MySQL의 listing 및 5개 dimension 테이블 | MySQL `pipeline_runs.progress_key`, 로컬 checkpoint fallback |
+| FAQ | 허용된 `/faqs` HTTP 경로 | `faq_id`와 `content_hash` | MongoDB `support_db.faq` | 별도 source checkpoint 없음 |
 
-### 프로젝트 소개
+세 파이프라인은 `src/collection`, `src/preprocessing`, `src/loading`, `src/pipelines`로 분리되어 있다. `src.main`에서 `all`을 선택하면 매 cycle마다 **registration → usedcar → FAQ** 순서로 실행하며 하나의 top-level `run_id`를 공유한다.
 
-본 프로젝트는 전국 판매망을 운영하는 중고 자동차 판매사를 가상의 고객사로 설정하고, 시장 데이터·중고차 매물 데이터·고객지원 데이터를 통합적으로 수집·관리·제공하는 데이터 솔루션을 구축하는 프로젝트이다.
+```mermaid
+flowchart LR
+    Sources["등록 API / Used-car API / FAQ HTTP"] --> Collect["collection"]
+    Collect --> Preprocess["preprocessing"]
+    Preprocess --> Validate{"record validation"}
+    Validate -->|valid| Load["loading / Upsert"]
+    Validate -->|partial reject| Reject["JSONL error event 후 폐기"]
+    Load --> SQL["MySQL"]
+    Load --> Mongo["MongoDB"]
+    SQL --> Checkpoint["usedcar checkpoint"]
+```
 
-### 프로젝트 필요성(배경)
+## 3. 실행 환경
 
-시장 정보, 중고차 매물, 고객 FAQ가 서로 다른 출처와 방식으로 관리되어 담당자가 필요한 데이터를 개별적으로 확인하고 가공해야 한다. 이로 인해 데이터 탐색과 활용에 불필요한 시간이 소요되며, 부서별로 필요한 정보를 일관된 기준으로 활용하기 어렵다. 따라서 데이터별 특성에 맞는 수집·정제·검증·저장 체계를 구축하고, 업무에 필요한 데이터를 효율적으로 조회할 수 있는 통합 환경이 필요하다.
+### 3.1 저장소의 독립 환경 사용
 
-### 프로젝트 목표
-- 영업 담당자의 시장 및 매물 정보 탐색 시간을 단축한다.
-- 지역별 시장 현황을 기반으로 영업 및 차량 확보 전략 수립을 지원한다.
-- 현재 보유 매물에 대한 조건별 조회와 비교를 지원한다.
-- 고객지원 담당자의 FAQ 탐색 효율성을 높인다.
-- 데이터 갱신 상태를 체계적으로 확인할 수 있도록 한다.
-- 서로 다른 데이터 소스를 일관된 관리 체계 안에서 활용할 수 있도록 한다.
+프로젝트 루트의 `.venu`가 준비되어 있으면 Conda를 활성화하지 않고 바로 실행할 수 있다.
 
-## 3. 기술 스택
+```bash
+.venu/bin/python --version
+.venu/bin/python -m src.main --help
+```
 
-| 구분 | 기술 |
+새 checkout에서 환경을 다시 만들 때는 Python 3.12 이상을 사용한다.
+
+```bash
+python3 -m venv .venu
+.venu/bin/python -m pip install --upgrade pip
+.venu/bin/python -m pip install -r requirements.txt
+```
+
+현재 shell에서 일반 `python` 명령을 쓰고 싶으면 다음처럼 활성화한다.
+
+```bash
+source .venu/bin/activate
+```
+
+### 3.2 환경변수
+
+`.env.example`을 `.env`로 복사한 뒤 실제 원천과 저장소 값을 입력한다. 비밀값은 Git에 커밋하지 않는다.
+
+```bash
+cp .env.example .env
+```
+
+Live SQL sink에는 `SQL_HOST` 또는 `SQL_JDBC_URL`, `SQL_USER`가 필요하다. `APP_ENV=production`에서는 SQL password와 credential이 포함된 명시적 `MONGODB_URI`도 필수다. 주요 조절값은 다음과 같다.
+
+| 변수 | 기본/제약 | 용도 |
+|---|---|---|
+| `USED_CAR_BATCH_SIZE` | 기본 500, 최대 500 | 중고차 page 크기 |
+| `USED_CAR_INITIAL_TARGET` | 기본 10,000 | initial snapshot 목표 건수 |
+| `USED_CAR_INTERVAL_SECONDS` | 최소 1초 | 중고차 API 요청 간격 |
+| `FAQ_MAX_PAGES` | 최대 2 | FAQ 탐색 범위 |
+| `FAQ_MAX_QUESTIONS_PER_PAGE` | code 기본 500, `.env.example` 10 | 양수 호환 설정값이며 현재 collector는 원천 건수를 잘라내지 않음 |
+| `FAQ_INTERVAL_SECONDS` | 최소 1초 | FAQ 요청 간격 |
+| `REGISTRATION_DAILY_QUOTA` | 최대 3,000 | 등록현황 일일 호출 한도 |
+| `REGISTRATION_START_PERIOD` | 선택값 `YYYY-MM` | CLI period 미지정 시 수집월 |
+| `OUTPUT_DIR`, `LOG_PATH` | 기본 `output` 하위 | 결과·상태·JSONL 로그 경로 |
+
+## 4. DB 준비
+
+Forward migration은 기존 데이터를 보존하면서 아직 적용되지 않은 migration만 수행한다.
+
+```bash
+.venu/bin/python migrations/sql/run.py
+.venu/bin/python migrations/mongo/ensure_indexes.py
+```
+
+MySQL migration은 `sales_support_db`의 10개 테이블과 6개 FK를 생성한다. Mongo migration은 `support_db.faq`에 strict validator와 `faq_id` unique index를 포함한 index를 보장한다. `application_logs` SQL 테이블은 현재 필수 운영 계약이 아니며 migration이 생성하지 않는다.
+
+다음 명령은 대상 애플리케이션 DB의 테이블 또는 collection을 **전부 삭제하고 재생성**하므로, 백업과 대상 확인 없이 실행하면 안 된다.
+
+```bash
+.venu/bin/python migrations/sql/rebuild.py \
+  --confirm-data-database sales_support_db
+
+.venu/bin/python migrations/mongo/rebuild.py \
+  --confirm-database support_db
+```
+
+## 5. 실행 방법
+
+### 5.1 전체 Live 무한 실행
+
+`--profile live`에서 `--once`를 생략하면 기본 60초 간격으로 계속 실행한다. 실패한 cycle은 정제된 오류를 stderr에 남기고 다음 cycle을 계속 시도한다. `Ctrl+C`, `SIGINT`, `SIGTERM`을 받으면 현재 cycle 뒤 종료한다.
+
+```bash
+.venu/bin/python -m src.main \
+  --pipeline all \
+  --profile live \
+  --registration-sink sql \
+  --usedcar-sink sql \
+  --faq-sink mongo \
+  --mode auto
+```
+
+간격은 `--loop-interval-seconds 300`처럼 변경할 수 있다. 현재 구현은 source별 독립 scheduler가 아니라 하나의 공통 반복 주기를 사용한다.
+
+### 5.2 한 cycle만 실행
+
+```bash
+.venu/bin/python -m src.main \
+  --pipeline all \
+  --profile live \
+  --once \
+  --registration-sink sql \
+  --usedcar-sink sql \
+  --faq-sink mongo \
+  --mode auto
+```
+
+개별 실행 예시는 다음과 같다.
+
+```bash
+# 게시 데이터가 존재하는 월을 명시하는 등록현황 실행
+.venu/bin/python -m src.main --pipeline registration --profile live --once \
+  --sink sql --period 2026-07
+
+# checkpoint 유무에 따라 initial/incremental을 자동 선택
+.venu/bin/python -m src.main --pipeline usedcar --profile live --once \
+  --sink sql --mode auto
+
+.venu/bin/python -m src.main --pipeline faq --profile live --once \
+  --sink mongo
+```
+
+`--dry-run`은 실제 source를 읽고 변환·검증하되 sink write와 상태 저장을 생략한다. `fixture` profile은 안전한 기본값이지만 선택한 각 파이프라인의 fixture 경로를 반드시 전달해야 하며 한 cycle만 실행한다.
+
+## 6. 데이터 정합성 및 실패 정책
+
+- business key가 없으면 insert, key와 내용이 모두 같으면 unchanged, 내용이 바뀌면 update한다.
+- 현재 source에서 다시 보이지 않는 중고차·FAQ를 자동 삭제하지 않는다. 현재 FAQ transformer는 수집된 유효 문서를 `is_active=true`로 정규화한다.
+- 중고차 SQL sink의 dimension과 listing, `pipeline_runs` checkpoint는 한 SQL transaction으로 처리한다.
+- 중고차 checkpoint는 성공한 적재 뒤에만 전진하고, source sequence 역행이나 dataset epoch 변경은 적재 전에 차단한다.
+- 일부 record만 거부되면 오류 로그를 남기고 해당 record를 버린 뒤 valid record 적재와 증분 처리를 계속한다.
+- 수집된 record가 전부 거부되면 실행을 실패 처리하고 적재와 checkpoint 진행을 중단한다.
+- 정상적인 빈 등록현황 응답과 중고차 steady state는 0건 성공으로 처리하며 기존 checkpoint를 유지한다.
+- FAQ의 현재 Live 관측값은 24건이지만 제품 계약은 고정 24건이 아니라 source가 제공하는 유효 문서 전체다.
+
+## 7. 저장 구조
+
+### MySQL
+
+- 중고차: `vehicle_brands`, `vehicle_models`, `vehicle_locations`, `vehicle_dealers`, `vehicle_business_areas`, `vehicle_listings`
+- 등록현황: `vehicle_registration_reports`
+- 운영: `pipeline_runs`(현재 중고차 SQL batch/checkpoint), `api_quota_usage`, `schema_migrations`
+
+### MongoDB
+
+- `support_db.faq`: FAQ 1건당 1 document, business key `faq_id`
+- `uq_faq_id`, `ix_faq_brand_category`, `ix_faq_updated_at`
+- four timestamp fields는 BSON Date로 저장하고 validator는 `strict/error`다.
+
+자세한 관계와 존재 이유는 [MySQL Migration 및 Live 운영 검증 리포트](docs/MySQL_Migration_and_Live_Operation_Report_2026-08-13.md), [MongoDB Migration 및 Live 운영 검증 리포트](docs/MongoDB_Migration_and_Live_Operation_Report_2026-08-13.md), [ERD](docs/ERD.png)를 참고한다.
+
+## 8. 검증 기준선
+
+2026-08-13 최종 구현 기준 검증 결과는 다음과 같다.
+
+| 검증 | 결과 |
+|---|---:|
+| Mock 전체 | `98 passed` |
+| Live 미포함 기본 전체 | `191 passed, 7 skipped` |
+| 실제 격리 Live 단독 | `7 passed` |
+| Live 포함 전체 | `198 passed` |
+| DB 초기화 후 운영 관측 | 정확히 300초, 15회 invocation 모두 exit code 0 |
+
+5분 관측 종료 시 중고차 listing 10,028건에서 business key 중복과 FK orphan은 모두 0이었고 checkpoint는 역행하지 않았다. FAQ는 24건 최초 insert 뒤 네 번의 동일 수집에서 총 96건 unchanged였다. 등록현황은 당시 기본값인 2026-08 원천이 0건을 반환했으므로 해당 관측 창만으로 Live Upsert를 재입증하지는 못했다.
+
+```bash
+.venu/bin/python -m pytest -q
+
+MLO_LIVE_TESTS=1 MLO_LIVE_WRITE=1 \
+  .venu/bin/python -m pytest -q tests/live/test_live_operational.py
+```
+
+Live 테스트는 실제 API와 격리 DB에 write한 뒤 정리한다. 환경변수와 write opt-in이 없으면 Live 테스트는 skip된다.
+
+## 9. 현재 한계
+
+- 사용자용 조회 API, 화면, 대시보드, 알림은 구현 범위 밖이다.
+- source별 cron/스케줄러가 없고 `src.main`의 공통 반복 주기만 제공한다.
+- 등록현황의 최신 게시월 탐색, 과거 15년 자동 backfill, 누락월 자동 보충은 구현하지 않았다.
+- 동일 파이프라인의 여러 process 중복 실행을 막는 분산 lock은 없다.
+- source에서 사라진 중고차·FAQ의 자동 삭제/tombstone 정책은 구현하지 않았다.
+- AWS 고가용성 구성은 설계·PoC·비용 산정 대상이며 이 저장소가 실제 배포 상태를 증명하지 않는다.
+
+## 10. 문서와 저장소 구조
+
+| 문서 | 역할 |
 |---|---|
-| Language | Python |
-| Data | MySQL, MongoDB |
-| Collaboration | GitHub |
-| Cloud | AWS |
+| [문서 인덱스](docs/00_index.md) | 문서 정본 관계와 전체 목록 |
+| [BRD](docs/Business_Requirements_Document.md) | 비즈니스 목표·범위·요구사항·구현 경계 |
+| [PRD](docs/Product_Requirements_Document.md) | 실제 기능·데이터·운영 계약과 수용 기준 |
+| [운영 테스트 및 정합성 보고서](docs/issues/operational_test_issues.md) | Mock/Live/5분 운영 검증 근거 |
+| [요구사항 추적성](docs/Requirements_Traceability.md) | 요구사항과 검증 근거 연결 |
+| [비용 산정](docs/Cost_Estimation.md) | 목표 AWS 구성의 예산 정본 |
 
-## 4. WBS
+```text
+src/
+├── collection/       # API/HTML/fixture 수집과 retry
+├── preprocessing/    # 정규화, validation, content hash
+├── loading/          # JSONL/MySQL/Mongo Upsert와 transaction
+├── pipelines/        # pipeline별 orchestration과 checkpoint 정책
+├── common/           # 설정, 계약, 시간, 로그, hash
+└── main.py           # 공통 CLI와 Live 반복 실행
 
-- [문서 인덱스](docs/00_index.md)
-- [1일차 상세 가이드](docs/Day1_Detailed_Guide.md)
-- [회의록](docs/Minutes/Meeting_Notes_2026-08-11.md)
-- 세부 WBS는 추가 예정
+migrations/
+├── sql/              # V001, forward runner, destructive rebuild
+└── mongo/            # FAQ validator/index, destructive rebuild
 
-## 5. 요구사항 명세서
-
-- [비즈니스 시나리오](docs/Business_Scenario.md)
-- [Business Requirements Document](docs/Business_Requirements_Document.md)
-- [Product Requirements Document](docs/Product_Requirements_Document.md)
-- [요구사항 추적성](docs/Requirements_Traceability.md)
-- [Data Specification](docs/Data_Specification.md)
-- [비용 산정](docs/Cost_Estimation.md)
-- [AWS DB 인프라 PoC 리포트](docs/AWS_DB_Infrastructure_PoC_Report_2026-08-11.md)
-
-## 6. ERD
-
-- 추가 예정
-
-## 7. 주요 프로시저
-
-- 추가 예정
-
-## 8. 수행결과(테스트/시연 페이지)
-
-- 추가 예정
-
-## 9. 한 줄 회고
-
-| 이름 | 회고 |
-|---|---|
-| 김남동 | 한 줄 회고를 작성하세요. |
-| 신성민 | 한 줄 회고를 작성하세요. |
-| 이인건 | 한 줄 회고를 작성하세요. |
-| 이재원 | 한 줄 회고를 작성하세요. |
+tests/
+├── mock/             # 외부 연결 없는 운영 계약 검증
+└── live/             # 실제 API + 격리 MySQL/MongoDB 검증
+```
