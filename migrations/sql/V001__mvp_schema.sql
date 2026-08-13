@@ -5,8 +5,6 @@
 
 CREATE DATABASE IF NOT EXISTS sales_support_db
     CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE DATABASE IF NOT EXISTS application_logs
-    CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 USE sales_support_db;
 
@@ -199,24 +197,4 @@ CREATE TABLE IF NOT EXISTS api_quota_usage (
     quota_status VARCHAR(32) NOT NULL,
     updated_at DATETIME NOT NULL,
     PRIMARY KEY (quota_date, api_name)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-USE application_logs;
-
-CREATE TABLE IF NOT EXISTS application_logs (
-    log_id BIGINT NOT NULL AUTO_INCREMENT,
-    run_id CHAR(36) NULL,
-    pipeline_name VARCHAR(64) NULL,
-    stage_name VARCHAR(64) NULL,
-    logic_name VARCHAR(128) NOT NULL,
-    level_name VARCHAR(16) NOT NULL,
-    event_name VARCHAR(128) NULL,
-    message TEXT NOT NULL,
-    record_key VARCHAR(256) NULL,
-    error_code VARCHAR(64) NULL,
-    metadata_json JSON NULL,
-    created_at DATETIME NOT NULL,
-    PRIMARY KEY (log_id),
-    KEY ix_logs_run (run_id, created_at),
-    KEY ix_logs_logic (logic_name, level_name, created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

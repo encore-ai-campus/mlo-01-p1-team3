@@ -70,7 +70,9 @@ def _positive_float(values: Mapping[str, str], key: str, default: float) -> floa
 
 
 def _csv(values: Mapping[str, str], key: str, default: str) -> Tuple[str, ...]:
-    return tuple(item.strip() for item in _env(values, key, default).split(",") if item.strip())
+    return tuple(
+        item.strip() for item in _env(values, key, default).split(",") if item.strip()
+    )
 
 
 def _parse_mysql_jdbc_url(value: str) -> tuple[str, Optional[int], str]:
@@ -138,14 +140,20 @@ class Settings:
     faq_source_url: str = ""
     faq_allowed_paths: Tuple[str, ...] = ("/faqs",)
     faq_max_pages: int = 2
-    faq_max_questions_per_page: int = 10
+    faq_max_questions_per_page: int = 500
     faq_interval_seconds: float = 1.0
     faq_license: str = "educational-sandbox-rewrite"
-    faq_attribution: str = "AutoData Lab educational snapshot; official source URL retained"
+    faq_attribution: str = (
+        "AutoData Lab educational snapshot; official source URL retained"
+    )
     faq_state_path: Path = Path("output/faq_checkpoint.json")
-    registration_api_url: str = "https://stat.molit.go.kr/portal/openapi/service/rest/getList.do"
+    registration_api_url: str = (
+        "https://stat.molit.go.kr/portal/openapi/service/rest/getList.do"
+    )
     registration_api_key: Optional[str] = None
-    registration_source_page: str = "https://stat.molit.go.kr/portal/cate/statView.do?hRsId=58&hFormId=5498"
+    registration_source_page: str = (
+        "https://stat.molit.go.kr/portal/cate/statView.do?hRsId=58&hFormId=5498"
+    )
     registration_form_id: int = 5498
     registration_style_num: int = 2
     registration_daily_quota: int = 3000
@@ -185,7 +193,11 @@ class Settings:
             raise ValueError("USED_CAR_BATCH_SIZE must not exceed 500")
         initial_target = _positive_int(values, "USED_CAR_INITIAL_TARGET", 10000)
         configured_max_batches = _env(values, "USED_CAR_MAX_BATCHES")
-        max_batches = int(configured_max_batches) if configured_max_batches else ceil(initial_target / batch_size)
+        max_batches = (
+            int(configured_max_batches)
+            if configured_max_batches
+            else ceil(initial_target / batch_size)
+        )
         if max_batches <= 0:
             raise ValueError("USED_CAR_MAX_BATCHES must be greater than zero")
         interval_seconds = _positive_float(values, "USED_CAR_INTERVAL_SECONDS", 1.0)
@@ -193,7 +205,13 @@ class Settings:
             raise ValueError("USED_CAR_INTERVAL_SECONDS must be at least 1 second")
 
         output_dir = Path(_env(values, "OUTPUT_DIR", "output"))
-        state_path = Path(_env(values, "USED_CAR_STATE_PATH", str(output_dir / "usedcar_checkpoint.json")))
+        state_path = Path(
+            _env(
+                values,
+                "USED_CAR_STATE_PATH",
+                str(output_dir / "usedcar_checkpoint.json"),
+            )
+        )
         log_path = Path(_env(values, "LOG_PATH", str(output_dir / "jsonl")))
         faq_source_url = _env(values, "FAQ_SOURCE_URL") or f"{base_url}/faqs"
         faq_allowed_paths = _csv(values, "FAQ_ALLOWED_PATHS", "/faqs")
@@ -205,22 +223,30 @@ class Settings:
         faq_max_pages = _positive_int(values, "FAQ_MAX_PAGES", 2)
         if faq_max_pages > 2:
             raise ValueError("FAQ_MAX_PAGES must not exceed 2")
-        faq_max_questions_per_page = _positive_int(values, "FAQ_MAX_QUESTIONS_PER_PAGE", 10)
-        if faq_max_questions_per_page > 10:
-            raise ValueError("FAQ_MAX_QUESTIONS_PER_PAGE must not exceed 10")
+        faq_max_questions_per_page = _positive_int(
+            values, "FAQ_MAX_QUESTIONS_PER_PAGE", 500
+        )
         registration_quota = _positive_int(values, "REGISTRATION_DAILY_QUOTA", 3000)
         if registration_quota > 3000:
             raise ValueError("REGISTRATION_DAILY_QUOTA must not exceed 3000")
 
-        explicit_sql_url = _env(values, "SQL_JDBC_URL") or _env(values, "MYSQL_JDBC_URL")
+        explicit_sql_url = _env(values, "SQL_JDBC_URL") or _env(
+            values, "MYSQL_JDBC_URL"
+        )
         jdbc_host, jdbc_port, jdbc_database = _parse_mysql_jdbc_url(explicit_sql_url)
         sql_host = _env(values, "SQL_HOST") or jdbc_host
         sql_port = _positive_int(values, "SQL_PORT", jdbc_port or 3306)
-        sql_database = _env(values, "SQL_DATABASE") or jdbc_database or "sales_support_db"
+        sql_database = (
+            _env(values, "SQL_DATABASE") or jdbc_database or "sales_support_db"
+        )
         sql_user = _optional_env(values, "SQL_USER", "MYSQL_USER")
         sql_password = _optional_env(values, "SQL_PASSWORD", "MYSQL_PASSWORD")
-        mongo_host = _env(values, "MONGODB_HOST") or _env(values, "MONGO_HOST", "localhost")
-        mongo_port_raw = _env(values, "MONGODB_PORT") or _env(values, "MONGO_PORT", "27017")
+        mongo_host = _env(values, "MONGODB_HOST") or _env(
+            values, "MONGO_HOST", "localhost"
+        )
+        mongo_port_raw = _env(values, "MONGODB_PORT") or _env(
+            values, "MONGO_PORT", "27017"
+        )
         try:
             mongo_port = int(mongo_port_raw)
         except ValueError as exc:
@@ -282,25 +308,51 @@ class Settings:
             faq_max_questions_per_page=faq_max_questions_per_page,
             faq_interval_seconds=faq_interval_seconds,
             faq_license=_env(values, "FAQ_LICENSE", "educational-sandbox-rewrite"),
-            faq_attribution=_env(values, "FAQ_ATTRIBUTION", "AutoData Lab educational snapshot; official source URL retained"),
-            faq_state_path=Path(_env(values, "FAQ_STATE_PATH", str(output_dir / "faq_checkpoint.json"))),
-            registration_api_url=_env(values, "REGISTRATION_API_URL", "https://stat.molit.go.kr/portal/openapi/service/rest/getList.do"),
-            registration_api_key=_optional_env(values, "REGISTRATION_API_KEY", "MOLIT_API_KEY"),
-            registration_source_page=_env(values, "REGISTRATION_SOURCE_PAGE", "https://stat.molit.go.kr/portal/cate/statView.do?hRsId=58&hFormId=5498"),
+            faq_attribution=_env(
+                values,
+                "FAQ_ATTRIBUTION",
+                "AutoData Lab educational snapshot; official source URL retained",
+            ),
+            faq_state_path=Path(
+                _env(values, "FAQ_STATE_PATH", str(output_dir / "faq_checkpoint.json"))
+            ),
+            registration_api_url=_env(
+                values,
+                "REGISTRATION_API_URL",
+                "https://stat.molit.go.kr/portal/openapi/service/rest/getList.do",
+            ),
+            registration_api_key=_optional_env(
+                values, "REGISTRATION_API_KEY", "MOLIT_API_KEY"
+            ),
+            registration_source_page=_env(
+                values,
+                "REGISTRATION_SOURCE_PAGE",
+                "https://stat.molit.go.kr/portal/cate/statView.do?hRsId=58&hFormId=5498",
+            ),
             registration_form_id=_positive_int(values, "REGISTRATION_FORM_ID", 5498),
             registration_style_num=_positive_int(values, "REGISTRATION_STYLE_NUM", 2),
             registration_daily_quota=registration_quota,
             registration_start_period=_env(values, "REGISTRATION_START_PERIOD"),
-            registration_state_path=Path(_env(values, "REGISTRATION_STATE_PATH", str(output_dir / "registration_state.json"))),
+            registration_state_path=Path(
+                _env(
+                    values,
+                    "REGISTRATION_STATE_PATH",
+                    str(output_dir / "registration_state.json"),
+                )
+            ),
             mongo_uri=mongo_uri,
             mongo_host=mongo_host,
             mongo_port=mongo_port,
             mongo_user=mongo_user,
             mongo_password=mongo_password,
             mongo_auth_source=mongo_auth_source,
-            mongo_database=_env(values, "MONGODB_DATABASE") or _env(values, "MONGO_DATABASE", "support_db"),
-            mongo_collection=_env(values, "MONGODB_FAQ_COLLECTION") or _env(values, "MONGO_COLLECTION", "faq"),
-            mongo_server_selection_timeout_ms=_positive_int(values, "MONGODB_SERVER_SELECTION_TIMEOUT_MS", 5000),
+            mongo_database=_env(values, "MONGODB_DATABASE")
+            or _env(values, "MONGO_DATABASE", "support_db"),
+            mongo_collection=_env(values, "MONGODB_FAQ_COLLECTION")
+            or _env(values, "MONGO_COLLECTION", "faq"),
+            mongo_server_selection_timeout_ms=_positive_int(
+                values, "MONGODB_SERVER_SELECTION_TIMEOUT_MS", 5000
+            ),
             sql_log_database=_env(values, "SQL_LOG_DATABASE", "application_logs"),
         )
 

@@ -32,7 +32,6 @@ from preprocessing.faq import (
 
 
 FAQ_MAX_PAGES = 2
-FAQ_MAX_QUESTIONS_PER_PAGE = 10
 FAQ_MIN_INTERVAL_SECONDS = 1.0
 
 
@@ -40,16 +39,11 @@ def _validate_business_requirements(settings: Settings) -> None:
     max_pages = int(getattr(settings, "faq_max_pages", FAQ_MAX_PAGES))
     if not 1 <= max_pages <= FAQ_MAX_PAGES:
         raise ValueError(f"FAQ_MAX_PAGES must be between 1 and {FAQ_MAX_PAGES}")
-    interval_seconds = float(getattr(settings, "faq_interval_seconds", FAQ_MIN_INTERVAL_SECONDS))
+    interval_seconds = float(
+        getattr(settings, "faq_interval_seconds", FAQ_MIN_INTERVAL_SECONDS)
+    )
     if interval_seconds < FAQ_MIN_INTERVAL_SECONDS:
         raise ValueError("FAQ_INTERVAL_SECONDS must be at least 1 second")
-    max_questions = int(
-        getattr(settings, "faq_max_questions_per_page", FAQ_MAX_QUESTIONS_PER_PAGE)
-    )
-    if not 1 <= max_questions <= FAQ_MAX_QUESTIONS_PER_PAGE:
-        raise ValueError(
-            f"FAQ_MAX_QUESTIONS_PER_PAGE must be between 1 and {FAQ_MAX_QUESTIONS_PER_PAGE}"
-        )
 
 
 def run_once(
@@ -69,21 +63,24 @@ def run_once(
         {"service": "data_preprocessing", "pipeline_name": "faq", "run_id": run_id},
     )
     collected_at = datetime.now(timezone.utc)
-    logger.event("INFO", "run_started", "FAQ run started", stage_name="Collect", logic_name="faq.collect")
+    logger.event(
+        "INFO",
+        "run_started",
+        "FAQ run started",
+        stage_name="Collect",
+        logic_name="faq.collect",
+    )
     raw_records: List[Dict[str, Any]] = []
     page_count = 0
     response_hashes: List[str] = []
     try:
-        pages = fixture_pages(fixture) if fixture else FaqCollector(settings).iter_pages()
+        pages = (
+            fixture_pages(fixture) if fixture else FaqCollector(settings).iter_pages()
+        )
         for page in pages:
             page_count += 1
             if page_count > FAQ_MAX_PAGES:
                 raise FaqError("FAQ page limit exceeded", code="faq_page_limit")
-            max_questions = int(
-                getattr(settings, "faq_max_questions_per_page", FAQ_MAX_QUESTIONS_PER_PAGE)
-            )
-            if len(page.records) > max_questions:
-                raise FaqError("FAQ question limit exceeded", code="faq_question_limit")
             response_hashes.append(page.response_sha256)
             raw_records.extend(page.records)
     except Exception as exc:
@@ -132,7 +129,9 @@ def run_once(
     prepared = PreparedBatch(
         records=tuple(valid),
         rejected=tuple(
-            RejectedRecord(index=item.index, error_code=item.error_code, stable_key=item.faq_id)
+            RejectedRecord(
+                index=item.index, error_code=item.error_code, stable_key=item.faq_id
+            )
             for item in rejected
         ),
     )
@@ -157,16 +156,40 @@ def run_once(
     )
     if prepared.rejected:
         logger.event(
-            "WARNING",
+            "ERROR",
             "records_rejected",
-            "FAQ records failed validation",
+            "FAQ records failed validation and were discarded",
             stage_name="Validate",
             logic_name="faq.validate",
+            error_code="records_rejected",
             rejected_count=len(prepared.rejected),
+            discarded_count=len(prepared.rejected),
+            discard_policy="log_only",
             reject_codes=sorted({item.error_code for item in prepared.rejected}),
         )
     sink: Any = None
+    sink_close_attempted = False
+    sink_close_failed = False
+
+    def close_sink() -> None:
+        nonlocal sink_close_attempted, sink_close_failed
+        if sink_close_attempted:
+            return
+        sink_close_attempted = True
+        close = getattr(sink, "close", None)
+        if close:
+            try:
+                close()
+            except Exception:
+                sink_close_failed = True
+                raise
+
     try:
+        if envelope.records and not prepared.records and prepared.rejected:
+            raise FaqPreprocessError(
+                "all collected FAQ records were rejected; loading was stopped",
+                code="all_records_rejected",
+            )
         if not dry_run:
             if sink_name == "json":
                 sink = JsonlFaqUpsertSink(settings.output_dir / "faq.jsonl")
@@ -190,26 +213,53 @@ def run_once(
             "dry_run": dry_run,
             "checkpoint_path": None,
         }
-        logger.event("INFO", "run_succeeded", "FAQ run completed", stage_name="Load", logic_name="faq.load", **result)
+        close_sink()
+        logger.event(
+            "INFO",
+            "run_succeeded",
+            "FAQ run completed",
+            stage_name="Load",
+            logic_name="faq.load",
+            **result,
+        )
         return result
     except Exception as exc:
+        validation_failure = getattr(exc, "code", None) == "all_records_rejected"
         logger.event(
             "ERROR",
             "run_failed",
             "FAQ run failed",
-            stage_name="Load",
-            logic_name="faq.load",
-            error_code=getattr(exc, "code", "load_failed"),
+            stage_name="Validate" if validation_failure else "Load",
+            logic_name="faq.validate" if validation_failure else "faq.load",
+            error_code=(
+                "resource_close_failed"
+                if sink_close_failed
+                else getattr(exc, "code", "load_failed")
+            ),
         )
         raise
     finally:
-        close = getattr(sink, "close", None)
-        if close:
-            close()
+        if not sink_close_attempted:
+            try:
+                close_sink()
+            except Exception:
+                try:
+                    logger.event(
+                        "ERROR",
+                        "resource_close_failed",
+                        "FAQ sink could not be closed cleanly",
+                        stage_name="Load",
+                        logic_name="faq.load",
+                        error_code="resource_close_failed",
+                    )
+                except Exception:
+                    pass
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
-    parser = argparse.ArgumentParser(description="Run one bounded FAQ collection/preprocessing cycle")
+    parser = argparse.ArgumentParser(
+        description="Run one bounded FAQ collection/preprocessing cycle"
+    )
     parser.add_argument("--fixture", type=Path)
     parser.add_argument("--sink", choices=("json", "mongo"), default="json")
     parser.add_argument("--output-dir", type=Path)
@@ -228,13 +278,23 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             )
         print(
             json.dumps(
-                run_once(settings=settings, fixture=args.fixture, sink_name=args.sink, dry_run=args.dry_run),
+                run_once(
+                    settings=settings,
+                    fixture=args.fixture,
+                    sink_name=args.sink,
+                    dry_run=args.dry_run,
+                ),
                 ensure_ascii=False,
             )
         )
         return 0
-    except (FaqError, FaqPreprocessError, RuntimeError, ValueError) as exc:
-        print(json.dumps({"status": "FAILED", "error_code": getattr(exc, "code", "faq_error")}), file=sys.stderr)
+    except Exception as exc:
+        print(
+            json.dumps(
+                {"status": "FAILED", "error_code": getattr(exc, "code", "faq_error")}
+            ),
+            file=sys.stderr,
+        )
         return 1
 
 

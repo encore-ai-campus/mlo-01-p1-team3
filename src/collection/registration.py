@@ -9,7 +9,7 @@ import ssl
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Mapping, Optional, Tuple
+from typing import Any, Callable, Dict, List, Mapping, Tuple
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode, urlsplit
 from urllib.request import Request, urlopen
@@ -20,7 +20,9 @@ from .api import ApiError
 class RegistrationError(RuntimeError):
     """An upstream or response-envelope error for registration reports."""
 
-    def __init__(self, message: str, code: str = "registration_error", *, retryable: bool = False) -> None:
+    def __init__(
+        self, message: str, code: str = "registration_error", *, retryable: bool = False
+    ) -> None:
         super().__init__(message)
         self.code = code
         self.retryable = retryable
@@ -39,10 +41,14 @@ class RegistrationPage:
 def normalize_period(value: Any) -> str:
     text = re.sub(r"[^0-9]", "", str(value or ""))
     if len(text) != 6:
-        raise RegistrationError("period must be YYYY-MM", code="invalid_reference_month")
+        raise RegistrationError(
+            "period must be YYYY-MM", code="invalid_reference_month"
+        )
     year, month = int(text[:4]), int(text[4:])
     if not 1 <= month <= 12:
-        raise RegistrationError("period month is invalid", code="invalid_reference_month")
+        raise RegistrationError(
+            "period month is invalid", code="invalid_reference_month"
+        )
     return f"{year:04d}{month:02d}"
 
 
@@ -97,14 +103,18 @@ def extract_record_list(payload: Any) -> List[Dict[str, Any]]:
     """
 
     if not isinstance(payload, Mapping):
-        raise RegistrationError("registration response must be an object", "response_schema")
+        raise RegistrationError(
+            "registration response must be an object", "response_schema"
+        )
     status = find_value(payload, {"status_code", "statuscode"})
     if _is_no_data_status(status):
         return []
 
     result_data = payload.get("result_data")
     if not isinstance(result_data, Mapping):
-        raise RegistrationError("registration response.result_data is missing", "response_schema")
+        raise RegistrationError(
+            "registration response.result_data is missing", "response_schema"
+        )
     form_list = result_data.get("formList")
     if not isinstance(form_list, list):
         raise RegistrationError(
@@ -114,7 +124,9 @@ def extract_record_list(payload: Any) -> List[Dict[str, Any]]:
     records: List[Dict[str, Any]] = []
     for index, record in enumerate(form_list):
         if not isinstance(record, Mapping):
-            raise RegistrationError(f"formList[{index}] must be an object", "response_schema")
+            raise RegistrationError(
+                f"formList[{index}] must be an object", "response_schema"
+            )
         records.append(dict(record))
     return records
 
@@ -152,7 +164,9 @@ class RegistrationApiClient:
         api_url = str(getattr(settings, "registration_api_url", ""))
         parsed = urlsplit(api_url)
         if parsed.netloc != "stat.molit.go.kr":
-            raise RegistrationError("registration endpoint is outside the approved host", "source_allowlist")
+            raise RegistrationError(
+                "registration endpoint is outside the approved host", "source_allowlist"
+            )
         api_key = getattr(settings, "registration_api_key", None)
         if not api_key:
             raise RegistrationError(
@@ -207,7 +221,9 @@ class RegistrationApiClient:
             except HTTPError as exc:
                 body = exc.read(512 * 1024)
                 if exc.code == 500 and b"INFO-100" in body:
-                    raise RegistrationError("registration API key is invalid", "invalid_api_key") from exc
+                    raise RegistrationError(
+                        "registration API key is invalid", "invalid_api_key"
+                    ) from exc
                 if exc.code == 500 and b"INFO-200" in body:
                     empty_payload = {
                         "status_code": "INFO-200",
@@ -215,8 +231,13 @@ class RegistrationApiClient:
                     }
                     return empty_payload, body
                 if exc.code == 500 and b"INFO-300" in body:
-                    raise RegistrationError("registration API service is unavailable", "api_closed") from exc
-                if exc.code not in {408, 429, 500, 502, 503, 504} or attempt >= self.max_retries:
+                    raise RegistrationError(
+                        "registration API service is unavailable", "api_closed"
+                    ) from exc
+                if (
+                    exc.code not in {408, 429, 500, 502, 503, 504}
+                    or attempt >= self.max_retries
+                ):
                     raise RegistrationError(
                         f"registration upstream HTTP {exc.code}",
                         f"http_{exc.code}",
@@ -233,7 +254,9 @@ class RegistrationApiClient:
             try:
                 payload = json.loads(body.decode("utf-8-sig"))
             except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-                raise RegistrationError("registration response is not valid JSON", "json_schema") from exc
+                raise RegistrationError(
+                    "registration response is not valid JSON", "json_schema"
+                ) from exc
             _status_error(payload)
             extract_record_list(payload)
             return payload, body
@@ -248,7 +271,9 @@ class FixtureRegistrationClient:
         try:
             self.payload = json.loads(path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError) as exc:
-            raise RegistrationError("registration fixture could not be read", "fixture_error") from exc
+            raise RegistrationError(
+                "registration fixture could not be read", "fixture_error"
+            ) from exc
 
     def fetch_period(
         self,
@@ -262,15 +287,21 @@ class FixtureRegistrationClient:
             selected: Any = None
             for page in payload["pages"]:
                 if not isinstance(page, Mapping):
-                    raise RegistrationError("registration fixture page must be an object", "fixture_schema")
+                    raise RegistrationError(
+                        "registration fixture page must be an object", "fixture_schema"
+                    )
                 page_period = normalize_period(page.get("period", period))
                 if page_period == period:
                     selected = page.get("payload", page)
                     break
-            payload = selected if selected is not None else {
-                "status_code": "INFO-200",
-                "result_data": {"formList": []},
-            }
+            payload = (
+                selected
+                if selected is not None
+                else {
+                    "status_code": "INFO-200",
+                    "result_data": {"formList": []},
+                }
+            )
 
         _status_error(payload)
         extract_record_list(payload)

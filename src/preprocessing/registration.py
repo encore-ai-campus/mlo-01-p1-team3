@@ -33,10 +33,14 @@ class RegistrationRejectedRecord:
 def normalize_period(value: Any) -> str:
     text = re.sub(r"[^0-9]", "", str(value or ""))
     if len(text) != 6:
-        raise RegistrationPreprocessError("period must be YYYY-MM", code="invalid_reference_month")
+        raise RegistrationPreprocessError(
+            "period must be YYYY-MM", code="invalid_reference_month"
+        )
     year, month = int(text[:4]), int(text[4:])
     if not 1 <= month <= 12:
-        raise RegistrationPreprocessError("period month is invalid", code="invalid_reference_month")
+        raise RegistrationPreprocessError(
+            "period month is invalid", code="invalid_reference_month"
+        )
     return f"{year:04d}{month:02d}"
 
 
@@ -109,13 +113,23 @@ def _reference_month(period: str, row: Mapping[str, Any]) -> str:
         normalized = format_utc_date(f"{parsed[:7]}-01", required=True)
         assert normalized is not None
         return normalized
-    raise RegistrationPreprocessError("reference month is invalid", code="invalid_reference_month")
+    raise RegistrationPreprocessError(
+        "reference month is invalid", code="invalid_reference_month"
+    )
 
 
 def _location(row: Mapping[str, Any]) -> Tuple[Optional[str], Optional[str]]:
     sido = _pick(
         row,
-        ("시도명", "sido_name", "sidoName", "province", "지역명", "region_name", "regionName"),
+        (
+            "시도명",
+            "sido_name",
+            "sidoName",
+            "province",
+            "지역명",
+            "region_name",
+            "regionName",
+        ),
     )
     sigungu = _pick(
         row,
@@ -146,25 +160,51 @@ def _metric_candidates(row: Mapping[str, Any]) -> Iterable[Tuple[str, str, Any]]
         yield from composite
         return
 
-    direct_type = _pick(row, ("차량구분", "차량유형", "차종", "vehicle_type", "vehicleType"))
-    direct_usage = _pick(row, ("용도구분", "용도", "usage_type", "usageType", "purpose"))
+    direct_type = _pick(
+        row, ("차량구분", "차량유형", "차종", "vehicle_type", "vehicleType")
+    )
+    direct_usage = _pick(
+        row, ("용도구분", "용도", "usage_type", "usageType", "purpose")
+    )
     direct_quantity = _pick(
         row,
-        ("수량", "등록대수", "등록수", "quantity", "registered_count", "registeredCount", "count", "value"),
+        (
+            "수량",
+            "등록대수",
+            "등록수",
+            "quantity",
+            "registered_count",
+            "registeredCount",
+            "count",
+            "value",
+        ),
     )
     if direct_type not in (None, "") and direct_usage not in (None, ""):
         yield str(direct_type).strip(), str(direct_usage).strip(), direct_quantity
 
 
+def _is_aggregate_metric(vehicle_type: str, usage_type: str) -> bool:
+    """Return whether a source measure is an aggregate, not a detail row."""
+
+    return vehicle_type == "총계" or usage_type == "계"
+
+
 def _canonical_hash(value: Mapping[str, Any]) -> str:
-    encoded = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    encoded = json.dumps(
+        value, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
 
 
 def transform_registration_row(
-    raw: Mapping[str, Any], *, period: str, settings: Settings, run_id: str, collected_at: str
+    raw: Mapping[str, Any],
+    *,
+    period: str,
+    settings: Settings,
+    run_id: str,
+    collected_at: str,
 ) -> List[Dict[str, Any]]:
-    """Flatten one API row into one prepared row per vehicle/use measure."""
+    """Flatten one API row into detail rows, excluding source aggregates."""
 
     try:
         normalized_collected_at = format_utc_datetime(collected_at, required=True)
@@ -178,22 +218,34 @@ def transform_registration_row(
     report_month = _reference_month(normalized_period, raw)
     sido_name, sigungu_name = _location(raw)
     if not sido_name:
-        raise RegistrationPreprocessError("sido_name is required", code="missing_sido_name")
+        raise RegistrationPreprocessError(
+            "sido_name is required", code="missing_sido_name"
+        )
     if not sigungu_name:
-        raise RegistrationPreprocessError("sigungu_name is required", code="missing_sigungu_name")
+        raise RegistrationPreprocessError(
+            "sigungu_name is required", code="missing_sigungu_name"
+        )
 
     candidates = list(_metric_candidates(raw))
     if not candidates:
-        raise RegistrationPreprocessError("no registration measure found", code="missing_registration_measure")
+        raise RegistrationPreprocessError(
+            "no registration measure found", code="missing_registration_measure"
+        )
 
     rows: List[Dict[str, Any]] = []
     for vehicle_type, usage_type, raw_quantity in candidates:
         vehicle_type = str(vehicle_type).strip()
         usage_type = str(usage_type).strip()
         if not vehicle_type:
-            raise RegistrationPreprocessError("vehicle_type is required", code="missing_vehicle_type")
+            raise RegistrationPreprocessError(
+                "vehicle_type is required", code="missing_vehicle_type"
+            )
         if not usage_type:
-            raise RegistrationPreprocessError("usage_type is required", code="missing_usage_type")
+            raise RegistrationPreprocessError(
+                "usage_type is required", code="missing_usage_type"
+            )
+        if _is_aggregate_metric(vehicle_type, usage_type):
+            continue
         quantity = _scalar(raw_quantity)
         if quantity is not None and (
             isinstance(quantity, bool) or not isinstance(quantity, int) or quantity < 0
@@ -225,7 +277,12 @@ def transform_registration_row(
 
 
 def transform_registration_records(
-    records: Iterable[Mapping[str, Any]], *, period: str, settings: Settings, run_id: str, collected_at: str
+    records: Iterable[Mapping[str, Any]],
+    *,
+    period: str,
+    settings: Settings,
+    run_id: str,
+    collected_at: str,
 ) -> Tuple[List[Dict[str, Any]], List[RegistrationRejectedRecord]]:
     valid: List[Dict[str, Any]] = []
     rejected: List[RegistrationRejectedRecord] = []
@@ -233,7 +290,11 @@ def transform_registration_records(
         try:
             valid.extend(
                 transform_registration_row(
-                    raw, period=period, settings=settings, run_id=run_id, collected_at=collected_at
+                    raw,
+                    period=period,
+                    settings=settings,
+                    run_id=run_id,
+                    collected_at=collected_at,
                 )
             )
         except RegistrationPreprocessError as exc:

@@ -171,7 +171,9 @@ def _registration_row(content_hash: str) -> dict[str, Any]:
     }
 
 
-def test_common_logger_uses_canonical_utc_formatter(monkeypatch: Any, tmp_path: Path) -> None:
+def test_common_logger_uses_canonical_utc_formatter(
+    monkeypatch: Any, tmp_path: Path
+) -> None:
     monkeypatch.setattr(logging_module, "utc_now_iso", lambda: FIRST_LOAD)
 
     logging_module.JsonlLogger(tmp_path / "events.jsonl").event("INFO", "test", "ok")
@@ -264,7 +266,9 @@ def test_usedcar_jsonl_updates_nested_listing_and_dimension_load_timestamps(
     assert second["brand"]["created_at"] == FIRST_LOAD
 
 
-def test_registration_jsonl_owns_load_timestamps(monkeypatch: Any, tmp_path: Path) -> None:
+def test_registration_jsonl_owns_load_timestamps(
+    monkeypatch: Any, tmp_path: Path
+) -> None:
     path = tmp_path / "registration.jsonl"
     sink = JsonlRegistrationUpsertSink(path)
     row = {
@@ -312,13 +316,19 @@ def test_registration_quota_json_uses_canonical_utc_call_time(
 def test_sql_sinks_normalize_datetime_values_before_mysql_conversion() -> None:
     source_value = "2026-02-01T09:00:00.987654+09:00"
 
-    assert SqlUpsertSink._sql_value(source_value, "source_updated_at") == "2026-02-01 00:00:00"
-    assert SqlRegistrationUpsertSink._sql_value(
-        {"updated_at": source_value}, "updated_at"
-    ) == "2026-02-01 00:00:00"
+    assert (
+        SqlUpsertSink._sql_value(source_value, "source_updated_at")
+        == "2026-02-01 00:00:00"
+    )
+    assert (
+        SqlRegistrationUpsertSink._sql_value({"updated_at": source_value}, "updated_at")
+        == "2026-02-01 00:00:00"
+    )
 
 
-def test_sql_usedcar_unchanged_rows_are_not_written() -> None:
+def test_sql_usedcar_repairs_noncanonical_hash_without_counting_business_update() -> (
+    None
+):
     cursor = _FakeCursor(listing_hash="a" * 64)
     connection = _FakeConnection(cursor)
     sink = SqlUpsertSink.__new__(SqlUpsertSink)
@@ -329,7 +339,8 @@ def test_sql_usedcar_unchanged_rows_are_not_written() -> None:
     assert stats.inserted_count == 0
     assert stats.updated_count == 0
     assert stats.unchanged_count == 1
-    assert cursor.executemany_calls == []
+    assert len(cursor.executemany_calls) == 1
+    assert "INSERT INTO vehicle_listings" in cursor.executemany_calls[0][0]
     assert connection.commit_count == 1
 
 
@@ -355,7 +366,15 @@ def test_sql_changed_rows_are_written_and_pipeline_progress_is_transactional() -
     sink.connection = connection
 
     stats = sink.save(
-        [_usedcar_row("b" * 64)],
+        [
+            {
+                "listing": {
+                    "listing_id": "listing-1",
+                    "title": "changed title",
+                    "content_hash": "b" * 64,
+                }
+            }
+        ],
         checkpoint={"initialized": True, "after_seq": 11},
         run_id="run-1",
         started_at=FIRST_LOAD,
@@ -391,7 +410,9 @@ def test_sql_checkpoint_load_reads_latest_progress_object() -> None:
     assert sink.load_checkpoint() == {"initialized": True, "after_seq": 19}
 
 
-def test_faq_and_registration_sinks_reject_incomplete_prepared_contracts(tmp_path: Path) -> None:
+def test_faq_and_registration_sinks_reject_incomplete_prepared_contracts(
+    tmp_path: Path,
+) -> None:
     with pytest.raises(ValueError, match="question"):
         JsonlFaqUpsertSink(tmp_path / "faq.jsonl").save(
             [{"faq_id": "faq-1", "content_hash": "a" * 64}]
@@ -423,8 +444,7 @@ def test_mongo_validator_and_incremental_contract_are_explicit() -> None:
 
 def test_sql_migration_splitter_preserves_quoted_semicolons() -> None:
     statements = split_sql(
-        "CREATE TABLE `sample` (value VARCHAR(16)); "
-        "INSERT INTO sample VALUES ('a;b');"
+        "CREATE TABLE `sample` (value VARCHAR(16)); INSERT INTO sample VALUES ('a;b');"
     )
 
     assert statements == [

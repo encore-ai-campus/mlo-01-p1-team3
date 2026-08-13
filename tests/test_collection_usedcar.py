@@ -54,7 +54,10 @@ def test_initial_collection_uses_cursor_contract_and_follows_next() -> None:
 
     result = list(fetcher.iter_initial(limit=500, max_batches=2))
 
-    assert [record for item in result for record in item.records] == [{"id": 101}, {"id": 102}]
+    assert [record for item in result for record in item.records] == [
+        {"id": 101},
+        {"id": 102},
+    ]
     assert client.calls == [
         (INITIAL_ENDPOINT, {"params": {"after_id": 0, "limit": 500}}),
         (next_url, {}),
@@ -75,7 +78,9 @@ def test_incremental_collection_uses_after_sequence_and_limit() -> None:
 
 
 def test_cursor_next_must_be_relative_and_stay_on_documented_endpoint() -> None:
-    client = QueueClient([page([{"id": 1}], "https://evil.example/api/v1/cars/cursor?after_id=1")])
+    client = QueueClient(
+        [page([{"id": 1}], "https://evil.example/api/v1/cars/cursor?after_id=1")]
+    )
     fetcher = UsedCarFetcher(client, sleeper=lambda seconds: None)
 
     with pytest.raises(FetchError, match="outside the documented endpoint"):
@@ -103,16 +108,17 @@ def test_parse_page_rejects_missing_envelope_or_identifier() -> None:
     assert identifier_error.value.code == "response_schema"
 
 
-def test_page_checkpoint_prefers_high_water_metadata() -> None:
+def test_page_checkpoint_separates_processed_sequence_from_snapshot_boundary() -> None:
     checkpoint = page_checkpoint(
-        {"until_id": 100, "dataset_epoch": "epoch-1", "high_water_seq": 55},
+        {"until_id": 100, "dataset_epoch": "epoch-1", "until_seq": 500},
         [{"id": 99, "seq": 54}],
     )
 
     assert checkpoint == {
         "until_id": 100,
         "dataset_epoch": "epoch-1",
-        "high_water_seq": 55,
+        "high_water_seq": 54,
+        "until_seq": 500,
     }
 
 
@@ -125,7 +131,9 @@ def test_fixture_fetcher_uses_the_same_cursor_parser(tmp_path: Path) -> None:
     )
 
     fetcher = FixtureFetcher(fixture)
-    records = [record for item in fetcher.iter_initial(500, 2) for record in item.records]
+    records = [
+        record for item in fetcher.iter_initial(500, 2) for record in item.records
+    ]
 
     assert records == [{"id": 1}, {"id": 2}]
     assert load_fetcher(object(), fixture).__class__ is FixtureFetcher

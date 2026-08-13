@@ -311,7 +311,9 @@ def test_used_car_normalizes_collected_at_and_generated_metadata_precision() -> 
         (used_car_record(firstRegistration="2026-02-31"), "invalid_first_registration"),
     ],
 )
-def test_used_car_rejects_contract_violations(record: dict[str, Any], error_code: str) -> None:
+def test_used_car_rejects_contract_violations(
+    record: dict[str, Any], error_code: str
+) -> None:
     valid, rejected = transform_records(
         [record],
         settings=settings(),
@@ -345,15 +347,77 @@ def test_registration_flattens_composite_measures_and_normalizes_quantities() ->
         collected_at="2026-02-01T00:00:00+00:00",
     )
 
-    assert [(row["vehicle_type"], row["usage_type"], row["quantity"]) for row in rows] == [
+    assert [
+        (row["vehicle_type"], row["usage_type"], row["quantity"]) for row in rows
+    ] == [
         ("승용", "관용", 1234),
         ("승용", "자가용", None),
-        ("총계", "계", 0),
     ]
     assert all(row["report_month"] == "2026-01-01" for row in rows)
     assert all(row["source_name"] == "molit_car_registration" for row in rows)
     assert all(row["source_url"] == settings().registration_api_url for row in rows)
     assert len({row["content_hash"] for row in rows}) == len(rows)
+
+
+def test_registration_excludes_eight_aggregates_and_keeps_twelve_details() -> None:
+    vehicle_types = ("승용", "승합", "화물", "특수", "총계")
+    usage_types = ("관용", "자가용", "영업용", "계")
+    row = {
+        "월": "2026-01",
+        "시도명": "서울",
+        "시군구": "강남구",
+        **{
+            f"{vehicle_type}>{usage_type}": 1
+            for vehicle_type in vehicle_types
+            for usage_type in usage_types
+        },
+    }
+
+    rows = transform_registration_row(
+        row,
+        period="2026-01",
+        settings=settings(),
+        run_id="run-1",
+        collected_at="2026-02-01T00:00:00+00:00",
+    )
+
+    expected_dimensions = [
+        (vehicle_type, usage_type)
+        for vehicle_type in vehicle_types[:-1]
+        for usage_type in usage_types[:-1]
+    ]
+    assert len(rows) == 12
+    assert [
+        (row["vehicle_type"], row["usage_type"]) for row in rows
+    ] == expected_dimensions
+    assert not any(
+        row["vehicle_type"] == "총계" or row["usage_type"] == "계" for row in rows
+    )
+
+
+@pytest.mark.parametrize(
+    ("vehicle_type", "usage_type"),
+    [("총계", "관용"), ("승용", "계")],
+)
+def test_registration_excludes_aggregate_direct_dimensions(
+    vehicle_type: str, usage_type: str
+) -> None:
+    rows = transform_registration_row(
+        {
+            "reference_month": "2026-02",
+            "province": "부산",
+            "district": "해운대구",
+            "vehicle_type": vehicle_type,
+            "usage_type": usage_type,
+            "quantity": "10,000",
+        },
+        period="2026-02",
+        settings=settings(),
+        run_id="run-1",
+        collected_at="2026-03-01T00:00:00+00:00",
+    )
+
+    assert rows == []
 
 
 def test_registration_normalizes_collected_at_to_common_datetime_format() -> None:
@@ -429,7 +493,7 @@ def test_registration_batch_rejects_missing_location_without_losing_index() -> N
         collected_at="2026-02-01T00:00:00+00:00",
     )
 
-    assert len(valid) == 3
+    assert len(valid) == 2
     assert [(item.index, item.error_code) for item in rejected] == [
         (1, "missing_sido_name")
     ]
@@ -464,14 +528,24 @@ def test_registration_rejects_invalid_period_quantity_or_measure(
 
 def test_preprocessing_modules_do_not_import_other_pipeline_stages() -> None:
     source_root = Path(__file__).resolve().parents[1] / "src" / "preprocessing"
-    forbidden = {"collection", "loading", "pipelines", "requests", "pymongo", "pymysql", "sqlalchemy"}
+    forbidden = {
+        "collection",
+        "loading",
+        "pipelines",
+        "requests",
+        "pymongo",
+        "pymysql",
+        "sqlalchemy",
+    }
 
     for path in source_root.glob("*.py"):
         tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
         imported_roots: set[str] = set()
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
-                imported_roots.update(alias.name.split(".", 1)[0] for alias in node.names)
+                imported_roots.update(
+                    alias.name.split(".", 1)[0] for alias in node.names
+                )
             elif isinstance(node, ast.ImportFrom) and node.module:
                 imported_roots.add(node.module.split(".", 1)[0])
         assert not imported_roots.intersection(forbidden), (path, imported_roots)

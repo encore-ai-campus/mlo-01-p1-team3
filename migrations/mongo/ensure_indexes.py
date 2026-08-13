@@ -1,7 +1,7 @@
 """Create or validate the MongoDB FAQ collection contract.
 
 The migration is non-destructive.  It creates the collection when absent,
-adds the validator to an existing unvalidated collection, and always ensures
+adds or updates the validator on an existing collection, and always ensures
 the indexes required by the loading contract.  It never drops documents or
 indexes.
 """
@@ -47,15 +47,15 @@ FAQ_VALIDATOR = {
             "brand": {"bsonType": "string"},
             "category": {"bsonType": "string"},
             "source_url": {"bsonType": "string"},
-            "source_updated_at": {"bsonType": "string"},
+            "source_updated_at": {"bsonType": "date"},
             "license": {"bsonType": "string"},
             "attribution": {"bsonType": "string"},
             "content_hash": {"bsonType": "string"},
             "is_active": {"bsonType": "bool"},
             "run_id": {"bsonType": "string"},
-            "collected_at": {"bsonType": "string"},
-            "created_at": {"bsonType": "string"},
-            "updated_at": {"bsonType": "string"},
+            "collected_at": {"bsonType": "date"},
+            "created_at": {"bsonType": "date"},
+            "updated_at": {"bsonType": "date"},
         },
     }
 }
@@ -99,7 +99,8 @@ def ensure_indexes(
         else:
             definition = _collection_definition(db, collection)
             options = definition.get("options", {}) if definition else {}
-            if not isinstance(options, Mapping) or not options.get("validator"):
+            current_validator = options.get("validator") if isinstance(options, Mapping) else None
+            if current_validator != FAQ_VALIDATOR:
                 db.command(
                     "collMod",
                     collection,

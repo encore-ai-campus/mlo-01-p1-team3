@@ -43,7 +43,7 @@ def _registration_fixture(path: Path) -> Path:
                             "date": "202606",
                             "시도명": "서울",
                             "시군구": "강남구",
-                            "승용>계": 1,
+                            "승용>관용": 1,
                         }
                     ]
                 },
@@ -72,7 +72,9 @@ def _registration_settings(tmp_path: Path, *, quota: int = 3000) -> Any:
     )
 
 
-def test_main_is_canonical_faq_entrypoint(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+def test_main_is_canonical_faq_entrypoint(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
     fixture = _faq_fixture(tmp_path / "faq.html")
 
     exit_code = entrypoint.main(
@@ -117,7 +119,9 @@ def test_registration_dry_run_does_not_persist_quota(tmp_path: Path) -> None:
     assert not (settings.output_dir / "vehicle_registration_reports.jsonl").exists()
 
 
-def test_registration_quota_exhaustion_is_not_reported_as_success(tmp_path: Path) -> None:
+def test_registration_quota_exhaustion_is_not_reported_as_success(
+    tmp_path: Path,
+) -> None:
     fixture = _registration_fixture(tmp_path / "registration.json")
     settings = _registration_settings(tmp_path, quota=1)
 
@@ -144,22 +148,35 @@ def test_usedcar_rejects_dataset_epoch_change_between_pages(
     ]
 
     class FakeFetcher:
+        def incremental_watermark(self) -> dict[str, Any]:
+            return {"high_water_seq": 2, "dataset_epoch": "epoch-a"}
+
         def iter_initial(self, limit: int, max_batches: int) -> Any:
             yield from pages
 
     class FakeSink:
+        def __init__(self) -> None:
+            self.calls: list[dict[str, Any]] = []
+
         def save(self, rows: Any, **kwargs: Any) -> LoadStats:
+            self.calls.append(kwargs)
             return LoadStats(inserted_count=len(rows))
 
         def close(self) -> None:
             return None
 
-    monkeypatch.setattr(usedcar, "load_fetcher", lambda settings, fixture: FakeFetcher())
-    monkeypatch.setattr(usedcar, "sink_for", lambda settings, sink_name: FakeSink())
+    monkeypatch.setattr(
+        usedcar, "load_fetcher", lambda settings, fixture: FakeFetcher()
+    )
+    sink = FakeSink()
+    monkeypatch.setattr(usedcar, "sink_for", lambda settings, sink_name: sink)
     monkeypatch.setattr(
         usedcar,
         "transform_records",
-        lambda records, **kwargs: ([{"listing": {"listing_id": str(records[0]["id"])}}], []),
+        lambda records, **kwargs: (
+            [{"listing": {"listing_id": str(records[0]["id"])}}],
+            [],
+        ),
     )
     settings = SimpleNamespace(
         state_path=tmp_path / "usedcar_checkpoint.json",
@@ -172,6 +189,6 @@ def test_usedcar_rejects_dataset_epoch_change_between_pages(
         usedcar.run_once(settings=settings, mode="initial", sink_name="json")
 
     assert error.value.code == "dataset_epoch_changed"
-    checkpoint = json.loads(settings.state_path.read_text(encoding="utf-8"))
-    assert checkpoint["dataset_epoch"] == "epoch-a"
-    assert checkpoint["after_seq"] == 1
+    assert not settings.state_path.exists()
+    assert len(sink.calls) == 1
+    assert sink.calls[0].get("checkpoint") is None

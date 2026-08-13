@@ -35,18 +35,31 @@ def get_api_key(settings: Optional[Any] = None) -> str:
 
     selected_settings = settings or _settings_from_env()
     client = ApiClient(selected_settings)
-    client.refresh_public_key()
-    if not client.api_key:
-        raise FetchError("public-key response did not contain a usable api_key", code="key_schema")
-    return client.api_key
+    try:
+        client.refresh_public_key()
+        if not client.api_key:
+            raise FetchError(
+                "public-key response did not contain a usable api_key",
+                code="key_schema",
+            )
+        return client.api_key
+    finally:
+        close = getattr(client, "close", None)
+        if close is not None:
+            close()
 
 
 def request_api(url: str, api_key: str) -> tuple[Any, str]:
     """Legacy one-request helper returning ``(payload, current_key)``."""
 
     client = ApiClient.from_url(url, api_key=api_key)
-    payload = client.get(url, authenticated=True)
-    return payload, client.api_key or ""
+    try:
+        payload = client.get(url, authenticated=True)
+        return payload, client.api_key or ""
+    finally:
+        close = getattr(client, "close", None)
+        if close is not None:
+            close()
 
 
 __all__ = [

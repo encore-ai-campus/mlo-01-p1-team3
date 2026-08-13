@@ -52,7 +52,8 @@ flowchart TD
 - 구조화 로그: `common.logging_utils.JsonlLogger`가 기록하고 비밀값을 마스킹
 - 공통 진입점: `python -m src.main --pipeline <faq|registration|usedcar|all>`
 - profile: `--profile fixture|live` (fixture가 기본이며 live는 명시적으로 선택)
-- 공통 CLI: `--once`, `--fixture`, pipeline별 fixture, `--dry-run`, `--output-dir`
+- 공통 CLI: `--once`, `--loop-interval-seconds`, `--fixture`, pipeline별 fixture, `--dry-run`, `--output-dir`
+- `--profile live`는 기본적으로 회차 사이 60초를 기다리며 계속 실행한다. `--once`를 지정하면 1회만 실행하고 종료한다. `SIGINT`·`SIGTERM`은 진행 중인 회차를 마친 뒤 반복을 종료한다. fixture profile은 반복하지 않는다.
 - 중고차: `--mode auto|initial|incremental`
 - 등록현황: `--period YYYY-MM`
 - FAQ: `--sink json|mongo`

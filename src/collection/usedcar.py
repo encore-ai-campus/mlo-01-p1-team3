@@ -8,15 +8,24 @@ with each yielded ``Page``.
 from __future__ import annotations
 
 import json
-import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
 from threading import RLock
-from typing import Any, Callable, Dict, Iterable, Iterator, List, Mapping, Optional, Sequence
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Iterable,
+    Iterator,
+    List,
+    Mapping,
+    Optional,
+    Sequence,
+)
 from urllib.parse import parse_qsl, urlsplit, urlunsplit
 
-from .api import ApiClient, ApiError, FetchError
+from .api import ApiClient, FetchError
 
 
 INITIAL_ENDPOINT = "/api/v1/cars/cursor"
@@ -64,14 +73,22 @@ def parse_page(payload: Any) -> Page:
     raw_data = payload["data"]
     raw_meta = payload["meta"]
     raw_links = payload["links"]
-    if not isinstance(raw_data, list) or not all(isinstance(item, Mapping) for item in raw_data):
-        raise FetchError("response data must be a list of objects", code="response_schema")
+    if not isinstance(raw_data, list) or not all(
+        isinstance(item, Mapping) for item in raw_data
+    ):
+        raise FetchError(
+            "response data must be a list of objects", code="response_schema"
+        )
     if not isinstance(raw_meta, Mapping) or not isinstance(raw_links, Mapping):
-        raise FetchError("response meta and links must be objects", code="response_schema")
+        raise FetchError(
+            "response meta and links must be objects", code="response_schema"
+        )
 
     raw_next = raw_links.get("next")
     if raw_next is not None and (not isinstance(raw_next, str) or not raw_next.strip()):
-        raise FetchError("links.next must be a URL string or null", code="response_schema")
+        raise FetchError(
+            "links.next must be a URL string or null", code="response_schema"
+        )
 
     records: List[Dict[str, Any]] = []
     for index, item in enumerate(raw_data):
@@ -115,7 +132,9 @@ def _first_value(mapping: Mapping[str, Any], names: Sequence[str]) -> Any:
     return None
 
 
-def page_checkpoint(meta: Mapping[str, Any], records: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
+def page_checkpoint(
+    meta: Mapping[str, Any], records: Sequence[Mapping[str, Any]]
+) -> Dict[str, Any]:
     """Extract checkpoint metadata without persisting response bodies."""
 
     last_id: Optional[int] = None
@@ -130,22 +149,32 @@ def page_checkpoint(meta: Mapping[str, Any], records: Sequence[Mapping[str, Any]
             if last_seq is None or raw_seq > last_seq:
                 last_seq = raw_seq
     until_id = _first_value(meta, ("until_id", "untilId", "high_water_id"))
-    high_water_seq = _first_value(
+    explicit_high_water_seq = _first_value(
         meta,
-        ("high_water_seq", "highWaterSeq", "until_seq", "untilSeq", "last_seq"),
+        ("high_water_seq", "highWaterSeq", "last_seq"),
     )
-    return {
+    until_seq = _first_value(meta, ("until_seq", "untilSeq"))
+    checkpoint = {
         "until_id": until_id if until_id is not None else last_id,
         "dataset_epoch": _first_value(meta, ("dataset_epoch", "datasetEpoch")),
-        "high_water_seq": high_water_seq if high_water_seq is not None else last_seq,
+        "high_water_seq": (
+            explicit_high_water_seq if explicit_high_water_seq is not None else last_seq
+        ),
     }
+    if until_seq is not None:
+        checkpoint["until_seq"] = until_seq
+    return checkpoint
 
 
 def _canonical_next_url(value: str) -> str:
     parsed = urlsplit(value)
-    query_names = {name.lower().replace("-", "_") for name, _ in parse_qsl(parsed.query)}
+    query_names = {
+        name.lower().replace("-", "_") for name, _ in parse_qsl(parsed.query)
+    }
     if query_names & ApiClient._SECRET_QUERY_NAMES:
-        raise FetchError("cursor next link contains a secret query parameter", code="secret_query")
+        raise FetchError(
+            "cursor next link contains a secret query parameter", code="secret_query"
+        )
     return urlunsplit(parsed._replace(fragment=""))
 
 
@@ -237,7 +266,32 @@ class UsedCarFetcher:
             max_batches=max_batches,
         )
 
-    def iter_incremental(self, after_seq: int, limit: int, max_batches: int) -> Iterator[Page]:
+    def incremental_watermark(self) -> Dict[str, Any]:
+        """Read the change-stream boundary that brackets an initial sync."""
+
+        self._wait_for_next_start()
+        payload = self.client.get(
+            CHANGES_ENDPOINT,
+            params={"after_seq": 0, "limit": 1},
+        )
+        page = parse_page(payload)
+        state = page_checkpoint(page.meta, page.records)
+        value = state.get("until_seq")
+        if value is None:
+            value = state.get("high_water_seq")
+        if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+            raise FetchError(
+                "source does not provide a sequence watermark for initial loading",
+                code="incremental_contract_missing",
+            )
+        return {
+            "high_water_seq": value,
+            "dataset_epoch": state.get("dataset_epoch"),
+        }
+
+    def iter_incremental(
+        self, after_seq: int, limit: int, max_batches: int
+    ) -> Iterator[Page]:
         if after_seq < 0:
             raise ValueError("after_seq must be non-negative")
         yield from self._iter_pages(
@@ -247,10 +301,16 @@ class UsedCarFetcher:
             max_batches=max_batches,
         )
 
-    def fetch_initial(self, limit: int = MAX_PAGE_LIMIT, max_batches: int = 20) -> List[Dict[str, Any]]:
+    def fetch_initial(
+        self, limit: int = MAX_PAGE_LIMIT, max_batches: int = 20
+    ) -> List[Dict[str, Any]]:
         """Compatibility helper returning a flattened initial result."""
 
-        return [record for page in self.iter_initial(limit, max_batches) for record in page.records]
+        return [
+            record
+            for page in self.iter_initial(limit, max_batches)
+            for record in page.records
+        ]
 
     def fetch_changes(
         self,
@@ -258,28 +318,47 @@ class UsedCarFetcher:
         limit: int = MAX_PAGE_LIMIT,
         max_batches: int = 20,
     ) -> List[Dict[str, Any]]:
-        return [record for page in self.iter_incremental(after_seq, limit, max_batches) for record in page.records]
+        return [
+            record
+            for page in self.iter_incremental(after_seq, limit, max_batches)
+            for record in page.records
+        ]
+
+    def close(self) -> None:
+        """Release transport resources owned by the API client."""
+
+        close = getattr(self.client, "close", None)
+        if close is not None:
+            close()
 
 
 def _fixture_pages(path: Path) -> List[Page]:
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        raise FetchError("fixture could not be read as JSON", code="fixture_error") from exc
+        raise FetchError(
+            "fixture could not be read as JSON", code="fixture_error"
+        ) from exc
 
     if isinstance(payload, Mapping) and isinstance(payload.get("pages"), list):
         raw_pages = payload["pages"]
     elif isinstance(payload, Mapping):
         raw_pages = [payload]
     else:
-        raise FetchError("fixture root must be an object with a page envelope", code="fixture_schema")
+        raise FetchError(
+            "fixture root must be an object with a page envelope", code="fixture_schema"
+        )
 
     if not raw_pages:
-        raise FetchError("fixture must contain at least one page", code="fixture_schema")
+        raise FetchError(
+            "fixture must contain at least one page", code="fixture_schema"
+        )
     pages: List[Page] = []
     for index, raw_page in enumerate(raw_pages):
         if not isinstance(raw_page, Mapping):
-            raise FetchError(f"fixture page {index} must be an object", code="fixture_schema")
+            raise FetchError(
+                f"fixture page {index} must be an object", code="fixture_schema"
+            )
         pages.append(parse_page(raw_page))
     return pages
 
@@ -312,15 +391,37 @@ class FixtureFetcher:
                 raise FetchError("fixture cursor link repeated", code="cursor_loop")
             seen_next.add(next_url)
         if self.pages and self.pages[-1].has_more and len(self.pages) < max_batches:
-            raise FetchError("fixture ended before links.next was exhausted", code="fixture_schema")
+            raise FetchError(
+                "fixture ended before links.next was exhausted", code="fixture_schema"
+            )
 
     def iter_initial(self, limit: int, max_batches: int) -> Iterator[Page]:
         yield from self._iter(INITIAL_ENDPOINT, limit, max_batches)
 
-    def iter_incremental(self, after_seq: int, limit: int, max_batches: int) -> Iterator[Page]:
+    def iter_incremental(
+        self, after_seq: int, limit: int, max_batches: int
+    ) -> Iterator[Page]:
         if after_seq < 0:
             raise ValueError("after_seq must be non-negative")
         yield from self._iter(CHANGES_ENDPOINT, limit, max_batches)
+
+    def incremental_watermark(self) -> Dict[str, Any]:
+        """Reuse a fixture page sequence marker as its initial watermark."""
+
+        for page in self.pages:
+            state = page_checkpoint(page.meta, page.records)
+            value = state.get("until_seq")
+            if value is None:
+                value = state.get("high_water_seq")
+            if isinstance(value, int) and not isinstance(value, bool) and value >= 0:
+                return {
+                    "high_water_seq": value,
+                    "dataset_epoch": state.get("dataset_epoch"),
+                }
+        raise FetchError(
+            "fixture does not provide a sequence watermark for initial loading",
+            code="incremental_contract_missing",
+        )
 
 
 def load_fetcher(settings: Any, fixture: Optional[Path]) -> Any:
@@ -348,7 +449,10 @@ def collect_fixture_pages(
         if not parsed.has_more:
             break
         if not parsed.next_url:
-            raise FetchError("fixture says has_more but links.next is absent", code="cursor_link_missing")
+            raise FetchError(
+                "fixture says has_more but links.next is absent",
+                code="cursor_link_missing",
+            )
         UsedCarFetcher._validate_next_path(parsed.next_url, endpoint)
     return result
 

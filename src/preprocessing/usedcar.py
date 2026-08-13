@@ -7,14 +7,13 @@ loader decides how that aggregate is written to the normalized SQL tables.
 
 from __future__ import annotations
 
-import hashlib
-import json
 import re
 from dataclasses import dataclass
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple
 
 from common.config import Settings
 from common.time_utils import format_utc_date, format_utc_datetime, utc_now_iso
+from common.usedcar_hash import usedcar_content_hash
 
 
 class PreprocessError(ValueError):
@@ -75,13 +74,17 @@ def _nested_text(value: Optional[Mapping[str, Any]], *keys: str) -> Optional[str
     return None
 
 
-def _nested_required_id(value: Optional[Mapping[str, Any]], field: str) -> Optional[int]:
+def _nested_required_id(
+    value: Optional[Mapping[str, Any]], field: str
+) -> Optional[int]:
     if value is None:
         return None
     return _int_value(value.get("id"), field, required=True)
 
 
-def _nested_required_text(value: Optional[Mapping[str, Any]], key: str, field: str) -> Optional[str]:
+def _nested_required_text(
+    value: Optional[Mapping[str, Any]], key: str, field: str
+) -> Optional[str]:
     if value is None:
         return None
     result = _text_value(value.get(key))
@@ -104,7 +107,9 @@ def _iso_value(value: Any, field: str) -> Optional[str]:
     try:
         return format_utc_datetime(text, required=True)
     except (TypeError, ValueError) as exc:
-        raise PreprocessError(f"{field} must be ISO 8601", code=f"invalid_{field}") from exc
+        raise PreprocessError(
+            f"{field} must be ISO 8601", code=f"invalid_{field}"
+        ) from exc
 
 
 def _date_value(value: Any, field: str) -> Optional[str]:
@@ -116,14 +121,11 @@ def _date_value(value: Any, field: str) -> Optional[str]:
     try:
         normalized = format_utc_date(text, required=True)
     except (TypeError, ValueError) as exc:
-        raise PreprocessError(f"{field} must be YYYY-MM-DD", code=f"invalid_{field}") from exc
+        raise PreprocessError(
+            f"{field} must be YYYY-MM-DD", code=f"invalid_{field}"
+        ) from exc
     assert normalized is not None
     return normalized
-
-
-def _canonical_hash(value: Mapping[str, Any]) -> str:
-    encoded = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
-    return hashlib.sha256(encoded).hexdigest()
 
 
 def _record_id(record: Mapping[str, Any]) -> Optional[str]:
@@ -149,7 +151,9 @@ def _change_record(record: Mapping[str, Any]) -> Mapping[str, Any]:
                 merged.setdefault("_event_id", record["eventId"])
             return merged
     nested_data = record.get("data")
-    if isinstance(nested_data, Mapping) and ("id" in nested_data or "listingNumber" in nested_data):
+    if isinstance(nested_data, Mapping) and (
+        "id" in nested_data or "listingNumber" in nested_data
+    ):
         merged = dict(nested_data)
         if "seq" in record:
             merged.setdefault("_change_seq", record["seq"])
@@ -159,7 +163,9 @@ def _change_record(record: Mapping[str, Any]) -> Mapping[str, Any]:
     return record
 
 
-def _entity_metadata(*, source_updated_at: Optional[str], run_id: str, collected_at: str, now: str) -> Dict[str, Any]:
+def _entity_metadata(
+    *, source_updated_at: Optional[str], run_id: str, collected_at: str, now: str
+) -> Dict[str, Any]:
     return {
         "source_updated_at": source_updated_at,
         "run_id": run_id,
@@ -170,7 +176,12 @@ def _entity_metadata(*, source_updated_at: Optional[str], run_id: str, collected
 
 
 def transform_record(
-    record: Mapping[str, Any], *, base_url: str, run_id: str, collected_at: str, dataset_epoch: Optional[str]
+    record: Mapping[str, Any],
+    *,
+    base_url: str,
+    run_id: str,
+    collected_at: str,
+    dataset_epoch: Optional[str],
 ) -> Dict[str, Any]:
     """Convert one documented API object into a normalized prepared aggregate.
 
@@ -184,19 +195,25 @@ def transform_record(
     try:
         normalized_collected_at = format_utc_datetime(collected_at, required=True)
     except (TypeError, ValueError) as exc:
-        raise PreprocessError("collected_at must be ISO 8601", code="invalid_collected_at") from exc
+        raise PreprocessError(
+            "collected_at must be ISO 8601", code="invalid_collected_at"
+        ) from exc
     assert normalized_collected_at is not None
 
     source_id = _record_id(record)
     if source_id is None:
-        raise PreprocessError("id or listingNumber is required", code="missing_listing_id")
+        raise PreprocessError(
+            "id or listingNumber is required", code="missing_listing_id"
+        )
 
     brand = _object_value(record.get("brand"), "brand")
     model = _object_value(record.get("model"), "model")
     location = _object_value(record.get("location"), "location")
     dealer = _object_value(record.get("dealer"), "dealer")
     business_area = _object_value(record.get("businessArea"), "business_area")
-    parent_area = _object_value(business_area.get("parent") if business_area else None, "business_area_parent")
+    parent_area = _object_value(
+        business_area.get("parent") if business_area else None, "business_area_parent"
+    )
 
     brand_id = _nested_required_id(brand, "brand_id")
     model_id = _nested_required_id(model, "model_id")
@@ -213,7 +230,9 @@ def transform_record(
     if source_status is not None:
         source_status = source_status.upper()
         if source_status not in {"AVAILABLE", "RESERVED", "SOLD"}:
-            raise PreprocessError("status is outside documented enum", code="invalid_status")
+            raise PreprocessError(
+                "status is outside documented enum", code="invalid_status"
+            )
 
     model_year = _nonnegative_int(record.get("modelYear"), "model_year")
     mileage_km = _nonnegative_int(record.get("mileageKm"), "mileage_km")
@@ -230,7 +249,10 @@ def transform_record(
             "slug": _nested_text(brand, "slug"),
             "country": _nested_text(brand, "country"),
             **_entity_metadata(
-                source_updated_at=source_updated_at, run_id=run_id, collected_at=normalized_collected_at, now=now
+                source_updated_at=source_updated_at,
+                run_id=run_id,
+                collected_at=normalized_collected_at,
+                now=now,
             ),
         }
 
@@ -243,7 +265,10 @@ def transform_record(
             "slug": _nested_text(model, "slug"),
             "body_type": _nested_text(model, "bodyType", "vehicleType"),
             **_entity_metadata(
-                source_updated_at=source_updated_at, run_id=run_id, collected_at=normalized_collected_at, now=now
+                source_updated_at=source_updated_at,
+                run_id=run_id,
+                collected_at=normalized_collected_at,
+                now=now,
             ),
         }
 
@@ -256,7 +281,10 @@ def transform_record(
             "sigungu": _nested_text(location, "sigungu", "district"),
             "slug": _nested_text(location, "slug"),
             **_entity_metadata(
-                source_updated_at=source_updated_at, run_id=run_id, collected_at=normalized_collected_at, now=now
+                source_updated_at=source_updated_at,
+                run_id=run_id,
+                collected_at=normalized_collected_at,
+                now=now,
             ),
         }
 
@@ -268,7 +296,10 @@ def transform_record(
             "department": _nested_text(dealer, "department"),
             "position": _nested_text(dealer, "position"),
             **_entity_metadata(
-                source_updated_at=source_updated_at, run_id=run_id, collected_at=normalized_collected_at, now=now
+                source_updated_at=source_updated_at,
+                run_id=run_id,
+                collected_at=normalized_collected_at,
+                now=now,
             ),
         }
 
@@ -289,7 +320,10 @@ def transform_record(
                 else None
             ),
             **_entity_metadata(
-                source_updated_at=source_updated_at, run_id=run_id, collected_at=normalized_collected_at, now=now
+                source_updated_at=source_updated_at,
+                run_id=run_id,
+                collected_at=normalized_collected_at,
+                now=now,
             ),
         }
 
@@ -300,26 +334,44 @@ def transform_record(
         "description": _text_value(record.get("description")),
         "trim": _text_value(record.get("trim")),
         "brand": {
-            key: brand_entity.get(key) for key in ("brand_id", "name", "slug", "country")
-        } if brand_entity else None,
+            key: brand_entity.get(key)
+            for key in ("brand_id", "name", "slug", "country")
+        }
+        if brand_entity
+        else None,
         "model": {
-            key: model_entity.get(key) for key in ("model_id", "brand_id", "name", "slug", "body_type")
-        } if model_entity else None,
+            key: model_entity.get(key)
+            for key in ("model_id", "brand_id", "name", "slug", "body_type")
+        }
+        if model_entity
+        else None,
         "location": {
-            key: location_entity.get(key) for key in ("location_id", "province", "city", "sigungu", "slug")
-        } if location_entity else None,
+            key: location_entity.get(key)
+            for key in ("location_id", "province", "city", "sigungu", "slug")
+        }
+        if location_entity
+        else None,
         "dealer": {
-            key: dealer_entity.get(key) for key in ("dealer_code", "display_name", "department", "position")
-        } if dealer_entity else None,
+            key: dealer_entity.get(key)
+            for key in ("dealer_code", "display_name", "department", "position")
+        }
+        if dealer_entity
+        else None,
         "business_area": {
             "business_area_id": business_area_entity.get("business_area_id"),
             "name": business_area_entity.get("name"),
             "slug": business_area_entity.get("slug"),
-            "parent_business_area_id": business_area_entity.get("parent_business_area_id"),
+            "parent_business_area_id": business_area_entity.get(
+                "parent_business_area_id"
+            ),
             "parent": business_area_entity.get("parent"),
-        } if business_area_entity else None,
+        }
+        if business_area_entity
+        else None,
         "model_year": model_year,
-        "first_registration": _date_value(record.get("firstRegistration"), "first_registration"),
+        "first_registration": _date_value(
+            record.get("firstRegistration"), "first_registration"
+        ),
         "mileage_km": mileage_km,
         "price_krw": price_krw,
         "currency": _text_value(record.get("currency")),
@@ -327,9 +379,15 @@ def transform_record(
         "fuel_type": _text_value(record.get("fuelType")),
         "transmission": _text_value(record.get("transmission")),
         "color": _text_value(record.get("color")),
-        "displacement_cc": _nonnegative_int(record.get("displacementCc"), "displacement_cc"),
-        "accident_count": _nonnegative_int(record.get("accidentCount"), "accident_count"),
-        "owner_change_count": _nonnegative_int(record.get("ownerChangeCount"), "owner_change_count"),
+        "displacement_cc": _nonnegative_int(
+            record.get("displacementCc"), "displacement_cc"
+        ),
+        "accident_count": _nonnegative_int(
+            record.get("accidentCount"), "accident_count"
+        ),
+        "owner_change_count": _nonnegative_int(
+            record.get("ownerChangeCount"), "owner_change_count"
+        ),
         "inspection_status": _text_value(record.get("inspectionStatus")),
         "source_created_at": source_created_at,
         "source_updated_at": source_updated_at,
@@ -360,8 +418,9 @@ def transform_record(
         "owner_change_count": stable_content["owner_change_count"],
         "inspection_status": stable_content["inspection_status"],
         "source_event_id": _text_value(record.get("_event_id")),
-        "source_sequence": _nonnegative_int(record.get("_change_seq"), "source_sequence"),
-        "content_hash": _canonical_hash(stable_content),
+        "source_sequence": _nonnegative_int(
+            record.get("_change_seq"), "source_sequence"
+        ),
         "source_url": f"{base_url.rstrip('/')}/api/v1/cars/{source_id}",
         "source_created_at": source_created_at,
         "source_updated_at": source_updated_at,
@@ -370,7 +429,7 @@ def transform_record(
         "created_at": now,
         "updated_at": now,
     }
-    return {
+    aggregate = {
         "listing": listing,
         "brand": brand_entity,
         "model": model_entity,
@@ -378,10 +437,16 @@ def transform_record(
         "dealer": dealer_entity,
         "business_area": business_area_entity,
     }
+    listing["content_hash"] = usedcar_content_hash(aggregate)
+    return aggregate
 
 
 def transform_records(
-    records: Iterable[Mapping[str, Any]], *, settings: Settings, run_id: str, dataset_epoch: Optional[str]
+    records: Iterable[Mapping[str, Any]],
+    *,
+    settings: Settings,
+    run_id: str,
+    dataset_epoch: Optional[str],
 ) -> Tuple[List[Dict[str, Any]], List[RejectedRecord]]:
     collected_at = utc_now_iso()
     valid: List[Dict[str, Any]] = []
@@ -399,5 +464,9 @@ def transform_records(
                 )
             )
         except PreprocessError as exc:
-            rejected.append(RejectedRecord(index=index, error_code=exc.code, record_id=_record_id(candidate)))
+            rejected.append(
+                RejectedRecord(
+                    index=index, error_code=exc.code, record_id=_record_id(candidate)
+                )
+            )
     return valid, rejected

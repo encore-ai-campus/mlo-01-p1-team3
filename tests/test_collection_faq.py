@@ -6,7 +6,8 @@ from typing import Any
 
 import pytest
 
-from collection.faq import FaqCollector, FaqError, parse_faq_html
+from collection import faq as faq_module
+from collection.faq import FaqCollector, FaqError, fetch_faq_page, parse_faq_html
 from preprocessing.faq import transform_faq_records
 
 
@@ -96,7 +97,10 @@ def test_collection_faq_date_contract_is_accepted_by_preprocessing() -> None:
 
 def test_parse_faq_html_rejects_missing_selector_or_required_fields() -> None:
     with pytest.raises(FaqError) as selector_error:
-        parse_faq_html(b"<html><body><p>not a FAQ</p></body></html>", "https://faq.example.test/faqs")
+        parse_faq_html(
+            b"<html><body><p>not a FAQ</p></body></html>",
+            "https://faq.example.test/faqs",
+        )
     assert selector_error.value.code == "faq_selector_changed"
 
     with pytest.raises(FaqError) as schema_error:
@@ -122,6 +126,31 @@ def test_faq_collector_follows_same_host_allowlisted_next_link() -> None:
     assert requested == list(pages)
 
 
+def test_faq_collector_preserves_every_source_record_without_count_truncation() -> None:
+    body = (
+        b"<html><body>"
+        + b"".join(
+            faq_html(faq_id=f"faq-{index}")
+            .split(b"<body>", 1)[1]
+            .split(b"</body>", 1)[0]
+            for index in range(24)
+        )
+        + b"</body></html>"
+    )
+    collector = FaqCollector(
+        settings(faq_max_questions_per_page=10),
+        opener=lambda *_args, **_kwargs: HtmlResponse(body),
+        sleeper=lambda _seconds: None,
+    )
+
+    pages = list(collector.iter_pages())
+
+    assert len(pages) == 1
+    assert [row["faq_id"] for row in pages[0].records] == [
+        f"faq-{index}" for index in range(24)
+    ]
+
+
 def test_faq_collector_rejects_external_next_and_page_limit() -> None:
     collector = FaqCollector(settings(), opener=lambda *args, **kwargs: None)
 
@@ -134,7 +163,45 @@ def test_faq_collector_rejects_external_next_and_page_limit() -> None:
     def opener(request: Any, timeout: float) -> HtmlResponse:
         return HtmlResponse(pages[request.full_url])
 
-    limited = FaqCollector(settings(faq_max_pages=1), opener=opener, sleeper=lambda seconds: None)
+    limited = FaqCollector(
+        settings(faq_max_pages=1), opener=opener, sleeper=lambda seconds: None
+    )
     with pytest.raises(FaqError) as limit_error:
         list(limited.iter_pages())
     assert limit_error.value.code == "faq_page_limit"
+
+
+@pytest.mark.parametrize("failure", [False, True])
+def test_fetch_faq_page_closes_only_internally_owned_client(
+    monkeypatch: pytest.MonkeyPatch, failure: bool
+) -> None:
+    class Client:
+        def __init__(self, _settings: Any = None) -> None:
+            self.closed = False
+
+        def get_text(self, *_args: Any, **_kwargs: Any) -> str:
+            if failure:
+                raise RuntimeError("mock FAQ request failed")
+            return faq_html().decode()
+
+        def close(self) -> None:
+            self.closed = True
+
+    owned = Client()
+    monkeypatch.setattr(faq_module, "_settings_from_env", lambda: settings())
+    monkeypatch.setattr(faq_module, "ApiClient", lambda _settings: owned)
+
+    if failure:
+        with pytest.raises(RuntimeError, match="mock FAQ request failed"):
+            fetch_faq_page()
+    else:
+        assert fetch_faq_page().records[0]["faq_id"] == "faq-1"
+    assert owned.closed is True
+
+    injected = Client()
+    if failure:
+        with pytest.raises(RuntimeError, match="mock FAQ request failed"):
+            fetch_faq_page(client=injected)
+    else:
+        assert fetch_faq_page(client=injected).records[0]["faq_id"] == "faq-1"
+    assert injected.closed is False

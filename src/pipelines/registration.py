@@ -43,7 +43,10 @@ from loading.registration import (
     SqlQuotaLedger,
     SqlRegistrationUpsertSink,
 )
-from preprocessing.registration import RegistrationPreprocessError, transform_registration_records
+from preprocessing.registration import (
+    RegistrationPreprocessError,
+    transform_registration_records,
+)
 
 
 class _DryRunQuota:
@@ -92,7 +95,11 @@ def run_once(
         raise ValueError(f"unsupported registration sink: {sink_name}")
     if max_calls not in (None, 1):
         raise ValueError("registration pipeline performs exactly one API call per run")
-    if period and start_period and normalize_period(period) != normalize_period(start_period):
+    if (
+        period
+        and start_period
+        and normalize_period(period) != normalize_period(start_period)
+    ):
         raise ValueError("period and start_period must identify the same month")
     if getattr(settings, "registration_form_id", 5498) != 5498:
         raise ValueError("registration_form_id must remain 5498")
@@ -102,19 +109,13 @@ def run_once(
     run_id = run_id or str(uuid.uuid4())
     logger = JsonlLogger(
         settings.log_path,
-        {"service": "pipeline", "pipeline_name": "vehicle_registration", "run_id": run_id},
+        {
+            "service": "pipeline",
+            "pipeline_name": "vehicle_registration",
+            "run_id": run_id,
+        },
     )
     state = RegistrationStateStore(settings.registration_state_path)
-    quota: Any = (
-        _DryRunQuota(settings.registration_daily_quota)
-        if dry_run
-        else (
-            SqlQuotaLedger(settings)
-            if sink_name == "sql"
-            else JsonQuotaLedger(state, limit=settings.registration_daily_quota, time_zone=settings.time_zone)
-        )
-    )
-    stored_state = state.load()
     requested_period = normalize_period(
         period
         or start_period
@@ -122,15 +123,10 @@ def run_once(
         or current_period(settings.time_zone)
     )
     sink: Any = None
-    logger.event(
-        "INFO",
-        "run_started",
-        "daily registration run started",
-        stage_name="Collect",
-        logic_name="vehicle_registration.collect",
-        period=month_label(requested_period),
-        quota_remaining=quota.remaining,
-    )
+    quota: Any = None
+    stored_state: Dict[str, Any] = {}
+    cleanup_attempted = False
+    cleanup_failed = False
 
     total_collected = total_preprocessed = total_valid = total_rejected = 0
     total_inserted = total_updated = total_unchanged = 0
@@ -141,14 +137,65 @@ def run_once(
 
     def reserve_call() -> None:
         nonlocal request_count
+        assert quota is not None
         request_count += 1
         quota.reserve()
 
+    def close_resources() -> None:
+        """Attempt both closes and surface the first cleanup failure."""
+
+        nonlocal cleanup_attempted, cleanup_failed
+        if cleanup_attempted:
+            return
+        cleanup_attempted = True
+        first_error: Exception | None = None
+        for resource in (sink, quota):
+            close = getattr(resource, "close", None)
+            if not close:
+                continue
+            try:
+                close()
+            except Exception as exc:
+                if first_error is None:
+                    first_error = exc
+        if first_error is not None:
+            cleanup_failed = True
+            raise first_error
+
     try:
-        client: Any = FixtureRegistrationClient(fixture) if fixture else RegistrationApiClient(settings)
+        quota = (
+            _DryRunQuota(settings.registration_daily_quota)
+            if dry_run
+            else (
+                SqlQuotaLedger(settings)
+                if sink_name == "sql"
+                else JsonQuotaLedger(
+                    state,
+                    limit=settings.registration_daily_quota,
+                    time_zone=settings.time_zone,
+                )
+            )
+        )
+        stored_state = state.load()
+        logger.event(
+            "INFO",
+            "run_started",
+            "daily registration run started",
+            stage_name="Collect",
+            logic_name="vehicle_registration.collect",
+            period=month_label(requested_period),
+            quota_remaining=quota.remaining,
+        )
+        client: Any = (
+            FixtureRegistrationClient(fixture)
+            if fixture
+            else RegistrationApiClient(settings)
+        )
         if not dry_run:
             if sink_name == "json":
-                sink = JsonlRegistrationUpsertSink(settings.output_dir / "vehicle_registration_reports.jsonl")
+                sink = JsonlRegistrationUpsertSink(
+                    settings.output_dir / "vehicle_registration_reports.jsonl"
+                )
             else:
                 sink = SqlRegistrationUpsertSink(settings)
 
@@ -156,11 +203,24 @@ def run_once(
             raise QuotaExceeded()
 
         if quota.remaining > 0:
-            payload, body = client.fetch_period(requested_period, reserve_call=reserve_call)
+            payload, body = client.fetch_period(
+                requested_period, reserve_call=reserve_call
+            )
             records = extract_record_list(payload)
-            status = find_value(payload, {"status_code", "statuscode"}) if isinstance(payload, dict) else None
-            if not records and status not in {"INFO-200", 200, "200"} and not isinstance(payload, dict):
-                raise RegistrationError("registration response has no record envelope", code="response_schema")
+            status = (
+                find_value(payload, {"status_code", "statuscode"})
+                if isinstance(payload, dict)
+                else None
+            )
+            if (
+                not records
+                and status not in {"INFO-200", 200, "200"}
+                and not isinstance(payload, dict)
+            ):
+                raise RegistrationError(
+                    "registration response has no record envelope",
+                    code="response_schema",
+                )
             collected = True
             envelope = CollectionEnvelope(
                 source_name="vehicle_registration",
@@ -199,7 +259,15 @@ def run_once(
                         index=item.index,
                         error_code=item.error_code,
                         stable_key="|".join(
-                            filter(None, (item.sido_name, item.sigungu_name, item.vehicle_type, item.usage_type))
+                            filter(
+                                None,
+                                (
+                                    item.sido_name,
+                                    item.sigungu_name,
+                                    item.vehicle_type,
+                                    item.usage_type,
+                                ),
+                            )
                         ),
                     )
                     for item in rejected
@@ -235,13 +303,23 @@ def run_once(
             )
             if prepared.rejected:
                 logger.event(
-                    "WARNING",
+                    "ERROR",
                     "records_rejected",
-                    "registration source rows failed validation",
+                    "registration source rows failed validation and were discarded",
                     stage_name="Validate",
                     logic_name="vehicle_registration.validate",
+                    error_code="records_rejected",
                     rejected_count=len(prepared.rejected),
-                    reject_codes=sorted({item.error_code for item in prepared.rejected}),
+                    discarded_count=len(prepared.rejected),
+                    discard_policy="log_only",
+                    reject_codes=sorted(
+                        {item.error_code for item in prepared.rejected}
+                    ),
+                )
+            if envelope.records and not prepared.records and prepared.rejected:
+                raise RegistrationPreprocessError(
+                    "all collected registration records were rejected; checkpoint was not advanced",
+                    code="all_records_rejected",
                 )
             current_stage = "Load"
             current_logic = "vehicle_registration.load"
@@ -283,6 +361,7 @@ def run_once(
             "dry_run": dry_run,
             "checkpoint_path": str(settings.registration_state_path),
         }
+        close_resources()
         logger.event(
             "INFO",
             "run_succeeded",
@@ -292,28 +371,49 @@ def run_once(
             **result,
         )
         return result
-    except (RegistrationError, QuotaExceeded, RegistrationPreprocessError, RuntimeError, ValueError) as exc:
+    except Exception as exc:
+        quota_used: Any = None
+        if quota is not None:
+            try:
+                quota_used = quota.used_count
+            except Exception:
+                quota_used = None
         logger.event(
             "ERROR",
             "run_failed",
             "registration run failed",
             stage_name=current_stage,
             logic_name=current_logic,
-            error_code=getattr(exc, "code", "registration_error"),
-            quota_used=quota.used_count,
+            error_code=(
+                "resource_close_failed"
+                if cleanup_failed
+                else getattr(exc, "code", "registration_error")
+            ),
+            quota_used=quota_used,
         )
         raise
     finally:
-        close = getattr(sink, "close", None)
-        if close:
-            close()
-        close_quota = getattr(quota, "close", None)
-        if close_quota:
-            close_quota()
+        if not cleanup_attempted:
+            try:
+                close_resources()
+            except Exception:
+                try:
+                    logger.event(
+                        "ERROR",
+                        "resource_close_failed",
+                        "registration resources could not be closed cleanly",
+                        stage_name=current_stage,
+                        logic_name=current_logic,
+                        error_code="resource_close_failed",
+                    )
+                except Exception:
+                    pass
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
-    parser = argparse.ArgumentParser(description="Run one daily registration-report collection")
+    parser = argparse.ArgumentParser(
+        description="Run one daily registration-report collection"
+    )
     parser.add_argument("--fixture", type=Path)
     parser.add_argument("--sink", choices=("json", "sql"), default="json")
     parser.add_argument("--output-dir", type=Path)
@@ -329,7 +429,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                     **settings.__dict__,
                     "output_dir": args.output_dir,
                     "log_path": args.output_dir / "jsonl",
-                    "registration_state_path": args.output_dir / "registration_state.json",
+                    "registration_state_path": args.output_dir
+                    / "registration_state.json",
                 }
             )
         result = run_once(
@@ -342,9 +443,14 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         )
         print(json.dumps(result, ensure_ascii=False))
         return 0
-    except (RegistrationError, RegistrationPreprocessError, RuntimeError, ValueError) as exc:
+    except Exception as exc:
         print(
-            json.dumps({"status": "FAILED", "error_code": getattr(exc, "code", "registration_error")}),
+            json.dumps(
+                {
+                    "status": "FAILED",
+                    "error_code": getattr(exc, "code", "registration_error"),
+                }
+            ),
             file=sys.stderr,
         )
         return 1

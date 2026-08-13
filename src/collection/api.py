@@ -7,7 +7,6 @@ and converts upstream failures into stable ``ApiError`` objects.
 
 from __future__ import annotations
 
-import json
 import random
 import time
 from dataclasses import dataclass
@@ -137,9 +136,13 @@ class ApiClient:
         else:
             raw_base_url = getattr(settings_or_base_url, "base_url", "")
             configured_key = getattr(settings_or_base_url, "api_key", None)
-            configured_timeout = float(getattr(settings_or_base_url, "timeout_seconds", 30.0))
+            configured_timeout = float(
+                getattr(settings_or_base_url, "timeout_seconds", 30.0)
+            )
             configured_user_agent = str(
-                getattr(settings_or_base_url, "user_agent", "mlo-used-car-collector/0.1")
+                getattr(
+                    settings_or_base_url, "user_agent", "mlo-used-car-collector/0.1"
+                )
             )
 
         parsed = urlsplit(str(raw_base_url).rstrip("/"))
@@ -147,12 +150,21 @@ class ApiClient:
             raise ValueError("base_url must be an absolute HTTP(S) URL")
         self.base_url = f"{parsed.scheme}://{parsed.netloc}"
         selected_key = api_key if api_key is not None else configured_key
-        self.api_key = selected_key.strip() if isinstance(selected_key, str) and selected_key.strip() else None
+        self.api_key = (
+            selected_key.strip()
+            if isinstance(selected_key, str) and selected_key.strip()
+            else None
+        )
         self.timeout = timeout if timeout is not None else configured_timeout
         self.user_agent = configured_user_agent
         self.session = session or requests.Session()
         self.sleeper = sleeper
         self.public_key_info: Optional[PublicKeyInfo] = None
+
+    def close(self) -> None:
+        """Release the underlying HTTP session."""
+
+        self.session.close()
 
     @classmethod
     def from_url(
@@ -179,7 +191,9 @@ class ApiClient:
         url: str,
         params: Optional[Mapping[str, Any]],
     ) -> None:
-        query_names = {name.lower().replace("-", "_") for name, _ in parse_qsl(urlsplit(url).query)}
+        query_names = {
+            name.lower().replace("-", "_") for name, _ in parse_qsl(urlsplit(url).query)
+        }
         if params:
             query_names.update(str(name).lower().replace("-", "_") for name in params)
         leaked = query_names & cls._SECRET_QUERY_NAMES
@@ -200,7 +214,9 @@ class ApiClient:
         target = urlsplit(candidate)
         base = urlsplit(self.base_url)
         if (target.scheme, target.netloc) != (base.scheme, base.netloc):
-            raise FetchError("endpoint is outside the configured API origin", code="source_allowlist")
+            raise FetchError(
+                "endpoint is outside the configured API origin", code="source_allowlist"
+            )
 
         normalized_path = target.path.rstrip("/") or "/"
         if allowed_paths is not None:
@@ -218,7 +234,9 @@ class ApiClient:
             target = target._replace(query=urlencode(merged, doseq=True))
         return urlunsplit(target)
 
-    def _headers(self, headers: Optional[Mapping[str, str]], *, authenticated: bool) -> MutableMapping[str, str]:
+    def _headers(
+        self, headers: Optional[Mapping[str, str]], *, authenticated: bool
+    ) -> MutableMapping[str, str]:
         result = {str(key): str(value) for key, value in (headers or {}).items()}
         if authenticated and self.api_key:
             result.setdefault("X-API-Key", self.api_key)
@@ -238,7 +256,9 @@ class ApiClient:
 
     def _request(self, url: str, *, headers: Mapping[str, str]) -> Any:
         try:
-            response = self.session.get(url, headers=dict(headers), timeout=self.timeout)
+            response = self.session.get(
+                url, headers=dict(headers), timeout=self.timeout
+            )
         except requests.RequestException as exc:
             raise ApiError(
                 "upstream connection failed",
@@ -249,7 +269,9 @@ class ApiClient:
 
         status = getattr(response, "status_code", None)
         if status is None:
-            raise ApiError("upstream response has no HTTP status", url=url, code="http_error")
+            raise ApiError(
+                "upstream response has no HTTP status", url=url, code="http_error"
+            )
         if status >= 400:
             raise ApiError(
                 f"upstream HTTP {status}",
@@ -262,13 +284,16 @@ class ApiClient:
         try:
             return response.json()
         except (TypeError, ValueError) as exc:
-            raise ApiError("upstream response was not valid JSON", url=url, code="json_schema") from exc
+            raise ApiError(
+                "upstream response was not valid JSON", url=url, code="json_schema"
+            ) from exc
 
     def get(
         self,
         path_or_url: str,
         *,
         params: Optional[Mapping[str, Any]] = None,
+        headers: Optional[Mapping[str, str]] = None,
         authenticated: bool = True,
         allowed_paths: Optional[Sequence[str]] = None,
         max_attempts: int = 3,
@@ -281,7 +306,10 @@ class ApiClient:
                 self.refresh_public_key()
             url = self.resolve(path_or_url, params=params, allowed_paths=allowed_paths)
             try:
-                return self._request(url, headers=self._headers(None, authenticated=authenticated))
+                return self._request(
+                    url,
+                    headers=self._headers(headers, authenticated=authenticated),
+                )
             except ApiError as exc:
                 if authenticated and exc.status == 403 and not refreshed:
                     self.refresh_public_key()
@@ -289,7 +317,11 @@ class ApiClient:
                     continue
                 if not exc.retryable or attempt + 1 >= max_attempts:
                     raise
-                delay = exc.retry_after if exc.retry_after is not None else min(8.0, 2.0**attempt)
+                delay = (
+                    exc.retry_after
+                    if exc.retry_after is not None
+                    else min(8.0, 2.0**attempt)
+                )
                 self.sleeper(delay + random.uniform(0.0, 0.25))
         raise ApiError("request retry loop exhausted", code="retry_exhausted")
 
@@ -302,15 +334,12 @@ class ApiClient:
         allowed_paths: Optional[Sequence[str]] = None,
         authenticated: bool = True,
     ) -> Any:
-        # Retained as a narrow compatibility alias.  Header-only key handling
-        # still belongs to this client.
-        if headers:
-            url = self.resolve(path_or_url, params=params, allowed_paths=allowed_paths)
-            merged = self._headers(headers, authenticated=authenticated)
-            return self._request(url, headers=merged)
+        # Retained as a narrow compatibility alias. Header-only key handling,
+        # retry, and one-time 403 refresh still belong to this client.
         return self.get(
             path_or_url,
             params=params,
+            headers=headers,
             authenticated=authenticated,
             allowed_paths=allowed_paths,
         )
@@ -328,9 +357,16 @@ class ApiClient:
         request_headers["Accept"] = "text/html,application/xhtml+xml"
         for attempt in range(max_attempts):
             try:
-                response = self.session.get(url, headers=dict(request_headers), timeout=self.timeout)
+                response = self.session.get(
+                    url, headers=dict(request_headers), timeout=self.timeout
+                )
             except requests.RequestException as exc:
-                error = ApiError("upstream connection failed", url=url, retryable=True, code="connection_error")
+                error = ApiError(
+                    "upstream connection failed",
+                    url=url,
+                    retryable=True,
+                    code="connection_error",
+                )
                 if attempt + 1 >= max_attempts:
                     raise error from exc
                 self.sleeper(min(8.0, 2.0**attempt))
@@ -347,7 +383,11 @@ class ApiClient:
             )
             if not error.retryable or attempt + 1 >= max_attempts:
                 raise error
-            self.sleeper(error.retry_after if error.retry_after is not None else min(8.0, 2.0**attempt))
+            self.sleeper(
+                error.retry_after
+                if error.retry_after is not None
+                else min(8.0, 2.0**attempt)
+            )
         raise ApiError("text request retry loop exhausted", code="retry_exhausted")
 
     def refresh_public_key(self) -> PublicKeyInfo:

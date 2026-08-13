@@ -67,7 +67,9 @@ def parse_faq_html(body: bytes | str, source_url: str) -> FaqPage:
     try:
         soup = BeautifulSoup(text, "html.parser")
         cards = soup.select(FAQ_ITEM_SELECTOR)
-    except Exception as exc:  # pragma: no cover - BeautifulSoup normally raises no parse error
+    except (
+        Exception
+    ) as exc:  # pragma: no cover - BeautifulSoup normally raises no parse error
         raise FaqError("FAQ HTML could not be parsed", code="faq_schema") from exc
     if not cards:
         raise FaqError(
@@ -105,7 +107,9 @@ def parse_faq_html(body: bytes | str, source_url: str) -> FaqPage:
 
     next_link = soup.select_one('a[rel~="next"]')
     raw_next_url = next_link.get("href") if next_link is not None else None
-    if raw_next_url is not None and (not isinstance(raw_next_url, str) or not raw_next_url.strip()):
+    if raw_next_url is not None and (
+        not isinstance(raw_next_url, str) or not raw_next_url.strip()
+    ):
         raise FaqError("FAQ next link is invalid", code="faq_schema")
     next_url = urljoin(source_url, raw_next_url) if raw_next_url else None
     return FaqPage(
@@ -135,29 +139,41 @@ class FaqCollector:
         source_url = str(getattr(settings, "faq_source_url", ""))
         base = urlsplit(source_url)
         if base.scheme not in {"http", "https"} or not base.netloc:
-            raise FaqError("FAQ_SOURCE_URL must be an absolute HTTP URL", code="source_allowlist")
+            raise FaqError(
+                "FAQ_SOURCE_URL must be an absolute HTTP URL", code="source_allowlist"
+            )
         self._base = base
         allowed = tuple(getattr(settings, "faq_allowed_paths", (FAQ_PATH,)))
         if not allowed:
-            raise FaqError("FAQ_ALLOWED_PATHS must not be empty", code="source_allowlist")
+            raise FaqError(
+                "FAQ_ALLOWED_PATHS must not be empty", code="source_allowlist"
+            )
         self._allowed_paths = {path.rstrip("/") or "/" for path in allowed}
         if base.path.rstrip("/") not in self._allowed_paths:
-            raise FaqError("FAQ_SOURCE_URL path is not allow-listed", code="source_allowlist")
+            raise FaqError(
+                "FAQ_SOURCE_URL path is not allow-listed", code="source_allowlist"
+            )
 
     def _safe_url(self, value: str) -> str:
         candidate = urljoin(urlunsplit(self._base), value)
         parsed = urlsplit(candidate)
         if (parsed.scheme, parsed.netloc) != (self._base.scheme, self._base.netloc):
-            raise FaqError("FAQ next link points outside configured host", code="source_allowlist")
+            raise FaqError(
+                "FAQ next link points outside configured host", code="source_allowlist"
+            )
         if parsed.path.rstrip("/") not in self._allowed_paths:
-            raise FaqError("FAQ next link path is not allow-listed", code="source_allowlist")
+            raise FaqError(
+                "FAQ next link path is not allow-listed", code="source_allowlist"
+            )
         return urlunsplit(parsed._replace(fragment=""))
 
     def _wait_for_next_start(self) -> None:
         now = self.monotonic()
         if self._next_start is not None:
             self.sleeper(max(0.0, self._next_start - now))
-        self._next_start = self.monotonic() + float(getattr(self.settings, "faq_interval_seconds", 1.0))
+        self._next_start = self.monotonic() + float(
+            getattr(self.settings, "faq_interval_seconds", 1.0)
+        )
 
     def _get(self, url: str) -> bytes:
         attempts = 3
@@ -166,23 +182,35 @@ class FaqCollector:
                 url,
                 headers={
                     "Accept": "text/html,application/xhtml+xml",
-                    "User-Agent": str(getattr(self.settings, "user_agent", "mlo-faq-collector/0.1")),
+                    "User-Agent": str(
+                        getattr(self.settings, "user_agent", "mlo-faq-collector/0.1")
+                    ),
                 },
                 method="GET",
             )
             try:
-                with self.opener(request, timeout=float(getattr(self.settings, "timeout_seconds", 30.0))) as response:
+                with self.opener(
+                    request,
+                    timeout=float(getattr(self.settings, "timeout_seconds", 30.0)),
+                ) as response:
                     content_type = (response.headers.get("Content-Type") or "").lower()
                     if content_type and "html" not in content_type:
-                        raise FaqError("FAQ response Content-Type is not HTML", code="faq_content_type")
+                        raise FaqError(
+                            "FAQ response Content-Type is not HTML",
+                            code="faq_content_type",
+                        )
                     body = response.read(MAX_FAQ_BODY_BYTES + 1)
                     if len(body) > MAX_FAQ_BODY_BYTES:
-                        raise FaqError("FAQ response exceeded 4 MiB", code="faq_response_too_large")
+                        raise FaqError(
+                            "FAQ response exceeded 4 MiB", code="faq_response_too_large"
+                        )
                     return body
             except HTTPError as exc:
                 retryable = exc.code in {429, 500, 502, 503, 504}
                 if not retryable or attempt + 1 >= attempts:
-                    raise FaqError(f"FAQ upstream HTTP {exc.code}", code=f"http_{exc.code}") from exc
+                    raise FaqError(
+                        f"FAQ upstream HTTP {exc.code}", code=f"http_{exc.code}"
+                    ) from exc
                 retry_after = 0.0
                 if exc.headers and exc.headers.get("Retry-After"):
                     try:
@@ -192,7 +220,9 @@ class FaqCollector:
                 self.sleeper(max(retry_after, 2.0**attempt))
             except (URLError, TimeoutError) as exc:
                 if attempt + 1 >= attempts:
-                    raise FaqError("FAQ upstream connection failed", code="connection_error") from exc
+                    raise FaqError(
+                        "FAQ upstream connection failed", code="connection_error"
+                    ) from exc
                 self.sleeper(2.0**attempt)
         raise FaqError("FAQ retry loop exhausted", code="retry_exhausted")
 
@@ -206,18 +236,19 @@ class FaqCollector:
             if next_url is None:
                 return
             if next_url in seen:
-                raise FaqError("FAQ next link repeated an already requested URL", code="faq_loop")
+                raise FaqError(
+                    "FAQ next link repeated an already requested URL", code="faq_loop"
+                )
             seen.add(next_url)
             self._wait_for_next_start()
             page_url = next_url
             page = parse_faq_html(self._get(page_url), page_url)
-            max_questions = int(getattr(self.settings, "faq_max_questions_per_page", 10))
-            if len(page.records) > max_questions:
-                raise FaqError("FAQ question limit exceeded", code="faq_question_limit")
             yield page
             next_url = self._safe_url(page.next_url) if page.next_url else None
         if next_url is not None:
-            raise FaqError("FAQ page limit reached before pagination ended", code="faq_page_limit")
+            raise FaqError(
+                "FAQ page limit reached before pagination ended", code="faq_page_limit"
+            )
 
 
 def fixture_pages(path: Path) -> Iterable[FaqPage]:
@@ -257,14 +288,21 @@ def crawl_faqs() -> List[Dict[str, Any]]:
     return records
 
 
-def fetch_faq_page(*, source_url: Optional[str] = None, client: Optional[ApiClient] = None) -> FaqPage:
+def fetch_faq_page(
+    *, source_url: Optional[str] = None, client: Optional[ApiClient] = None
+) -> FaqPage:
     """Compatibility single-page API using ``collection.api`` for transport."""
 
     settings = _settings_from_env()
     source = source_url or str(settings.faq_source_url)
+    owned_client = client is None
     http = client or ApiClient(settings)
-    body = http.get_text(source, allowed_paths=(urlsplit(source).path,))
-    return parse_faq_html(body, source)
+    try:
+        body = http.get_text(source, allowed_paths=(urlsplit(source).path,))
+        return parse_faq_html(body, source)
+    finally:
+        if owned_client:
+            http.close()
 
 
 def parse_fixture(html: bytes | str, *, source_url: str = "fixture://faqs") -> FaqPage:

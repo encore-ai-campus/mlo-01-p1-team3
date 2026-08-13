@@ -109,11 +109,15 @@ class JsonlFaqUpsertSink:
             try:
                 value = json.loads(line)
             except json.JSONDecodeError as exc:
-                raise RuntimeError(f"FAQ JSONL output is invalid at line {index}") from exc
+                raise RuntimeError(
+                    f"FAQ JSONL output is invalid at line {index}"
+                ) from exc
             try:
                 _validate_faq_document(value)
             except ValueError as exc:
-                raise RuntimeError(f"FAQ JSONL record is invalid at line {index}") from exc
+                raise RuntimeError(
+                    f"FAQ JSONL record is invalid at line {index}"
+                ) from exc
             rows[str(value["faq_id"])] = value
         return rows
 
@@ -136,7 +140,10 @@ class JsonlFaqUpsertSink:
         ordered = sorted(existing.values(), key=lambda item: str(item["faq_id"]))
         atomic_write(
             self.path,
-            "".join(json.dumps(item, ensure_ascii=False, sort_keys=True) + "\n" for item in ordered),
+            "".join(
+                json.dumps(item, ensure_ascii=False, sort_keys=True) + "\n"
+                for item in ordered
+            ),
         )
         return FaqLoadStats(inserted, updated, unchanged)
 
@@ -156,12 +163,20 @@ class MongoFaqUpsertSink:
             serverSelectionTimeoutMS=settings.mongo_server_selection_timeout_ms,
             tz_aware=True,
         )
-        self._database = self._client[settings.mongo_database]
-        self._collection = self._database[settings.mongo_collection]
-        self._ensure_validator(settings.mongo_collection)
-        self._collection.create_index("faq_id", unique=True, name="uq_faq_id")
-        self._collection.create_index([("brand", 1), ("category", 1)], name="ix_faq_brand_category")
-        self._collection.create_index([("updated_at", -1)], name="ix_faq_updated_at")
+        try:
+            self._database = self._client[settings.mongo_database]
+            self._collection = self._database[settings.mongo_collection]
+            self._ensure_validator(settings.mongo_collection)
+            self._collection.create_index("faq_id", unique=True, name="uq_faq_id")
+            self._collection.create_index(
+                [("brand", 1), ("category", 1)], name="ix_faq_brand_category"
+            )
+            self._collection.create_index(
+                [("updated_at", -1)], name="ix_faq_updated_at"
+            )
+        except Exception:
+            self._client.close()
+            raise
 
     def _ensure_validator(self, collection_name: str) -> None:
         """Require the explicit Mongo migration before accepting documents."""
@@ -172,9 +187,13 @@ class MongoFaqUpsertSink:
             )
         definitions = self._database.list_collections(filter={"name": collection_name})
         definition = next(iter(definitions), None)
-        options = definition.get("options", {}) if isinstance(definition, Mapping) else {}
+        options = (
+            definition.get("options", {}) if isinstance(definition, Mapping) else {}
+        )
         validator = options.get("validator") if isinstance(options, Mapping) else None
-        schema = validator.get("$jsonSchema") if isinstance(validator, Mapping) else None
+        schema = (
+            validator.get("$jsonSchema") if isinstance(validator, Mapping) else None
+        )
         properties = schema.get("properties") if isinstance(schema, Mapping) else None
         if not isinstance(properties, Mapping) or any(
             not isinstance(properties.get(name), Mapping)
