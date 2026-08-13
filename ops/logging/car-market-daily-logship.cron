@@ -1,0 +1,15 @@
+# =============================================================================
+# [START] Source EC2 daily archive-transfer cron
+# Purpose:
+#   Once daily, send all completed hourly gzip files to Monitoring. Deploy on
+#   each of the six source EC2s as /etc/cron.d/car-market-daily-logship.
+# =============================================================================
+
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+15 2 * * * root /usr/local/lib/car-market/ship_rotated_logs.sh
+
+# =============================================================================
+# [END] Source EC2 daily archive-transfer cron
+# =============================================================================

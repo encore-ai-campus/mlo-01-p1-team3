@@ -1,0 +1,15 @@
+# =============================================================================
+# [START] Source EC2 hourly logrotate cron
+# Purpose:
+#   Run on Collector, both MySQL nodes, and all three MongoDB nodes at minute
+#   7 of every hour. Deploy as /etc/cron.d/car-market-resource-logrotate.
+# =============================================================================
+
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+7 * * * * root /usr/local/lib/car-market/rotate_resource_log.sh
+
+# =============================================================================
+# [END] Source EC2 hourly logrotate cron
+# =============================================================================
