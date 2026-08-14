@@ -257,4 +257,6 @@ tests/
 | 이재원 | 데이터 파이프라인의 이해도와 모듈화의 이해를 배웠고 협업에서처럼 깃허브와 깃을 많이 써볼 수 있었지만 문서화의 중요성과 개인 능력의 한계를 느껴 보완이 필요함을 느꼈습니다.  |
 
 ## 참고
-https://docs.google.com/presentation/d/1q6dqrgJ93li7-NxwBoWGouH_7fNKjvou/edit?usp=sharing&ouid=109121084513100010660&rtpof=true&sd=true
+**google slides의 경우 모바일 환경 등 특정 환경에서 호환성 이슈가 발생하는 것을 확인하였습니다. 정상적으로 보이지 않으신다면 pdf를 이용해주세요.**
+[발표 프레젠테이션(google slides)](https://docs.google.com/presentation/d/1q6dqrgJ93li7-NxwBoWGouH_7fNKjvou/edit?usp=sharing&ouid=109121084513100010660&rtpof=true&sd=true)
+[발표 프레젠테이션(pdf)](https://drive.google.com/file/d/1khzJeqOZpARSaCunnhhnLmzFZS9U2gVg/view?usp=sharing)
