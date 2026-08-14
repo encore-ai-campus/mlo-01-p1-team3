@@ -1,0 +1,15 @@
+# =============================================================================
+# [START] Monitoring EC2 daily archive-ingest cron
+# Purpose:
+#   After the six source transfers, validate and store received files in their
+#   source-specific archive directories. Deploy only on Monitoring EC2.
+# =============================================================================
+
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+45 2 * * * root /usr/local/lib/car-market/ingest_rotated_logs.sh
+
+# =============================================================================
+# [END] Monitoring EC2 daily archive-ingest cron
+# =============================================================================
