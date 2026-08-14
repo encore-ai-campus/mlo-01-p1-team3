@@ -4,7 +4,7 @@
 >
 > 실행 진입점: `python -m src.main`
 
-전국 판매망을 운영하는 중고 자동차 판매사를 가상의 고객사로 두고, 자동차 등록현황·중고차 매물·FAQ를 수집하고 검증한 뒤 MySQL과 MongoDB에 멱등하게 적재하는 Python 데이터 파이프라인이다. 현재 저장소의 제품 범위는 **수집 → 전처리 → 검증 → Upsert → 체크포인트/운영 로그**까지이며, 사용자용 조회 API와 대시보드는 아직 구현하지 않았다.
+전국 판매망을 운영하는 중고 자동차 판매사를 가상의 고객사로 두고, 자동차 등록현황·중고차 매물·FAQ를 수집하고 검증한 뒤 MySQL과 MongoDB에 멱등하게 적재하는 Python 데이터 파이프라인이다. 현재 저장소의 제품 범위는 **수집 → 전처리 → 검증 → Upsert → 체크포인트**까지이며, 사용자용 조회 API와 대시보드는 아직 구현하지 않았다.
 
 ## 1. 팀
 
@@ -40,6 +40,9 @@ flowchart LR
 ```
 
 ## 3. 실행 환경
+
+<details>
+<summary>펼치기</summary>
 
 ### 3.1 저장소의 독립 환경 사용
 
@@ -86,6 +89,8 @@ Live SQL sink에는 `SQL_HOST` 또는 `SQL_JDBC_URL`, `SQL_USER`가 필요하다
 | `REGISTRATION_START_PERIOD` | 선택값 `YYYY-MM` | CLI period 미지정 시 수집월 |
 | `OUTPUT_DIR`, `LOG_PATH` | 기본 `output` 하위 | 결과·상태·JSONL 로그 경로 |
 
+</details>
+
 ## 4. DB 준비
 
 Forward migration은 기존 데이터를 보존하면서 아직 적용되지 않은 migration만 수행한다.
@@ -108,6 +113,9 @@ MySQL migration은 `sales_support_db`의 10개 테이블과 6개 FK를 생성한
 ```
 
 ## 5. 실행 방법
+
+<details>
+<summary>펼치기</summary>
 
 ### 5.1 전체 Live 무한 실행
 
@@ -155,6 +163,8 @@ MySQL migration은 `sales_support_db`의 10개 테이블과 6개 FK를 생성한
 
 `--dry-run`은 실제 source를 읽고 변환·검증하되 sink write와 상태 저장을 생략한다. `fixture` profile은 안전한 기본값이지만 선택한 각 파이프라인의 fixture 경로를 반드시 전달해야 하며 한 cycle만 실행한다.
 
+</details>
+
 ## 6. 데이터 정합성 및 실패 정책
 
 - business key가 없으면 insert, key와 내용이 모두 같으면 unchanged, 내용이 바뀌면 update한다.
@@ -169,7 +179,7 @@ MySQL migration은 `sales_support_db`의 10개 테이블과 6개 FK를 생성한
 ## 7. 저장 구조
 
 ### MySQL
-
+![ERD](docs/img/ERD-Diagram.png)
 - 중고차: `vehicle_brands`, `vehicle_models`, `vehicle_locations`, `vehicle_dealers`, `vehicle_business_areas`, `vehicle_listings`
 - 등록현황: `vehicle_registration_reports`
 - 운영: `pipeline_runs`(현재 중고차 SQL batch/checkpoint), `api_quota_usage`, `schema_migrations`
@@ -179,8 +189,6 @@ MySQL migration은 `sales_support_db`의 10개 테이블과 6개 FK를 생성한
 - `support_db.faq`: FAQ 1건당 1 document, business key `faq_id`
 - `uq_faq_id`, `ix_faq_brand_category`, `ix_faq_updated_at`
 - four timestamp fields는 BSON Date로 저장하고 validator는 `strict/error`다.
-
-자세한 관계와 존재 이유는 [MySQL Migration 및 Live 운영 검증 리포트](docs/MySQL_Migration_and_Live_Operation_Report_2026-08-13.md), [MongoDB Migration 및 Live 운영 검증 리포트](docs/MongoDB_Migration_and_Live_Operation_Report_2026-08-13.md), [ERD](docs/ERD.png)를 참고한다.
 
 ## 8. 검증 기준선
 
@@ -215,6 +223,8 @@ Live 테스트는 실제 API와 격리 DB에 write한 뒤 정리한다. 환경�
 - AWS 고가용성 구성은 설계·PoC·비용 산정 대상이며 이 저장소가 실제 배포 상태를 증명하지 않는다.
 
 ## 10. 저장소 구조
+<details>
+<summary>펼치기</summary>
 
 ```text
 src/
@@ -224,15 +234,18 @@ src/
 ├── pipelines/        # pipeline별 orchestration과 checkpoint 정책
 ├── common/           # 설정, 계약, 시간, 로그, hash
 └── main.py           # 공통 CLI와 Live 반복 실행
-
+...
 migrations/
 ├── sql/              # V001, forward runner, destructive rebuild
 └── mongo/            # FAQ validator/index, destructive rebuild
-
+...
 tests/
 ├── mock/             # 외부 연결 없는 운영 계약 검증
 └── live/             # 실제 API + 격리 MySQL/MongoDB 검증
 ```
+
+</details>
+
 
 ## 11. 한 줄 회고
 
@@ -241,7 +254,7 @@ tests/
 | 김남동 | 팀장으로써 프로젝트 기획을 해보며 소통과 기획의 중요성에 대해서 느낄 수 있었고, 협업 과정에서 일어날 수 있는 다양한 경우를 경험하며 많이 성장할 수 있었습니다. |
 | 신성민 | AWS 인프라를 직접 구축하고 문제를 해결하며 구조를 빠르게 이해할 수 있었고, 협업 과정에서도 많은 것을 배우고 느낄 수 있었습니다.  |
 | 이인건 | 데이터 수집, 정제, 적재의 진행과정과 데이터 파이프라인의 이해도를 한층 높일 수 있었습니다. |
-| 이재원 | 데이터 파이프라인의 이해도와 모듈화의 이해를 배웠지만 개인 능력의 한계를 느껴 보완이 필요함을 느낄 수 있었습니다. |
+| 이재원 | 데이터 파이프라인의 이해도와 모듈화의 이해를 배웠고 협업에서처럼 깃허브와 깃을 많이 써볼 수 있었지만 문서화의 중요성과 개인 능력의 한계를 느껴 보완이 필요함을 느꼈습니다.  |
 
 ## 참고
-https://docs.google.com/presentation/d/1oll8snjSN46s3fLDoZmlMYGMOPb64851/edit?usp=sharing&ouid=109121084513100010660&rtpof=true&sd=true
+https://docs.google.com/presentation/d/1q6dqrgJ93li7-NxwBoWGouH_7fNKjvou/edit?usp=sharing&ouid=109121084513100010660&rtpof=true&sd=true
